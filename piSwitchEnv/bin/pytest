@@ -1,0 +1,7 @@
+#!/Users/weich/Desktop/Uwe-Pi/ember+flask+restful/piSwitch/piSwitchEnv/bin/python
+
+import warnings
+warnings.simplefilter('default', DeprecationWarning)
+
+from logilab.common.pytest import run
+run()
