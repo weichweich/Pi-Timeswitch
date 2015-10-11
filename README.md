@@ -3,6 +3,8 @@ Pi-TimeSwitch is an automated, easy to use timeswitch for the [Raspberry Pi](htt
 
 Pi-TimeSwitch provides a web based GUI where one can specify a schedule for every gpio. Start and end time of each intervall can be randomized.
 
+The GUI is made using [Emberjs](http://emberjs.com) for a nice interactive website and [Flask](http://flask.pocoo.org) for a simple REST API.
+
 Currently the project is in an **early state of development**. There are several **bugs** in the GUI and some features are missing.
 
 **You are welcome to contribute.**
@@ -35,7 +37,7 @@ git clone https://github.com/weichweich/pi-timeswitch.git ./piSwitch
 cd ~/piSwitch
 ~~~
 
-Install [Flask](http://flask.pocoo.org), [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO)
+Install Flask, [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO)
  
 ~~~
 pip install Flask
