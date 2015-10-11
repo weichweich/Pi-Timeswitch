@@ -42,7 +42,7 @@ Install Flask, [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), 
 ~~~
 pip install Flask
 pip install Flask-Restful
-pip install -U marshmallow --pre # http://marshmallow.readthedocs.org/en/latest/
+pip install -U marshmallow --pre
 pip install RPi.GPIO
 ~~~
 
