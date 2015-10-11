@@ -1,5 +1,5 @@
 # Pi-TimeSwitch
-Pi-TimeSwitch is an automated, easy to use timeswitch for the Raspberry Pi[^raspi].
+Pi-TimeSwitch is an automated, easy to use timeswitch for the [Raspberry Pi](https://www.raspberrypi.org).
 
 Pi-TimeSwitch provides a web based GUI where one can specify a schedule for every gpio. Start and end time of each intervall can be randomized.
 
@@ -15,7 +15,7 @@ Upgrade pip:
 sudo pip install —upgrade pip
 ~~~
 
-Install virtualenv[^virtualenv]
+Install [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
 
 ~~~
 sudo pip install virtualenv
@@ -35,7 +35,7 @@ git clone https://github.com/weichweich/pi-timeswitch.git ./piSwitch
 cd ~/piSwitch
 ~~~
 
-Install Flask[^flask], Flask-Restful[^restful], RPi.GPIO[^gpio]
+Install [Flask](http://flask.pocoo.org), [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO)
  
 ~~~
 pip install Flask
@@ -51,9 +51,3 @@ python server.py --file schedule.sqlite3 --create
 ~~~
 
 --create will delete the current SQL database if existing and creates a new one.
-
-[^raspi]: https://www.raspberrypi.org
-[^virtualenv]: http://docs.python-guide.org/en/latest/dev/virtualenvs/
-[^flask]: http://flask.pocoo.org
-[^restful]: http://flask-restful.readthedocs.org/en/0.3.4/
-[^gpio]: https://pypi.python.org/pypi/RPi.GPIO
