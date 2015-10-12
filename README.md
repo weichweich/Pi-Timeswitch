@@ -11,45 +11,44 @@ Currently the project is in an **early state of development**. There are several
 
 ## How to install Pi-TimeSwitch:
 
-Upgrade pip:
+### Virtualenv
+At first i recommend to create a virtual environment using [Virtualenv](). e.g.
+
+Create a virtual environment:
 
 ~~~
-sudo pip install —upgrade pip
+cd pi-timeswitch-folder
+virtualenv venv
 ~~~
-
-Install [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
-
-~~~
-sudo pip install virtualenv
-~~~
-
-Make directory for the repository and go to home folder
+Activate it:
 
 ~~~
-mkdir ~/piSwitch
-cd ~
+source venv/bin/activate
 ~~~
 
-Clone git repository:
+### Dependencies
 
-~~~
-git clone https://github.com/weichweich/pi-timeswitch.git ./piSwitch
-cd ~/piSwitch
-~~~
+Then you need to install [Flask](http://flask.pocoo.org), [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO), [marshmallow](http://marshmallow.readthedocs.org/en/latest/). e.g.
 
-Install Flask, [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO)
- 
 ~~~
 pip install Flask
-pip install Flask-Restful
+pip install flask-restful
 pip install -U marshmallow --pre
-pip install RPi.GPIO
+sudo apt-get install rpi.gpio		# Only on Raspberry Pi. 
 ~~~
 
-Create the SQLite database and start the server:
+If the RPi.GPIO is not installed, the programm will use a mockup (which won't switch anything and just logges switching attempts).
+
+###  Start the Server
+
+First time:
 
 ~~~
-python server.py --file schedule.sqlite3 --create
+python server.py --file schdule.sqlite --create
 ~~~
 
---create will delete the current SQL database if existing and creates a new one.
+`--create` creates a new database and erases the old if it exists.
+
+`--debug` runns the server in debug mode.
+
+`--file <path-to-file>` is the path to the file where the schedule is safed.
