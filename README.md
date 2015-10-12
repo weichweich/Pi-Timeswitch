@@ -11,8 +11,21 @@ Currently the project is in an **early state of development**. There are several
 
 ## How to install Pi-TimeSwitch:
 
+Ensure that pip is installed:
+
+~~~
+sudo easy_install pip
+~~~
+
 ### Virtualenv
-At first i recommend to create a virtual environment using [Virtualenv](). e.g.
+
+At first i recommend to create a virtual environment using [Virtualenv]().
+
+Install Virtualenv:
+
+~~~
+pip install virtualenv
+~~~
 
 Create a virtual environment:
 
