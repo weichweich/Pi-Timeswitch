@@ -4,6 +4,7 @@
 import sqlite3 as sql
 import logging
 import time
+import os
 
 class NullHandler(logging.Handler):
     def emit(self, record):
@@ -14,11 +15,13 @@ LOGGER = logging.getLogger(__name__)
 
 def create_db(filename):
     '''Deletes the old database and creates all tables.'''
+
+    if os.path.exists(filename):
+        os.remove(filename)
+
     try:
         connection = sql.connect(filename)
         cur = connection.cursor()
-        cur.execute('''DROP TABLE Sequences''')
-        cur.execute('''DROP TABLE Pins''')
 
         cur.execute('''CREATE TABLE Sequences(
             id INTEGER PRIMARY KEY,
