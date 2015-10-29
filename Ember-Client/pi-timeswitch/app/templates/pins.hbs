@@ -1,0 +1,52 @@
+<h3 id="title">Pins</h3>
+
+<table id="pinTable">
+  <thead>
+    <tr>
+    <th width="20"></th>
+    <th class="borderedCell" width="50">Pin</th>
+    <th class="borderedCell">Name</th>
+    <th width="20"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each pin in model itemController="pin"}}
+      <tr {{action "editPin" on="doubleClick"}}>
+        <td>{{pin.state}}</td>
+        <td class="numeric">
+          {{#link-to "pin" pin}}{{pin.id}}{{/link-to}}
+        </td><td class="borderedCell">
+          {{#if pin.isEditing}}
+            {{edit-view class="edit" 
+              value=pin.name focus-out="acceptChanges" 
+              insert-newline="acceptChanges"}}
+          {{else}}
+            {{#link-to "pin" pin}}{{pin.name}}{{/link-to}}
+          {{/if}}
+        </td>
+        <td>
+          <button {{action "removePin"}} class="destroy"></button>
+        </td>
+      </tr>
+    {{/each}}
+    <tr>
+      <td></td>
+      <td class="borderedCell">
+        {{input type="text" 
+          value=id
+          placeholder="Pin"
+          action="addPin"}}
+      </td><td class="borderedCell">
+        {{input
+          type="text"
+          value=name
+          placeholder="Name"
+          action="addPin"}}
+      </td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+
+{{outlet}}

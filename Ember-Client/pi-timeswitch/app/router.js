@@ -6,6 +6,10 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+	this.route('about');
+	this.route('pins', function() {
+		this.route(':pin_id');
+	});
 });
 
 export default Router;

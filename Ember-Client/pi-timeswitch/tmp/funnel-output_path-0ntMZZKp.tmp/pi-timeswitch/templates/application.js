@@ -1,0 +1,1 @@
+/Users/weich/Seafile/Developer/RPi/pi-timeswitch/Ember-Client/pi-timeswitch/tmp/template_compiler-tmp_dest_dir-zitOPTH5.tmp/pi-timeswitch/templates/application.js

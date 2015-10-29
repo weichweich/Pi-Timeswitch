@@ -1,0 +1,147 @@
+body {
+  height: 100%;
+	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	background: url('/assets/images/bg.png');
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-ms-font-smoothing: antialiased;
+	-o-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+}
+
+button {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	font-size: 100%;
+	vertical-align: baseline;
+	font-family: inherit;
+	color: inherit;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	-ms-appearance: none;
+	-o-appearance: none;
+	appearance: none;
+}
+
+#timeTable td .destroy, #pinTable td .destroy {
+	position: relative;
+	right: 0px;
+	display: none;
+	width:  13px;
+	height: 13px;
+	font-size: 13px;
+	color: #a88a8a;
+	-webkit-transition: all 0.2s;
+	-moz-transition: all 0.2s;
+	-ms-transition: all 0.2s;
+	-o-transition: all 0.2s;
+	transition: all 0.2s;
+}
+
+#timeTable td .destroy:hover, #pinTable td .destroy:hover {
+	text-shadow: 0 0 1px #000,
+				 0 0 10px rgba(199, 107, 107, 0.8);
+	-webkit-transform: scale(1.3);
+	-moz-transform: scale(1.3);
+	-ms-transform: scale(1.3);
+	-o-transform: scale(1.3);
+	transform: scale(1.3);
+}
+
+#timeTable td .destroy:after, #pinTable td .destroy:after {
+	content: '✖';
+}
+
+#timeTable tr:hover .destroy, #pinTable tr:hover .destroy {
+	display: inline-block;
+}
+
+h1 {
+	text-align: center;
+	font: 26px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-ms-font-smoothing: antialiased;
+	-o-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+}
+
+h2 {
+	text-align: center;
+	font: 20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-ms-font-smoothing: antialiased;
+	-o-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+}
+
+#pinTable {
+  border: 0px;
+	border-collapse: collapse;
+	width: 350px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#timeTable {
+  border: 0px;
+	border-collapse: collapse;
+	width: 350px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+input {
+	border: 0px;
+	background: #ffe;
+	width: 100%; 
+	box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing: border-box;
+}
+
+input.Err {
+	border: 0px;
+	background: #f99;
+	width: 100%; 
+	box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing: border-box;
+}
+
+.numeric {
+	border: solid 1px #000000;
+	text-align: center;
+}
+
+.borderedCell {
+	border: solid 1px #000000;
+	text-align: center;
+}
+
+tr, td {
+	border: solid 0px #000000;
+	text-align: left;
+}
+
+th {
+	border: solid 0px #000000;
+	text-align: center;
+}
+
+div.wappen {
+	margin-right: auto;
+	margin-left: auto;
+	margin-bottom: auto;
+	margin-top: auto;
+	left: 10px;
+	bottom: 10px;
+	clear: none;
+	float: none;
+	position: fixed;
+	visibility: visible;
+	display: inline;
+}

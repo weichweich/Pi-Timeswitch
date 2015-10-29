@@ -1,0 +1,1 @@
+/Users/weich/Seafile/Developer/RPi/pi-timeswitch/Ember-Client/pi-timeswitch/tmp/jshinter-cache_path-WlkmERLI.tmp/helpers/resolver.jshint.js

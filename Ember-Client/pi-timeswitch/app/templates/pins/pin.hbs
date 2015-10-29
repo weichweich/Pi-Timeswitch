@@ -1,0 +1,97 @@
+<h4 id="title">Pin</h4>
+
+
+
+<h2>{{name}}</h2>
+<table id="timeTable">
+  <thead>
+    <tr>
+      <th class="borderedCell">Status </th>
+      <th class="borderedCell">Start  </th>
+      <th class="borderedCell">Range  </th>
+      <th class="borderedCell">End    </th>
+      <th class="borderedCell">Range  </th>
+      <th width="20"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each this.schedules itemController="time"}}
+        <tr {{action "editTime" on="doubleClick"}}>
+          <td>
+          </td>
+        {{#if this.isEditing}}
+          <td class="numeric">
+          {{edit-view class="edit" 
+            value=fromTm 
+            insert-newline="acceptChanges"}}
+          </td>
+        {{else}}
+          <td class="numeric">
+            <lable>{{fromTm}}</lable>
+          </td>
+        {{/if}}
+        {{#if this.isEditing}}
+          <td class="numeric">
+          {{edit-view class="edit" 
+            value=fromRange 
+            insert-newline="acceptChanges"}}
+          </td>
+        {{else}}
+          <td class="numeric">
+            <lable>{{fromRange}}</lable>
+          </td>
+        {{/if}}
+        {{#if this.isEditing}}
+          <td class="numeric">
+          {{edit-view class="edit" 
+            value=toTm
+            insert-newline="acceptChanges"}}
+          </td>
+        {{else}}
+          <td class="numeric">
+            <lable>{{toTm}}</lable>
+          </td>
+        {{/if}}
+        {{#if this.isEditing}}
+          <td class="numeric">
+          {{edit-view class="edit" 
+            value=toRange 
+            insert-newline="acceptChanges"}}
+          </td>
+        {{else}}
+          <td class="numeric">
+            <lable>{{toRange}}</lable>
+          </td>
+        {{/if}}
+        <td>
+          <button {{action "removeTime"}} class="destroy"></button>
+        </td>
+        </tr>
+    {{/each}}
+      <td>
+      </td><td class="borderedCell">
+        {{input
+          type="text" 
+          value=fromTm 
+          placeholder="von" 
+          action="addTime"}}
+      </td><td class="borderedCell">
+        {{input type="text" 
+          value=fromRange 
+          placeholder="streuung" 
+          action="addTime"}}
+      </td><td class="borderedCell">
+        {{input 
+          type="text" 
+          value=toTm
+          placeholder="bis"
+          action="addTime"}}
+      </td><td class="borderedCell">
+        {{input 
+          type="text" 
+          value=toRange
+          placeholder="streuung"
+          action="addTime"}}
+      </td>
+  </tbody>
+</table>
