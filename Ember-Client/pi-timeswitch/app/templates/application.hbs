@@ -1,14 +1,18 @@
 <h2 id="title">Welcome to Pi-Timeswitch</h2>
 
-<nav>
-  {{#link-to "about"}}About{{/link-to}}
-  {{#link-to "pins"}}Pins{{/link-to}}
-</nav>
+
+<div class="nav">
+    <ul>
+        <li>{{#link-to "pins"}}Pins{{/link-to}}</li>
+        <li>{{#link-to "about"}}About{{/link-to}}</li>
+    </ul>
+</div>
+
 
 {{outlet}}
 
 <div class="wappen">
-  {{#link-to "about"}}
-    <img src="assets/images/Wappen.png" width="25" hight="25">
-  {{/link-to}}
+    {{#link-to "about"}}
+        <img src="assets/images/Wappen.png" width="25" hight="25">
+    {{/link-to}}
 </div>
