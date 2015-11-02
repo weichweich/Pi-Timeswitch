@@ -2,26 +2,24 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({  
     model() {
-        let pins = [
-            {
-                state: 'on',
-                id: 1,
-                name: "Blub",
-            },
-            {
-                state: 'off',
-                id: 2,
-                name: "top",
-            },
-            {
-                state: 'on',
-                id: 3,
-                name: "hop",
-            },
-
-        ];
-        return pins;
-        // return this.store.findAll('pin');
+        // var pins = [];
+        // pins.push({
+        //         state: 'on',
+        //         id: 1,
+        //         name: "Blub",
+        //     });
+        // pins.push({
+        //         state: 'off',
+        //         id: 2,
+        //         name: "top",
+        //     });
+        // pins.push({
+        //         state: 'on',
+        //         id: 3,
+        //         name: "hop",
+        //     });
+        // return pins;
+        return this.store.findAll('pin');
     },
     actions: {
         createPin(id, name) {
