@@ -9,9 +9,9 @@
         </td>
     {{else}}
         <td class="borderedCell" {{action "editPinName" on="doubleClick"}}>
-            {{#link-to "pins.pin" pin}}{{pin.name}}{{/link-to}}
+            {{#link-to "pins.pin" pin.id}}{{pin.name}}{{/link-to}}
         </td>
-    {{/if}}    {{!-- --}}
+    {{/if}}
 <td>
   <button {{action "deletePin"}} class="destroy"></button>
 </td>

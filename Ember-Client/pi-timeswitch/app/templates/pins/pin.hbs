@@ -2,7 +2,6 @@
 <table id="timeTable">
   <thead>
     <tr>
-      <th class="borderedCell">Status </th>
       <th class="borderedCell">Start  </th>
       <th class="borderedCell">Range  </th>
       <th class="borderedCell">End    </th>
@@ -13,8 +12,6 @@
   <tbody>
     {{#each this.schedules itemController="time"}}
         <tr {{action "editTime" on="doubleClick"}}>
-          <td>
-          </td>
         {{#if this.isEditing}}
           <td class="numeric">
           {{edit-view class="edit" 
@@ -64,8 +61,7 @@
         </td>
         </tr>
     {{/each}}
-      <td>
-      </td><td class="borderedCell">
+      <td class="borderedCell">
         {{input
           type="text" 
           value=fromTm 
