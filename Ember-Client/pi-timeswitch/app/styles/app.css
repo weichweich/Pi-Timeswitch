@@ -162,7 +162,7 @@ h5 {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: .83em;
     margin-before: 1.67em;
-    margin-after: 1.67em
+    margin-after: 1.67em;
     -webkit-font-smoothing: antialiased;
     -moz-font-smoothing: antialiased;
     -ms-font-smoothing: antialiased;
@@ -175,7 +175,7 @@ h6 {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: .67em;
     margin-before: 2.33em;
-    margin-after: 2.33em
+    margin-after: 2.33em;
     -webkit-font-smoothing: antialiased;
     -moz-font-smoothing: antialiased;
     -ms-font-smoothing: antialiased;
@@ -187,7 +187,7 @@ p {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 1em;
     margin-before: 1em;
-    margin-after: 1em
+    margin-after: 1em;
     -webkit-font-smoothing: antialiased;
     -moz-font-smoothing: antialiased;
     -ms-font-smoothing: antialiased;

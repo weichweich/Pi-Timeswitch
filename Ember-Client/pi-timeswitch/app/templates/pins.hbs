@@ -1,51 +1,20 @@
 <br/>
-<table id="pinTable">
-  <thead>
-    <tr>
-    <th width="20"></th>
-    <th class="borderedCell" width="50">Pin</th>
-    <th class="borderedCell">Name</th>
-    <th width="20"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each pin in model itemController="pin"}}
-      <tr {{action "editPin" on="doubleClick"}}>
-        <td>{{pin.state}}</td>
-        <td class="numeric">
-          {{#link-to "pin" pin}}{{pin.id}}{{/link-to}}
-        </td><td class="borderedCell">
-          {{#if pin.isEditing}}
-            {{edit-view class="edit" 
-              value=pin.name focus-out="acceptChanges" 
-              insert-newline="acceptChanges"}}
-          {{else}}
-            {{#link-to "pin" pin}}{{pin.name}}{{/link-to}}
-          {{/if}}
-        </td>
-        <td>
-          <button {{action "removePin"}} class="destroy"></button>
-        </td>
+  <table id="pinTable">
+    <thead>
+      <tr>
+      <th width="20"></th>
+      <th class="borderedCell" width="50">Pin</th>
+      <th class="borderedCell">Name</th>
+      <th width="20"></th>
       </tr>
-    {{/each}}
-    <tr>
-      <td></td>
-      <td class="borderedCell">
-        {{input type="text" 
-          value=id
-          placeholder="Pin"
-          enter="addPin"}}
-      </td><td class="borderedCell">
-        {{input
-          type="text"
-          value=name
-          placeholder="Name"
-          enter="addPin"}}
-      </td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {{#each model as |pin|}}
+        {{pin-row pin=pin updatePinName="updatePinName" deletePin="deletePin"}}
+      {{/each}}
+      {{pin-input action="createPin"}}
+    </tbody>
+  </table>
 <br>
 
 {{outlet}}
