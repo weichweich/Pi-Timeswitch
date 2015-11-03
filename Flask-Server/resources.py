@@ -5,8 +5,8 @@ from flask import request
 from flask_restful import Resource
 from time_switch.model import Sequence, Pin, is_absolute_time, is_relative_time
 
-from marshmallow import Schema, ValidationError, fields, post_load, validates_schema
-
+from marshmallow import ValidationError, fields, post_load, validates_schema
+from marshmallow_jsonapi import Schema
 import logging
 
 import time
@@ -56,6 +56,9 @@ class SequenceSchema(Schema):
         LOGGER.error(exc.messages)
         raise AppError('An error occurred with input: {0}'.format(data))
 
+    class Meta:
+        type_ = 'sequence'
+
 class PinSchema(Schema):
     id = fields.Integer(attribute='pin_id', load_from='id', required=True)
     name = fields.String(attribute='name')
@@ -67,6 +70,9 @@ class PinSchema(Schema):
     def handle_error(self, exc, data):
         LOGGER.error(exc.messages)
         raise AppError('An error occurred with input: {0}'.format(data))
+
+    class Meta:
+        type_ = 'pin'
 
 # ######################################
 # # Resources:
@@ -98,7 +104,7 @@ class PinsResource(Resource):
         switch_model = self.switch_manager.get_model()
         pins = switch_model.get_pins()
         result = PINS_SCHEMA.dump(pins)
-        return {'pins':result.data}
+        return result.data
 
     def post(self):
         '''Handels a POST message.'''
@@ -121,7 +127,7 @@ class PinResource(Resource):
         pins = switch_model.get_pin(pin_id)
 
         result = PIN_SCHEMA.dump(pins)
-        return {'pins':result.data}
+        return {'data':result.data}
 
     def put(self, pin_id):
         '''Handels a POST message.'''
@@ -133,7 +139,7 @@ class PinResource(Resource):
 
         pins = switch_model.get_pin(pin_id)
         result = PIN_SCHEMA.dump(pins)
-        return {'pins':result.data}
+        return {'data':result.data}
 
 class SequencesResource(Resource):
     '''Specifies the REST API for accessing sequences'''
@@ -146,7 +152,7 @@ class SequencesResource(Resource):
         switch_model = self.switch_manager.get_model()
         sequences = switch_model.get_sequences()
         result = SEQUENCES_SCHEMA.dump(sequences)
-        return {'schedules':result.data}
+        return {'data':result.data}
 
     def post(self):
         '''Handels a POST message.'''
@@ -160,7 +166,7 @@ class SequencesResource(Resource):
 
         sequences = switch_model.get_sequences()
         result = SEQUENCES_SCHEMA.dump(sequences)
-        return {'schedules':result.data}
+        return {'data':result.data}
 
 class SequenceResource(Resource):
     '''Specifies the REST API for accessing sequences'''
@@ -174,7 +180,7 @@ class SequenceResource(Resource):
         switch_model = self.switch_manager.get_model()
         sequences = switch_model.get_sequence(sequence_id)
         result = SEQUENCE_SCHEMA.dump(sequences)
-        return {'schedules':result.data}
+        return {'data':result.data}
 
     def post(self, sequence_id):
         '''Handels a POST message.'''
@@ -189,7 +195,7 @@ class SequenceResource(Resource):
 
         sequences = switch_model.get_sequences()
         result = SEQUENCES_SCHEMA.dump(sequences)
-        return {'schedules':result.data}
+        return {'data':result.data}
 
     def delete(self, sequence_id):
         '''Handels a DELETE message.'''
@@ -198,5 +204,5 @@ class SequenceResource(Resource):
         
         sequences = switch_model.get_sequences()
         result = SEQUENCES_SCHEMA.dump(sequences)
-        return {'schedules':result.data}
+        return {'data':result.data}
  

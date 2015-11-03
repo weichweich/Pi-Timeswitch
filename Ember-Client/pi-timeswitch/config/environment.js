@@ -22,7 +22,7 @@ module.exports = function(environment) {
       'script-src': "'self' 'unsafe-inline' 'unsafe-eval'",
       'font-src': "'self'",
       'connect-src': "'self'",
-      'img-src': "'self'",
+      'img-src': "'self' flask.pocoo.org",
       'style-src': "'self' 'unsafe-inline'",
     }
   };
