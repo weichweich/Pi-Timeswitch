@@ -1,6 +1,6 @@
 <td>{{pin.state}}</td>
 <td class="numeric">
-    {{#link-to "pins.pin" pin}}{{pin.id}}{{/link-to}}
+    {{#link-to "pins.pin" pin}}{{pin.pinNum}}{{/link-to}}
 </td>
     {{#if editing}}
         <td class="borderedCell">
@@ -9,7 +9,7 @@
         </td>
     {{else}}
         <td class="borderedCell" {{action "editPinName" on="doubleClick"}}>
-            {{#link-to "pins.pin" pin.id}}{{pin.name}}{{/link-to}}
+            {{#link-to "pins.pin" pin}}{{pin.name}}{{/link-to}}
         </td>
     {{/if}}
 <td>

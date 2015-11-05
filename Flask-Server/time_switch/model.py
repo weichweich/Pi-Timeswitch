@@ -135,7 +135,7 @@ class PiSwitchModel(object):
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''SELECT * FROM Sequences
-                WHERE pin_id=?''', (pin_id,))
+                WHERE pin_id=?''', (str(pin_id)))
 
             rows = cur.fetchall()
     
@@ -146,7 +146,7 @@ class PiSwitchModel(object):
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''DELETE FROM Sequences
-                WHERE pin_id=?''', (pin_id))
+                WHERE pin_id=?''', (str(pin_id)))
 
             rows = cur.fetchall()
     
@@ -188,8 +188,8 @@ class PiSwitchModel(object):
 
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
-            cur.execute('''DELETE FROM Pin WHERE pin_id=?''',
-                        (pin_id,))
+            cur.execute('''DELETE FROM Pins WHERE id=?''',
+                        (str(pin_id)))
 
 
     def set_pin(self, pin):
@@ -244,11 +244,16 @@ class Sequence(object):
 
 class Pin(object):
 
-    def __init__(self, pin_id, sequences=None, name=None):
-        self.pin_id = pin_id
+    def __init__(self, pin_num, sequences=None, name=None, state=0):
+        ''' State = 0 -> Undef | 1 -> ON | -1 -> OFF
+
+        '''
+        self.pin_num = pin_num
         self.sequences = sequences
+        self.state = state
+        self.id = pin_num
         if name is None:
-            self.name = "Pin {0}".format(pin_id)
+            self.name = "Pin {0}".format(pin_num)
         else:
             self.name = name
 
@@ -262,7 +267,7 @@ class Pin(object):
         self.name = new_name
 
     def get_id(self):
-        return self.pin_id
+        return self.pin_num
 
     def set_id(self, pin_id):
         self.pin_id = pin_id

@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+var PIN_TAG = 'pin';
+
 export default Ember.Component.extend({
     tagName: 'tr',
     classNameBindings: ['editing'],
@@ -11,17 +13,17 @@ export default Ember.Component.extend({
             
         },
         submitName() {
-            let pin = this.get('aPin');
-            Ember.Logger.debug(pin);
+            let pin = this.get(PIN_TAG);
+
             if (Ember.get(pin, 'name') === "") {
 
             } else {
-                this.sendAction('updatePinName', this.get('pin'));
+                this.sendAction('updatePinName', this.get(PIN_TAG));
                 this.set('editing', false);
             }
         },
         deletePin() {
-            let pin = this.get('aPin');
+            let pin = this.get(PIN_TAG);
             this.sendAction('deletePin', pin);
         },
         focusOutInput() {
