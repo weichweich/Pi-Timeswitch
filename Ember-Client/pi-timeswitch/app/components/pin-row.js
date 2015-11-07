@@ -23,7 +23,7 @@ export default Ember.Component.extend({
             }
         },
         deletePin() {
-            let pin = this.get(Constants.pinTag);
+            let pin = this.get('pin');
             this.sendAction('deletePin', pin);
         },
         focusOutInput() {

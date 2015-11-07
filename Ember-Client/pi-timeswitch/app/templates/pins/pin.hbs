@@ -11,9 +11,9 @@
   </thead>
   <tbody>
     {{#each model.sequences as |sequence|}}
-      {{sequence-row sequence=sequence updateSequence="updateSequence" 
-      deleteSequence="deleteSequence"}}
+      {{sequence-row sequence=sequence 
+      updateSequence="updateSequence" deleteSequence="deleteSequence"}}
     {{/each}}
-    {{sequence-input action="createSequence"}}
+    {{sequence-input pin=model.pin action="createSequence"}}
   </tbody>
 </table>

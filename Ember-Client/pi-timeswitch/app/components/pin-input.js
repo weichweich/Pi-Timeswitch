@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 function filterInt(value) {
-    if(/^(\-|\+)?([0-9]+)$/.test(value)) {
+    if(/^([0-9]+)$/.test(value)) {
         return Number(value);
     }
     return NaN;

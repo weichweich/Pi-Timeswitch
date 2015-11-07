@@ -13,6 +13,9 @@ class NullHandler(logging.Handler):
 logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
 
+### Helper methodes
+## create db
+
 def create_db(filename):
     '''Deletes the old database and creates all tables.'''
 
@@ -40,6 +43,8 @@ def create_db(filename):
 
     except sql.Error, e:
         raise
+        
+## validate data
 
 def is_absolute_time(check_time):
     try:
@@ -62,6 +67,8 @@ def get_sequences_from_rows(rows):
                                   end_range, sequence_id=sequence_id))
 
     return sequences
+
+### MODEL ###
 
 class PiSwitchModel(object):
     '''This class saves and loads pins and schedules.'''
@@ -205,17 +212,17 @@ class PiSwitchModel(object):
                 for sequence in pin.get_sequences():
                     self.set_sequence(sequence)
 
-##### MODEL #####
+##### data access classes #####
 
 class Sequence(object):
-    def __init__(self, pin_id, start_tm, start_range, end_tm, end_range, sequence_id=-1):
+    def __init__(self, pin_id, start_time, start_range, end_time, end_range, sequence_id=-1):
 
         self.pin_id = pin_id
-        self.sequence_id = sequence_id
+        self.id = sequence_id
 
-        self.start_tm = start_tm
+        self.start_time = start_time
         self.start_range = start_range
-        self.end_tm = end_tm
+        self.end_time = end_time
         self.end_range = end_range
 
     def get_pin_id(self):
@@ -225,22 +232,22 @@ class Sequence(object):
         self.pin_id = pin_id
 
     def get_id(self):
-        return self.sequence_id
+        return self.id
 
     def set_id(self, sequence_id):
-        self.sequence_id = sequence_id
+        self.id = sequence_id
 
     def get_start(self):
-        return (self.start_tm, self.start_range)
+        return (self.start_time, self.start_range)
 
-    def set_start(self, start_tm, start_range):
-        self.start_tm, self.start_range = start_tm, start_range
+    def set_start(self, start_time, start_range):
+        self.start_time, self.start_range = start_time, start_range
 
     def get_end(self):
-        return (self.end_tm, self.end_range)
+        return (self.end_time, self.end_range)
 
-    def set_end(self, end_tm, end_range):
-        self.end_tm, self.end_range = end_tm, end_range
+    def set_end(self, end_time, end_range):
+        self.end_time, self.end_range = end_time, end_range
 
 class Pin(object):
 

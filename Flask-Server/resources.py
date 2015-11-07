@@ -137,11 +137,21 @@ class SequencesResource(Resource):
         '''Handels a POST message.'''
         switch_model = self.switch_manager.get_model()
         request_json = request.get_json(force=True)
+
+        try:
+            SEQUENCE_SCHEMA.validate(request_json)
+        except ValidationError as err:
+            LOGGER.warn("ValidationError POST /sequences \n"\
+                + str(err.messages) + "\n" + str(request_json))
+            return err.messages, 400
+        except IncorrectTypeError as err:
+            LOGGER.warn("IncorrectTypeError POST /sequences \n"\
+             + str(err.messages) + "\n" + str(request_json))
+            return err.messages, 400
+
         load_result = SEQUENCE_SCHEMA.load(request_json)
 
-        sequence = load_result.data
-
-        switch_model.set_sequence(sequence)
+        switch_model.set_sequence(load_result.data)
 
         sequences = switch_model.get_sequences()
         result = SEQUENCES_SCHEMA.dump(sequences)

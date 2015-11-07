@@ -1,7 +1,7 @@
 {{#if this.isEditing}}
   <td class="numeric">
   {{edit-view class="edit" 
-    value=fromTm 
+    value=startTime 
     insert-newline="acceptChanges"}}
   </td>
   <td class="numeric">
@@ -21,18 +21,18 @@
   </td>
 {{else}}
   <td class="numeric">
-    <lable>{{fromTm}}</lable>
+    <lable>{{sequence.startTime}}</lable>
   </td>
   <td class="numeric">
-    <lable>{{fromRange}}</lable>
+    <lable>{{sequence.startRange}}</lable>
   </td>
   <td class="numeric">
-    <lable>{{toTm}}</lable>
+    <lable>{{sequence.endTime}}</lable>
   </td>
   <td class="numeric">
-    <lable>{{toRange}}</lable>
+    <lable>{{sequence.endRange}}</lable>
   </td>
 {{/if}}
 <td>
-  <button {{action "removeTime"}} class="destroy"></button>
+  <button {{action "deleteSequence"}} class="destroy"></button>
 </td>

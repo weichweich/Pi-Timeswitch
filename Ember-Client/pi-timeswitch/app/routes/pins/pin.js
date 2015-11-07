@@ -8,13 +8,14 @@ export default Ember.Route.extend({
         });
     },
     actions: {
-        createSequence(startTime, startRange, endTime, endRange) {
+        createSequence(startTime, startRange, endTime, endRange, pinId) {
 
             this.store.createRecord('sequence', {
                 startTime: startTime,
                 startRange: startRange,
                 endTime: endTime,
-                endRange: endRange
+                endRange: endRange,
+                pinId: pinId
             }).save();
         },
         updateSequence(sequence) {

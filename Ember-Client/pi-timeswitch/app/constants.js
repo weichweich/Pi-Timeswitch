@@ -4,7 +4,5 @@ export default {
     startRangeTag: 'startRange',
     endTimeTag: 'endTime',
     endRangeTag: 'endRange',
-
-    // Constans for pin
-    pinTag: 'pin',
+    absTimeRegex: /^([0-1][0-9]|2[0-3]):([0-5][0-9])$/,
 }
