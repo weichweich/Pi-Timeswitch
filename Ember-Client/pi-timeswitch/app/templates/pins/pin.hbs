@@ -1,4 +1,4 @@
-<h2>{{name}}</h2>
+<h3>{{model.pin.id}} – {{model.pin.name}}</h3>
 <table id="timeTable">
   <thead>
     <tr>
@@ -10,80 +10,10 @@
     </tr>
   </thead>
   <tbody>
-    {{#each this.schedules itemController="time"}}
-        <tr {{action "editTime" on="doubleClick"}}>
-        {{#if this.isEditing}}
-          <td class="numeric">
-          {{edit-view class="edit" 
-            value=fromTm 
-            insert-newline="acceptChanges"}}
-          </td>
-        {{else}}
-          <td class="numeric">
-            <lable>{{fromTm}}</lable>
-          </td>
-        {{/if}}
-        {{#if this.isEditing}}
-          <td class="numeric">
-          {{edit-view class="edit" 
-            value=fromRange 
-            insert-newline="acceptChanges"}}
-          </td>
-        {{else}}
-          <td class="numeric">
-            <lable>{{fromRange}}</lable>
-          </td>
-        {{/if}}
-        {{#if this.isEditing}}
-          <td class="numeric">
-          {{edit-view class="edit" 
-            value=toTm
-            insert-newline="acceptChanges"}}
-          </td>
-        {{else}}
-          <td class="numeric">
-            <lable>{{toTm}}</lable>
-          </td>
-        {{/if}}
-        {{#if this.isEditing}}
-          <td class="numeric">
-          {{edit-view class="edit" 
-            value=toRange 
-            insert-newline="acceptChanges"}}
-          </td>
-        {{else}}
-          <td class="numeric">
-            <lable>{{toRange}}</lable>
-          </td>
-        {{/if}}
-        <td>
-          <button {{action "removeTime"}} class="destroy"></button>
-        </td>
-        </tr>
+    {{#each model.sequences as |sequence|}}
+      {{sequence-row sequence=sequence updateSequence="updateSequence" 
+      deleteSequence="deleteSequence"}}
     {{/each}}
-      <td class="borderedCell">
-        {{input
-          type="text" 
-          value=fromTm 
-          placeholder="von" 
-          enter="addSequence"}}
-      </td><td class="borderedCell">
-        {{input type="text" 
-          value=fromRange 
-          placeholder="streuung" 
-          enter="addSequence"}}
-      </td><td class="borderedCell">
-        {{input 
-          type="text" 
-          value=toTm
-          placeholder="bis"
-          enter="addSequence"}}
-      </td><td class="borderedCell">
-        {{input 
-          type="text" 
-          value=toRange
-          placeholder="streuung"
-          enter="addSequence"}}
-      </td>
+    {{sequence-input action="createSequence"}}
   </tbody>
 </table>

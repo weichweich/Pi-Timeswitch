@@ -1,6 +1,6 @@
 import Ember from 'ember';
+import Constants from 'pi-timeswitch/constants';
 
-var PIN_TAG = 'pin';
 
 export default Ember.Component.extend({
     tagName: 'tr',
@@ -13,17 +13,17 @@ export default Ember.Component.extend({
             
         },
         submitName() {
-            let pin = this.get(PIN_TAG);
+            let pin = this.get(Constants.pinTag);
 
             if (Ember.get(pin, 'name') === "") {
 
             } else {
-                this.sendAction('updatePinName', this.get(PIN_TAG));
+                this.sendAction('updatePinName', this.get(Constants.pinTag));
                 this.set('editing', false);
             }
         },
         deletePin() {
-            let pin = this.get(PIN_TAG);
+            let pin = this.get(Constants.pinTag);
             this.sendAction('deletePin', pin);
         },
         focusOutInput() {

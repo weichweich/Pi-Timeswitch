@@ -1,0 +1,38 @@
+{{#if this.isEditing}}
+  <td class="numeric">
+  {{edit-view class="edit" 
+    value=fromTm 
+    insert-newline="acceptChanges"}}
+  </td>
+  <td class="numeric">
+  {{edit-view class="edit" 
+    value=fromRange 
+    insert-newline="acceptChanges"}}
+  </td>
+  <td class="numeric">
+  {{edit-view class="edit" 
+    value=toTm
+    insert-newline="acceptChanges"}}
+  </td>
+  <td class="numeric">
+  {{edit-view class="edit" 
+    value=toRange 
+    insert-newline="acceptChanges"}}
+  </td>
+{{else}}
+  <td class="numeric">
+    <lable>{{fromTm}}</lable>
+  </td>
+  <td class="numeric">
+    <lable>{{fromRange}}</lable>
+  </td>
+  <td class="numeric">
+    <lable>{{toTm}}</lable>
+  </td>
+  <td class="numeric">
+    <lable>{{toRange}}</lable>
+  </td>
+{{/if}}
+<td>
+  <button {{action "removeTime"}} class="destroy"></button>
+</td>

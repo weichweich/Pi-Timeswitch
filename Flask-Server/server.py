@@ -108,10 +108,10 @@ API.add_resource(PinsResource, '/api/pins',
 API.add_resource(PinResource, '/api/pins/<int:pin_id>',
                  resource_class_kwargs=resource_kwargs)
 
-API.add_resource(SequencesResource, '/api/schedules',
+API.add_resource(SequencesResource, '/api/sequences',
                  resource_class_kwargs=resource_kwargs)
 
-API.add_resource(SequenceResource, '/api/schedules/<int:sequence_id>',
+API.add_resource(SequenceResource, '/api/sequences/<int:sequence_id>',
                  resource_class_kwargs=resource_kwargs)
 
 if __name__ == '__main__':

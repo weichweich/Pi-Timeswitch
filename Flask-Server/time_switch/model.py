@@ -146,7 +146,7 @@ class PiSwitchModel(object):
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''DELETE FROM Sequences
-                WHERE pin_id=?''', (str(pin_id)))
+                WHERE pin_id=?''', str(pin_id))
 
             rows = cur.fetchall()
     
@@ -172,15 +172,15 @@ class PiSwitchModel(object):
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''SELECT * FROM Pins
-                WHERE pin_id=?''', (pin_id))
+                WHERE id=?''', str(pin_id))
     
             row = cur.fetchall()
             if row is None:
                 return None
     
             sequences = self.get_sequences_for_pin(pin_id)
-    
-            return Pin(row[0], sequences, row[1])
+            rawPin = row[0]
+            return Pin(rawPin[0], sequences, rawPin[1])
 
     def delete_pin(self, pin_id):
         '''Deletes all sequence for the pin and the pin it selfs.'''

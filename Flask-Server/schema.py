@@ -27,14 +27,13 @@ def dasherize(text):
 
 class SequenceSchema(Schema):
     id = fields.Str(dump_only=True)
-    # id = fields.Integer(attribute='sequence_id', load_from='id')
-    pin = fields.Integer(load_from='pin', attribute='pin_id',
-                         required={'message': 'Foreign key pin id is required!', 'code': 400})
 
-    fromTm = fields.String(attribute='start_tm', load_from='fromTm', required=True)
-    fromRange = fields.String(attribute='start_range', load_from='fromRange', required=True)
-    toTm = fields.String(attribute='end_tm', load_from='toTm', required=True)
-    toRange = fields.String(attribute='end_range', load_from='toRange', required=True)
+    pin_id = fields.Integer(required={'message': 'Foreign key pin id is required!', 'code': 400})
+
+    start_Time = fields.String(required=True)
+    start_Range = fields.String(required=True)
+    end_Time = fields.String(required=True)
+    end_Range = fields.String(required=True)
 
     @post_load
     def make_sequence(self, data):
