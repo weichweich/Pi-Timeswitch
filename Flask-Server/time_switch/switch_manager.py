@@ -90,6 +90,7 @@ class SwitchManager(object):
 
         if sequence_id not in self.diffusions:
             if is_relative_time(start_tm_str[0]):
+                print str(start_tm_str)
                 start_tm = (pars_rel_time(start_tm_str[0]), pars_rel_time(start_tm_str[1]))
                 end_tm = (pars_abs_time(end_tm_str[0]), pars_rel_time(end_tm_str[1]))
 
@@ -104,7 +105,7 @@ class SwitchManager(object):
 
                 if duration <= 0:
                     rand_start = rand_end
-    
+
                 self.diffusions[sequence_id] = (rand_start, rand_end)
 
             elif is_relative_time(end_tm_str[0]):
@@ -117,22 +118,22 @@ class SwitchManager(object):
 
                 if duration <= 0:
                     rand_end = rand_start
-    
+
                 self.diffusions[sequence_id] = (rand_start, rand_end)
             else:
                 start_tm = (pars_abs_time(start_tm_str[0]), pars_rel_time(start_tm_str[1]))
                 end_tm = (pars_abs_time(end_tm_str[0]), pars_rel_time(end_tm_str[1]))
 
                 rand_start = start_tm[0] + random.randint(-start_tm[1], start_tm[1])
-    
+
                 rand_end = end_tm[0] + random.randint(-end_tm[1], end_tm[1])
-    
+
                 tm_diff = end_tm[0] - start_tm[0]
                 rand_tm_diff = rand_end - rand_start
-    
+
                 if tm_diff * rand_tm_diff <= 0:
                     rand_start = rand_end
-    
+
                 self.diffusions[sequence_id] = (rand_start, rand_end)
 
         return self.diffusions[sequence_id]
@@ -157,7 +158,7 @@ class SwitchManager(object):
             self.switch_pin_on(pin_id)
         elif not active_sequence_found:
             self.switch_pin_off(pin_id)
-            
+
     def switch_pin_on(self, pin_id):
         if pin_id not in self.gpios:
             GPIO.setup(pin_id, GPIO.OUT) # setup GPIO
@@ -180,7 +181,7 @@ class SwitchManager(object):
         '''Starts the timeswitch and sets the GPIOs up.'''
         GPIO.setmode(GPIO.BOARD)
         self.thread.start()
-    
+
     def stop(self):
         '''Stops the timeswitch and cleansup the GPIOs.'''
         self.event.set()

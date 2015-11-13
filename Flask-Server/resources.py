@@ -126,14 +126,23 @@ class SequencesResource(Resource):
         self.switch_manager = switch_manager
         self.sequence_schema = SequenceSchema()
 
-    def get(self):
+    def get(self, pin_id=None):
         '''Handels a GET message.'''
         switch_model = self.switch_manager.get_model()
-        sequences = switch_model.get_sequences()
+        sequences = []
+
+        if pin_id:
+            pin = switch_model.get_pin(pin_id)
+            sequences = pin.get_sequences()
+        else:
+            pins = switch_model.get_pins()
+            for pin in pins:
+                sequences.append(pin.get_sequences())
+
         result = SEQUENCES_SCHEMA.dump(sequences)
         return result.data
 
-    def post(self):
+    def post(self, pin_id=None):
         '''Handels a POST message.'''
         switch_model = self.switch_manager.get_model()
         request_json = request.get_json(force=True)
@@ -151,11 +160,18 @@ class SequencesResource(Resource):
 
         load_result = SEQUENCE_SCHEMA.load(request_json)
 
-        switch_model.set_sequence(load_result.data)
+        sequence = load_result.data;
 
-        sequences = switch_model.get_sequences()
-        result = SEQUENCES_SCHEMA.dump(sequences)
-        return result.data
+        if not pin_id:
+            pin_id = request_json['data']['relationships']['pin']['data']['id']
+        pin = switch_model.get_pin(pin_id)
+        if not pin:
+            return "Invalid pin id", 400
+
+        sequence.set_pin(pin)
+        switch_model.set_sequence(sequence)
+
+        return "", 204
 
 class SequenceResource(Resource):
     '''Specifies the REST API for accessing sequences'''
@@ -190,8 +206,7 @@ class SequenceResource(Resource):
         '''Handels a DELETE message.'''
         switch_model = self.switch_manager.get_model()
         switch_model.delete_sequence(sequence_id)
-        
+
         sequences = switch_model.get_sequences()
         result = SEQUENCES_SCHEMA.dump(sequences)
         return result.data
- 

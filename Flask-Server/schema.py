@@ -5,8 +5,8 @@ from flask import request
 from flask_restful import Resource
 from time_switch.model import Sequence, Pin, is_absolute_time, is_relative_time
 
-from marshmallow import ValidationError, fields, post_load, validates_schema
-from marshmallow_jsonapi import Schema
+from marshmallow import ValidationError, post_load, validates_schema
+from marshmallow_jsonapi import Schema, fields
 from marshmallow_jsonapi.exceptions import IncorrectTypeError
 import logging
 
@@ -28,15 +28,21 @@ def dasherize(text):
 class SequenceSchema(Schema):
     id = fields.Str(dump_only=True)
 
-    pin_id = fields.Integer(required={'message': 'Foreign key pin id is required!', 'code': 400})
-
     start_time = fields.String(required=True)
     start_range = fields.String(required=True)
     end_time = fields.String(required=True)
     end_range = fields.String(required=True)
+    pin = fields.Relationship(
+        related_url='/api/pins/{pin_id}',
+        related_url_kwargs={'pin_id': '<pin.id>'},
+        # Include resource linkage
+        many=False, include_data=True,
+        type_='pins'
+    )
 
     @post_load
     def make_sequence(self, data):
+        print str(data)
         return Sequence(**data)
 
     def handle_error(self, exc, data):
@@ -51,6 +57,13 @@ class PinSchema(Schema):
     pin_num = fields.Integer(required=True)
     name = fields.String(attribute='name')
     state = fields.Integer()
+    sequences = fields.Relationship(
+        related_url='/api/pins/{pin_id}/sequences',
+        related_url_kwargs={'pin_id': '<id>'},
+        # Include resource linkage
+        many=True, include_data=True,
+        type_='sequences'
+    )
 
     @post_load
     def make_pin(self, data):

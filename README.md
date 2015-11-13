@@ -39,29 +39,44 @@ Activate it:
 source venv/bin/activate
 ~~~
 
-### Dependencies
+### Prepare Flask-Server
 
-Then you need to install [Flask](http://flask.pocoo.org), [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO), [marshmallow](http://marshmallow.readthedocs.org/en/latest/). e.g.
+Then you need to install [Flask](http://flask.pocoo.org), [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO), [marshmallow](http://marshmallow.readthedocs.org/en/latest/), [marshmallow-jsonapi](https://marshmallow-jsonapi.readthedocs.org/en/latest/).
 
 ~~~
 pip install Flask
 pip install flask-restful
 pip install -U marshmallow --pre
+pip install marshmallow-jsonapi
 sudo apt-get install rpi.gpio		# Only on Raspberry Pi. 
 ~~~
 
 If the RPi.GPIO is not installed, the programm will use a mockup (which won't switch anything and just logges switching attempts).
 
-###  Start the Server
+### Prepare Ember-Client
 
-First time:
+Install [emberjs](http://emberjs.com).
 
 ~~~
-python server.py --file schdule.sqlite --create
+npm install -g ember-cli
+~~~
+
+
+###  Start the development Server
+
+When starten the server for the fisrt time, we need to create a new database. Run the command with the `--create` switch. 
+
+~~~
+cd <project-root>/Flask-Server
+source venv/bin/activate
+python server.py --file schdule.sqlite
+
+cd <project-root>/Ember-Client/pi-timeswitch
+ember server --proxy http://127.0.0.1:5000
 ~~~
 
 `--create` creates a new database and erases the old if it exists.
 
 `--debug` runns the server in debug mode.
 
-`--file <path-to-file>` is the path to the file where the schedule is safed.
+`--file <path-to-file>` is the path to the file where the schedule is stored.

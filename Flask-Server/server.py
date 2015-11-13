@@ -74,18 +74,12 @@ SWITCH_MANAGER = SwitchManager(SWITCH_MODEL)
 
 PIN_SCHEMA = PinSchema(many=True)
 
-# make static folder the main '/' folder... Part 1/2
-APP = Flask(__name__, static_url_path='')
+APP = Flask(__name__)
 API = Api(APP)
 
 # ######################################
 # # routes:
 # ######################################
-
-# make static folder the main '/' folder... Part 2/2
-@APP.route('/')
-def root():
-    return APP.send_static_file('index.html')
 
 @APP.route('/shutdown')
 def shutdown():
@@ -108,10 +102,10 @@ API.add_resource(PinsResource, '/api/pins',
 API.add_resource(PinResource, '/api/pins/<int:pin_id>',
                  resource_class_kwargs=resource_kwargs)
 
-API.add_resource(SequencesResource, '/api/sequences',
+API.add_resource(SequencesResource, '/api/pins/<int:pin_id>/sequences', '/api/sequences',
                  resource_class_kwargs=resource_kwargs)
 
-API.add_resource(SequenceResource, '/api/sequences/<int:sequence_id>',
+API.add_resource(SequenceResource, '/api/sequence/<int:sequence_id>',
                  resource_class_kwargs=resource_kwargs)
 
 if __name__ == '__main__':

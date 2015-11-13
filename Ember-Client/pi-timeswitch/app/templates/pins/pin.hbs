@@ -1,4 +1,4 @@
-<h3>{{model.pin.id}} – {{model.pin.name}}</h3>
+<h3>{{model.id}} – {{model.name}}</h3>
 <table id="timeTable">
   <thead>
     <tr>
@@ -14,6 +14,6 @@
       {{sequence-row sequence=sequence 
       updateSequence="updateSequence" deleteSequence="deleteSequence"}}
     {{/each}}
-    {{sequence-input pin=model.pin action="createSequence"}}
+    {{sequence-input pin=model action="createSequence"}}
   </tbody>
 </table>

@@ -2,21 +2,19 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({  
     model(params) {
-        return Ember.RSVP.hash({
-            pin: this.store.findRecord('pin', params.pin_id),
-            sequences: this.store.findAll('sequence')
-        });
+        return this.store.findRecord('pin', params.pin_id);
     },
     actions: {
-        createSequence(startTime, startRange, endTime, endRange, pinId) {
-
-            this.store.createRecord('sequence', {
+        createSequence(startTime, startRange, endTime, endRange, pin) {
+            
+            var sequence = this.store.createRecord('sequence', {
                 startTime: startTime,
                 startRange: startRange,
                 endTime: endTime,
                 endRange: endRange,
-                pinId: pinId
-            }).save();
+            });
+            sequence.set('pin', pin);
+            sequence.save();
         },
         updateSequence(sequence) {
             sequence.save();

@@ -43,7 +43,7 @@ def create_db(filename):
 
     except sql.Error, e:
         raise
-        
+
 ## validate data
 
 def is_absolute_time(check_time):
@@ -63,7 +63,7 @@ def is_relative_time(check_time):
 def get_sequences_from_rows(rows):
     sequences = []
     for (sequence_id, pin_id, start_time, start_range, end_time, end_range) in rows:
-        sequences.append(Sequence(pin_id, start_time, start_range, end_time,
+        sequences.append(Sequence(start_time, start_range, end_time,
                                   end_range, sequence_id=sequence_id))
 
     return sequences
@@ -83,25 +83,25 @@ class PiSwitchModel(object):
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute("SELECT * FROM Sequences")
-    
+
             rows = cur.fetchall()
-    
+
             for (sequence_id, pin_id, start_time, start_range, end_time, end_range) in rows:
-                sequences.append(Sequence(pin_id, start_time, start_range, end_time,
+                sequences.append(Sequence(start_time, start_range, end_time,
                                           end_range, sequence_id=sequence_id))
-    
+
             return sequences
 
     def get_sequence(self, sequence_id):
         '''Returns all schedules in the dataset.'''
-        
+
         LOGGER.info("get_sequence({0})".format(sequence_id))
 
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''SELECT * FROM Sequences
                         WHERE id=?''', (sequence_id,))
-    
+
             row = cur.fetchone()
             if row is None:
                 return None
@@ -115,17 +115,17 @@ class PiSwitchModel(object):
             if sequence.get_id() == -1:
                 LOGGER.info("set_sequence({0}) - adding new sequence"\
                     .format(sequence.get_id()))
-                vals = (sequence.pin_id, sequence.get_start()[0],
+                vals = (sequence.get_pin().get_id(), sequence.get_start()[0],
                         sequence.get_start()[1], sequence.get_end()[0], sequence.get_end()[1])
-                cur.execute('''INSERT INTO 
+                cur.execute('''INSERT INTO
                             Sequences(pin_id, start_time, start_range, end_time, end_range)
                             VALUES (?, ?, ?, ?, ?)''', vals)
             else:
                 LOGGER.info("set_sequence({0}) - updating sequence"\
                     .format(sequence.get_id()))
-                vals = (sequence.sequence_id, sequence.pin_id, sequence.get_start()[0],
+                vals = (sequence.sequence_id, sequence.get_pin().get_id(), sequence.get_start()[0],
                         sequence.get_start()[1], sequence.get_end()[0], sequence.get_end()[1])
-                cur.execute('''REPLACE INTO 
+                cur.execute('''REPLACE INTO
                             Sequences(id, pin_id, start_time, start_range, end_time, end_range)
                             VALUES (?, ?, ?, ?, ?, ?)''', vals)
 
@@ -136,7 +136,7 @@ class PiSwitchModel(object):
             cur = connection.cursor()
             cur.execute('''DELETE FROM Sequences
                         WHERE id=?''', (sequence_id,))
-    
+
     def get_sequences_for_pin(self, pin_id):
         '''Returns all sequences for the pin.'''
         with sql.connect(self.sql_file) as connection:
@@ -145,7 +145,7 @@ class PiSwitchModel(object):
                 WHERE pin_id=?''', (str(pin_id)))
 
             rows = cur.fetchall()
-    
+
             return get_sequences_from_rows(rows)
 
     def delete_sequences_for_pin(self, pin_id):
@@ -156,7 +156,7 @@ class PiSwitchModel(object):
                 WHERE pin_id=?''', str(pin_id))
 
             rows = cur.fetchall()
-    
+
             return get_sequences_from_rows(rows)
 
     def get_pins(self):
@@ -165,13 +165,13 @@ class PiSwitchModel(object):
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''SELECT * FROM Pins''')
-    
+
             rows = cur.fetchall()
-    
+
             for row in rows:
                 sequences = self.get_sequences_for_pin(row[0])
                 pins.append(Pin(row[0], sequences, row[1]))
-    
+
             return pins
 
     def get_pin(self, pin_id):
@@ -180,13 +180,13 @@ class PiSwitchModel(object):
             cur = connection.cursor()
             cur.execute('''SELECT * FROM Pins
                 WHERE id=?''', str(pin_id))
-    
-            row = cur.fetchall()
+
+            row = cur.fetchone()
             if row is None:
                 return None
-    
+
             sequences = self.get_sequences_for_pin(pin_id)
-            rawPin = row[0]
+            rawPin = row
             return Pin(rawPin[0], sequences, rawPin[1])
 
     def delete_pin(self, pin_id):
@@ -215,9 +215,8 @@ class PiSwitchModel(object):
 ##### data access classes #####
 
 class Sequence(object):
-    def __init__(self, pin_id, start_time, start_range, end_time, end_range, sequence_id=-1):
-
-        self.pin_id = pin_id
+    def __init__(self, start_time, start_range, end_time, end_range, pin=None, sequence_id=-1):
+        self.pin = pin
         self.id = sequence_id
 
         self.start_time = start_time
@@ -225,11 +224,13 @@ class Sequence(object):
         self.end_time = end_time
         self.end_range = end_range
 
-    def get_pin_id(self):
-        return self.pin_id
+    def get_pin(self):
+        return self.pin
 
-    def set_pin_id(self, pin_id):
-        self.pin_id = pin_id
+    def set_pin(self, pin):
+        self.pin = pin
+        if (self.pin):
+            self.pin_id = pin.get_id()
 
     def get_id(self):
         return self.id
@@ -256,7 +257,10 @@ class Pin(object):
 
         '''
         self.pin_num = pin_num
-        self.sequences = sequences
+        self.sequences = sequences if sequences else []
+        for sequence in self.sequences:
+            sequence.set_pin(self)
+
         self.state = state
         self.id = pin_num
         if name is None:

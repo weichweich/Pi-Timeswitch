@@ -21,21 +21,37 @@ export default Ember.Component.extend({
             var startRange = this.get(Constants.startRangeTag);
             var endTime = this.get(Constants.endTimeTag);
             var endRange = this.get(Constants.endRangeTag);
-            var pinId = this.get('pin').get('pinNum');
+            var pin = this.get('pin');
 
-            var valideData = startTime && startRange && endTime && endRange;
+            var valideData = false;
 
-            if (valideData) {
-                valideData &= (isAbsTime(startTime) && isRelTime(endTime))
-                            || (isAbsTime(endTime) && isRelTime(startTime))
-                            || (isAbsTime(endTime) && isAbsTime(startTime));
-                valideData &= isRelTime(startRange);
-                valideData &= isRelTime(endRange);
+            if (startTime && startRange && endTime && endRange) {
+                if (isAbsTime(endTime)) {
+                    if (isAbsTime(startTime) || isRelTime(startTime)) {
+                        valideData = true;
+                    } else {
+                        alert('Start time must be a valide time');
+                    }
+                } else if (isRelTime(endTime)) {
+                    if (isAbsTime(startTime)) {
+                        valideData = true;
+                    } else {
+                        alert('Start time must be a valide absolute time');
+                    }
+                } else {
+                    alert('End time must be a valide time!');
+                }
+            } else {
+                alert('A field is null!');
             }
 
+            valideData &= isRelTime(startRange);
+            valideData &= isRelTime(endRange);
+
             if (valideData) {
+
                 this.sendAction('action', startTime, startRange, endTime,
-                endRange, pinId);
+                endRange, pin);
 
                 // clear values
                 this.set(Constants.startTimeTag, '');
