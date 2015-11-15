@@ -1,15 +1,15 @@
 import Ember from 'ember';
 
-export default Ember.Route.extend({  
+export default Ember.Route.extend({
     model: function() {
         return this.store.findAll('pin');
     },
     actions: {
         createPin(pinNum, name) {
-
             this.store.createRecord('pin', {
                 state: 0,
                 pinNum: pinNum,
+                id: pinNum,
                 name: name
             }).save();
         },

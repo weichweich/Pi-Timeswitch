@@ -68,9 +68,10 @@ class PinResource(Resource):
     def get(self, pin_id):
         '''Handels a GET message.'''
         switch_model = self.switch_manager.get_model()
-        pins = switch_model.get_pin(pin_id)
-
-        result = PIN_SCHEMA.dump(pins)
+        pin = switch_model.get_pin(pin_id)
+        if not pin:
+            return "Pin not found!", 404
+        result = PIN_SCHEMA.dump(pin)
         return result.data, 200
 
     def delete(self, pin_id):

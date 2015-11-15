@@ -23,7 +23,7 @@ PARSER.add_argument('--file', dest='schedule_file', metavar='file',
                     help='A JSON-file containing the schedule.',
                     required=True)
 
-PARSER.add_argument('--debug', dest='debug', default=False, 
+PARSER.add_argument('--debug', dest='debug', default=False,
                     const=True, nargs="?",
                     help='A JSON-file containing the schedule.')
 
@@ -74,12 +74,18 @@ SWITCH_MANAGER = SwitchManager(SWITCH_MODEL)
 
 PIN_SCHEMA = PinSchema(many=True)
 
-APP = Flask(__name__)
+# make static folder the main '/' folder... Part 1/2
+APP = Flask(__name__, static_url_path='')
 API = Api(APP)
 
 # ######################################
 # # routes:
 # ######################################
+
+# make static folder the main '/' folder... Part 2/2
+@APP.route('/')
+def root():
+    return APP.send_static_file('index.html')
 
 @APP.route('/shutdown')
 def shutdown():
