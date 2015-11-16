@@ -42,7 +42,7 @@ logging.basicConfig(level=logging.DEBUG,
                     %(levelname)-8s %(message)s',
                     datefmt='%m-%d %H:%M',
                     filename='piSwitch.log',
-                    filemode='w')
+                    filemode='a')
 # define a Handler which writes INFO messages or higher to the sys.stderr
 CONSOLE = logging.StreamHandler()
 

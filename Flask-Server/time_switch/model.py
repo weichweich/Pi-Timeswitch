@@ -86,7 +86,8 @@ class PiSwitchModel(object):
 
             rows = cur.fetchall()
 
-            for (sequence_id, pin_id, start_time, start_range, end_time, end_range) in rows:
+            for (sequence_id, pin_id, start_time,
+                 start_range, end_time, end_range) in rows:
                 sequences.append(Sequence(start_time, start_range, end_time,
                                           end_range, sequence_id=sequence_id))
 
@@ -109,24 +110,30 @@ class PiSwitchModel(object):
                 return Sequence(**row)
 
     def set_sequence(self, sequence):
-        '''Adds the given sequence to the dataset. Removes the old schedule if it exists.'''
+        '''Adds the given sequence to the dataset.\
+           Removes the old schedule if it exists.'''
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             if sequence.get_id() == -1:
                 LOGGER.info("set_sequence({0}) - adding new sequence"\
                     .format(sequence.get_id()))
                 vals = (sequence.get_pin().get_id(), sequence.get_start()[0],
-                        sequence.get_start()[1], sequence.get_end()[0], sequence.get_end()[1])
+                        sequence.get_start()[1], sequence.get_end()[0],
+                        sequence.get_end()[1])
+
                 cur.execute('''INSERT INTO
-                            Sequences(pin_id, start_time, start_range, end_time, end_range)
+                            Sequences(pin_id, start_time, start_range,\
+                            end_time, end_range)
                             VALUES (?, ?, ?, ?, ?)''', vals)
             else:
                 LOGGER.info("set_sequence({0}) - updating sequence"\
                     .format(sequence.get_id()))
-                vals = (sequence.sequence_id, sequence.get_pin().get_id(), sequence.get_start()[0],
-                        sequence.get_start()[1], sequence.get_end()[0], sequence.get_end()[1])
+                vals = (sequence.sequence_id, sequence.get_pin().get_id(),
+                        sequence.get_start()[0], sequence.get_start()[1],
+                        sequence.get_end()[0], sequence.get_end()[1])
                 cur.execute('''REPLACE INTO
-                            Sequences(id, pin_id, start_time, start_range, end_time, end_range)
+                            Sequences(id, pin_id, start_time, start_range,\
+                            end_time, end_range)
                             VALUES (?, ?, ?, ?, ?, ?)''', vals)
 
 
@@ -142,7 +149,7 @@ class PiSwitchModel(object):
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''SELECT * FROM Sequences
-                WHERE pin_id=?''', (str(pin_id)))
+                WHERE pin_id=?''', (str(pin_id),))
 
             rows = cur.fetchall()
 
@@ -153,7 +160,7 @@ class PiSwitchModel(object):
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''DELETE FROM Sequences
-                WHERE pin_id=?''', str(pin_id))
+                WHERE pin_id=?''', (str(pin_id),))
 
             rows = cur.fetchall()
 
@@ -179,7 +186,7 @@ class PiSwitchModel(object):
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''SELECT * FROM Pins
-                WHERE id=?''', str(pin_id))
+                WHERE id=?''', (str(pin_id),))
 
             row = cur.fetchone()
             if row is None:
@@ -196,7 +203,7 @@ class PiSwitchModel(object):
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''DELETE FROM Pins WHERE id=?''',
-                        (str(pin_id)))
+                        (str(pin_id),))
 
 
     def set_pin(self, pin):
@@ -215,7 +222,8 @@ class PiSwitchModel(object):
 ##### data access classes #####
 
 class Sequence(object):
-    def __init__(self, start_time, start_range, end_time, end_range, pin=None, sequence_id=-1):
+    def __init__(self, start_time, start_range, end_time,
+                 end_range, pin=None, sequence_id=-1):
         self.pin = pin
         self.id = sequence_id
 

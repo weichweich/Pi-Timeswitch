@@ -7,6 +7,8 @@ import threading
 import time
 import random
 
+time.strptime('2012-01-01', '%Y-%m-%d') # dummy call to prevent error...
+
 class NullHandler(logging.Handler):
     '''Logging Handler which makes all logging
         calls silent, if the user of the module did
@@ -162,12 +164,19 @@ class SwitchManager(object):
     def switch_pin_on(self, pin_id):
         if pin_id not in self.gpios:
             GPIO.setup(pin_id, GPIO.OUT) # setup GPIO
+        if (pin_id not in self.gpios) or not self.gpios[pin_id]:
+            LOGGER.info("Switch ON " + str(pin_id))
+
         self.gpios[pin_id] = True
         GPIO.output(pin_id, SWITCH_ON)
 
     def switch_pin_off(self, pin_id):
         if pin_id not in self.gpios:
             GPIO.setup(pin_id, GPIO.OUT) # setup GPIO
+
+        if (pin_id not in self.gpios) or self.gpios[pin_id]:
+            LOGGER.info("Switch OFF " + str(pin_id))
+
         self.gpios[pin_id] = False
         GPIO.output(pin_id, SWITCH_OFF)
 
@@ -179,11 +188,13 @@ class SwitchManager(object):
 
     def start(self):
         '''Starts the timeswitch and sets the GPIOs up.'''
+        LOGGER.info("Start gpio manager")
         GPIO.setmode(GPIO.BOARD)
         self.thread.start()
 
     def stop(self):
         '''Stops the timeswitch and cleansup the GPIOs.'''
+        LOGGER.info("stop gpio manager")
         self.event.set()
         GPIO.cleanup()
         self.gpios.clear()
