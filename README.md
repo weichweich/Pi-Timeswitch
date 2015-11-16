@@ -48,7 +48,10 @@ pip install Flask
 pip install flask-restful
 pip install -U marshmallow --pre
 pip install marshmallow-jsonapi
-sudo apt-get install rpi.gpio		# Only on Raspberry Pi. 
+
+# Only on Raspberry Pi:
+sudo apt-get install python-dev  
+pip install rpi.gpio 
 ~~~
 
 If the RPi.GPIO is not installed, the programm will use a mockup (which won't switch anything and just logges switching attempts).
@@ -59,6 +62,8 @@ Install [emberjs](http://emberjs.com).
 
 ~~~
 npm install -g ember-cli
+cd <project-root>/Ember-Client/pi-timeswitch
+npm install && bower install
 ~~~
 
 
@@ -74,6 +79,8 @@ python server.py --file schdule.sqlite
 cd <project-root>/Ember-Client/pi-timeswitch
 ember server --proxy http://127.0.0.1:5000
 ~~~
+
+Options for server.py:
 
 `--create` creates a new database and erases the old if it exists.
 

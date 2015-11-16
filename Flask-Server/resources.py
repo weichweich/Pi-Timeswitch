@@ -57,7 +57,7 @@ class PinsResource(Resource):
 
         result = PIN_SCHEMA.load(request_json)
         switch_model.set_pin(result.data)
-        switch_manager.update_all_gpios()
+        self.switch_manager.update_all_gpios()
         return "", 200
 
 class PinResource(Resource):
@@ -79,7 +79,7 @@ class PinResource(Resource):
         switch_model = self.switch_manager.get_model()
 
         switch_model.delete_pin(pin_id)
-        switch_manager.update_all_gpios()
+        self.switch_manager.update_all_gpios()
         return "", 204
 
     def patch(self, pin_id):
@@ -100,7 +100,7 @@ class PinResource(Resource):
         pin = PIN_SCHEMA.load(request_json)
         switch_model.set_pin(pin.data)
 
-        switch_manager.update_all_gpios()
+        self.switch_manager.update_all_gpios()
         return "", 204
 
     def put(self, pin_id):
@@ -122,7 +122,7 @@ class PinResource(Resource):
         pin = PIN_SCHEMA.load(request_json)
         switch_model.set_pin(pin.data)
 
-        switch_manager.update_all_gpios()
+        self.switch_manager.update_all_gpios()
         return "", 204
 
 class SequencesResource(Resource):
@@ -176,7 +176,7 @@ class SequencesResource(Resource):
         sequence.set_pin(pin)
         switch_model.set_sequence(sequence)
 
-        switch_manager.update_all_gpios()
+        self.switch_manager.update_all_gpios()
         return "", 204
 
 class SequenceResource(Resource):
@@ -206,7 +206,7 @@ class SequenceResource(Resource):
 
         sequences = switch_model.get_sequences()
         result = SEQUENCES_SCHEMA.dump(sequences)
-        switch_manager.update_all_gpios()
+        self.switch_manager.update_all_gpios()
         return result.data
 
     def delete(self, sequence_id):
@@ -216,5 +216,5 @@ class SequenceResource(Resource):
 
         sequences = switch_model.get_sequences()
         result = SEQUENCES_SCHEMA.dump(sequences)
-        switch_manager.update_all_gpios()
+        self.switch_manager.update_all_gpios()
         return result.data

@@ -27,8 +27,8 @@ PARSER.add_argument('--debug', dest='debug', default=False,
                     const=True, nargs="?",
                     help='A JSON-file containing the schedule.')
 
-PARSER.add_argument('--create', dest='create', default=False, const=True, nargs="?",
-                    help='Creates a new database. DELETES ALL DATA!!')
+PARSER.add_argument('--create', dest='create', default=False, const=True,
+                    nargs="?", help='Creates a new database. DELETES ALL DATA!!')
 
 ARGS = PARSER.parse_args()
 
@@ -108,10 +108,10 @@ API.add_resource(PinsResource, '/api/pins',
 API.add_resource(PinResource, '/api/pins/<int:pin_id>',
                  resource_class_kwargs=resource_kwargs)
 
-API.add_resource(SequencesResource, '/api/pins/<int:pin_id>/sequences', '/api/sequences',
-                 resource_class_kwargs=resource_kwargs)
+API.add_resource(SequencesResource, '/api/pins/<int:pin_id>/sequences',
+                 '/api/sequences', resource_class_kwargs=resource_kwargs)
 
-API.add_resource(SequenceResource, '/api/sequence/<int:sequence_id>',
+API.add_resource(SequenceResource, '/api/sequences/<int:sequence_id>',
                  resource_class_kwargs=resource_kwargs)
 
 if __name__ == '__main__':
