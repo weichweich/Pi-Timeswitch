@@ -51,10 +51,10 @@ pip install marshmallow-jsonapi
 
 # Only on Raspberry Pi:
 sudo apt-get install python-dev  
-pip install rpi.gpio 
+pip install rpi.gpio
 ~~~
 
-If the RPi.GPIO is not installed, the programm will use a mockup (which won't switch anything and just logges switching attempts).
+If the RPi.GPIO is not installed, the program will use a mockup (which won't switch anything and just logs switching attempts).
 
 ### Prepare Ember-Client
 
@@ -69,12 +69,12 @@ npm install && bower install
 
 ###  Start the development Server
 
-When starten the server for the fisrt time, we need to create a new database. Run the command with the `--create` switch. 
+When starting the server for the first time, we need to create a new database. Run the command with the `--create` switch.
 
 ~~~
 cd <project-root>/Flask-Server
 source venv/bin/activate
-python server.py --file schdule.sqlite
+python server.py --file schedule.sqlite
 
 cd <project-root>/Ember-Client/pi-timeswitch
 ember server --proxy http://127.0.0.1:5000
@@ -84,6 +84,6 @@ Options for server.py:
 
 `--create` creates a new database and erases the old if it exists.
 
-`--debug` runns the server in debug mode.
+`--debug` runs the server in debug mode.
 
 `--file <path-to-file>` is the path to the file where the schedule is stored.
