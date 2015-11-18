@@ -1,35 +1,40 @@
-{{#if this.isEditing}}
+{{#if editing}}
   <td class="numeric">
-  {{edit-view class="edit" 
-    value=startTime 
-    insert-newline="acceptChanges"}}
+    {{input
+      type="text"
+      value=sequence.startTime
+      enter="editSequence"
+      autofocus="autofocus"}}
   </td>
   <td class="numeric">
-  {{edit-view class="edit" 
-    value=fromRange 
-    insert-newline="acceptChanges"}}
+    {{input
+      type="text"
+      value=sequence.startRange
+      enter="editSequence"}}
   </td>
   <td class="numeric">
-  {{edit-view class="edit" 
-    value=toTm
-    insert-newline="acceptChanges"}}
+    {{input
+      type="text"
+      value=sequence.endTime
+      enter="editSequence"}}
   </td>
   <td class="numeric">
-  {{edit-view class="edit" 
-    value=toRange 
-    insert-newline="acceptChanges"}}
+    {{input
+      type="text"
+      value=sequence.endRange
+      enter="editSequence"}}
   </td>
 {{else}}
-  <td class="numeric">
+  <td class="numeric" {{action "editSequence" on="doubleClick"}}>
     <lable>{{sequence.startTime}}</lable>
   </td>
-  <td class="numeric">
+  <td class="numeric" {{action "editSequence" on="doubleClick"}}>
     <lable>{{sequence.startRange}}</lable>
   </td>
-  <td class="numeric">
+  <td class="numeric" {{action "editSequence" on="doubleClick"}}>
     <lable>{{sequence.endTime}}</lable>
   </td>
-  <td class="numeric">
+  <td class="numeric" {{action "editSequence" on="doubleClick"}}>
     <lable>{{sequence.endRange}}</lable>
   </td>
 {{/if}}

@@ -9,7 +9,6 @@ export default Ember.Component.extend({
         editSequence() {
             this.toggleProperty('editing');
             this.$().focus();
-            
         },
         submitSequenceChange() {
             var startTime = this.get(Constants.startTimeTag);
@@ -20,7 +19,7 @@ export default Ember.Component.extend({
 
             if (startTime && startRange && endTime && endRange) {
 
-                this.sendAction('updateSequence', startTime, startRange, 
+                this.sendAction('updateSequence', startTime, startRange,
                     endTime, endRange, sequence.get('pinId'));
                 this.set('editing', false);
             }

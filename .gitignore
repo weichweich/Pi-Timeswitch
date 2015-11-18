@@ -1,5 +1,5 @@
 # Vitualenv:
-piSwitchEnv/
+venv/
 
 # SQLite
 *.db

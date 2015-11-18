@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, request
+from flask import Flask, request
 from flask_restful import Api
 
 from time_switch.switch_manager import SwitchManager

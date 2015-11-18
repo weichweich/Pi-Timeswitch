@@ -17,10 +17,10 @@ OUT = 'out'
 BOARD = 'board'
 
 def output(pinNum, voltage):
-	LOGGER.debug('Swtich pin {0:d} -> {1:s} '.format(pinNum, voltage))
+    LOGGER.debug('Swtich pin {0:d} -> {1:s} '.format(pinNum, voltage))
 
 def setmode(mode):
-	LOGGER.debug('GPIO mode: {0:s}'.format(mode))
+    LOGGER.debug('GPIO mode: {0:s}'.format(mode))
 
 def setup(pin, pinType):
 	LOGGER.debug('Pin {0:d} is set to {1:s}'.format(pin, pinType))
