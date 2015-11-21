@@ -7,7 +7,7 @@ from flask_restful import Api
 from time_switch.switch_manager import SwitchManager
 from time_switch.model import create_db, PiSwitchModel
 from resources import PinsResource, SequencesResource, PinResource,\
-                      SequenceResource, PinSchema
+                      SequenceResource, PinSchema, TimeResource
 
 import argparse
 import logging
@@ -113,6 +113,8 @@ API.add_resource(SequencesResource, '/api/pins/<int:pin_id>/sequences',
 
 API.add_resource(SequenceResource, '/api/sequences/<int:sequence_id>',
                  resource_class_kwargs=resource_kwargs)
+
+API.add_resource(TimeResource, '/api/server_time')
 
 if __name__ == '__main__':
 

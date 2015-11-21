@@ -285,8 +285,17 @@ class Pin(object):
     def set_name(self, new_name):
         self.name = new_name
 
+    def get_state(self):
+        return self.state
+
+    def set_state(self, new_state):
+        if (new_state in [-1, 0, 1]):
+            self.state = new_state
+        else:
+            raise ValueError("Pin state must be in [-1,0,1]")
+
     def get_id(self):
         return self.pin_num
 
     def set_id(self, pin_id):
-        self.pin_id = pin_id
+        self.pin_num = pin_id

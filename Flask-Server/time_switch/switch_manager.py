@@ -75,7 +75,6 @@ class SwitchManager(object):
     def __init__(self, switch_model):
         self.switch_model = switch_model
         self.pins = self.switch_model.get_pins()
-        self.gpios = {}
         self.diffusions = {}
         self.event = threading.Event()
         self.thread = threading.Thread(target=self._loop, args=())
@@ -83,6 +82,13 @@ class SwitchManager(object):
     def get_model(self):
         '''Returns the current used model.'''
         return self.switch_model
+
+    def get_pins(self):
+        return self.pins
+
+    def update(self):
+        self.pins = self.switch_model.get_pins()
+        self.update_all_gpios()
 
     def _get_diffusioned_intervall(self, sequence):
         '''Returns a tuple of start and end time.'''
@@ -155,36 +161,29 @@ class SwitchManager(object):
                 active_sequence_found = True # set found true
                 break # and leave the loop
 
-        pin_id = pin.get_id()
         if active_sequence_found:
-            self.switch_pin_on(pin_id)
+            self.switch_pin_on(pin)
         elif not active_sequence_found:
-            self.switch_pin_off(pin_id)
+            self.switch_pin_off(pin)
 
-    def switch_pin_on(self, pin_id):
-        if pin_id not in self.gpios:
-            GPIO.setup(pin_id, GPIO.OUT) # setup GPIO
-        if (pin_id not in self.gpios) or not self.gpios[pin_id]:
-            LOGGER.info("Switch ON " + str(pin_id))
+    def switch_pin_on(self, pin):
+        if pin.get_state() == 0:
+            GPIO.setup(pin.get_id(), GPIO.OUT) # setup GPIO
+        if (pin.get_state() != 1):
+            LOGGER.info("Switch ON " + str(pin.get_id()) + " (" + pin.get_name() +")")
 
-        self.gpios[pin_id] = True
-        GPIO.output(pin_id, SWITCH_ON)
+        pin.set_state(1)
+        GPIO.output(pin.get_id(), SWITCH_ON)
 
-    def switch_pin_off(self, pin_id):
-        if pin_id not in self.gpios:
-            GPIO.setup(pin_id, GPIO.OUT) # setup GPIO
+    def switch_pin_off(self, pin):
+        if pin.get_state() == 0:
+            GPIO.setup(pin.get_id(), GPIO.OUT) # setup GPIO
 
-        if (pin_id not in self.gpios) or self.gpios[pin_id]:
-            LOGGER.info("Switch OFF " + str(pin_id))
+        if (pin.get_state() != -1):
+            LOGGER.info("Switch ON " + str(pin.get_id()) + " (" + pin.get_name() +")")
 
-        self.gpios[pin_id] = False
-        GPIO.output(pin_id, SWITCH_OFF)
-
-    def state_for_gpio(self, pin_id):
-        if pin_id not in self.gpios:
-            return False
-        else:
-            return self.gpios[pin_id]
+        pin.set_state(-1)
+        GPIO.output(pin.get_id(), SWITCH_OFF)
 
     def start(self):
         '''Starts the timeswitch and sets the GPIOs up.'''
@@ -197,7 +196,8 @@ class SwitchManager(object):
         LOGGER.info("stop gpio manager")
         self.event.set()
         GPIO.cleanup()
-        self.gpios.clear()
+        for pin in self.pins:
+            pin.set_state(0)
 
     def _loop(self):
         '''Tests every minute if a GPIO should be switcht on or off.'''

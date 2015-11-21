@@ -26,6 +26,12 @@ PINS_SCHEMA = PinSchema(many=True)
 SEQUENCE_SCHEMA = SequenceSchema(many=False)
 SEQUENCES_SCHEMA = SequenceSchema(many=True)
 
+class TimeResource(Resource):
+    '''Specifies the REST API for accessing the servers time.'''
+
+    def get(self):
+        return {'time': time.asctime()}, 200
+
 class PinsResource(Resource):
     '''Specifies the REST API for accessing pins.'''
 
@@ -34,8 +40,7 @@ class PinsResource(Resource):
 
     def get(self):
         '''Handels a GET message.'''
-        switch_model = self.switch_manager.get_model()
-        pins = switch_model.get_pins()
+        pins = self.switch_manager.get_pins()
         result = PINS_SCHEMA.dump(pins)
         return result.data, 200
 
@@ -57,7 +62,7 @@ class PinsResource(Resource):
 
         result = PIN_SCHEMA.load(request_json)
         switch_model.set_pin(result.data)
-        self.switch_manager.update_all_gpios()
+        self.switch_manager.update()
         return "", 200
 
 class PinResource(Resource):
@@ -69,7 +74,9 @@ class PinResource(Resource):
     def get(self, pin_id):
         '''Handels a GET message.'''
         switch_model = self.switch_manager.get_model()
-        pin = switch_model.get_pin(pin_id)
+        pins = self.switch_manager.get_pins()
+        pin = next((x for x in pins if x.get_id() == pin_id), None)
+
         if not pin:
             return "Pin not found!", 404
         result = PIN_SCHEMA.dump(pin)
@@ -79,7 +86,7 @@ class PinResource(Resource):
         switch_model = self.switch_manager.get_model()
 
         switch_model.delete_pin(pin_id)
-        self.switch_manager.update_all_gpios()
+        self.switch_manager.update()
         return "", 204
 
     def patch(self, pin_id):
@@ -100,7 +107,7 @@ class PinResource(Resource):
         pin = PIN_SCHEMA.load(request_json)
         switch_model.set_pin(pin.data)
 
-        self.switch_manager.update_all_gpios()
+        self.switch_manager.update()
         return "", 204
 
     def put(self, pin_id):
@@ -122,7 +129,7 @@ class PinResource(Resource):
         pin = PIN_SCHEMA.load(request_json)
         switch_model.set_pin(pin.data)
 
-        self.switch_manager.update_all_gpios()
+        self.switch_manager.update()
         return "", 204
 
 class SequencesResource(Resource):
@@ -137,10 +144,11 @@ class SequencesResource(Resource):
         sequences = []
 
         if pin_id:
-            pin = switch_model.get_pin(pin_id)
+            pins = self.switch_manager.get_pins()
+            pin = next((x for x in pins if x.get_id() == pin_id), None)
             sequences = pin.get_sequences()
         else:
-            pins = switch_model.get_pins()
+            pins = self.switch_manager.get_pins()
             for pin in pins:
                 sequences.append(pin.get_sequences())
 
@@ -165,7 +173,7 @@ class SequencesResource(Resource):
 
         load_result = SEQUENCE_SCHEMA.load(request_json)
 
-        sequence = load_result.data;
+        sequence = load_result.data
 
         if not pin_id:
             pin_id = request_json['data']['relationships']['pin']['data']['id']
@@ -176,7 +184,7 @@ class SequencesResource(Resource):
         sequence.set_pin(pin)
         switch_model.set_sequence(sequence)
 
-        self.switch_manager.update_all_gpios()
+        self.switch_manager.update()
         return "", 204
 
 class SequenceResource(Resource):
@@ -206,7 +214,7 @@ class SequenceResource(Resource):
 
         sequences = switch_model.get_sequences()
         result = SEQUENCES_SCHEMA.dump(sequences)
-        self.switch_manager.update_all_gpios()
+        self.switch_manager.update()
         return result.data
 
     def delete(self, sequence_id):
@@ -216,5 +224,5 @@ class SequenceResource(Resource):
 
         sequences = switch_model.get_sequences()
         result = SEQUENCES_SCHEMA.dump(sequences)
-        self.switch_manager.update_all_gpios()
+        self.switch_manager.update()
         return result.data
