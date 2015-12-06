@@ -6,8 +6,8 @@ from flask_restful import Api
 
 from time_switch.switch_manager import SwitchManager
 from time_switch.model import create_db, PiSwitchModel
-from resources import PinsResource, SequencesResource, PinResource,\
-                      SequenceResource, PinSchema, TimeResource
+from schema import PinSchema, SequenceSchema
+from resources import ManyRessource, SingleResource
 
 import argparse
 import logging
@@ -61,10 +61,11 @@ logging.getLogger('').addHandler(CONSOLE)
 LOGGER = logging.getLogger("MAIN")
 
 # ######################################
-# # Setup Flask, flask_restful, switch_manager
+# # Setup Flask, switch_manager, config
 # ######################################
 
 SCHEDULE_FILE = ARGS.schedule_file
+URL_PREFIX = '/api'
 
 if ARGS.create:
     create_db(SCHEDULE_FILE)
@@ -72,49 +73,68 @@ if ARGS.create:
 SWITCH_MODEL = PiSwitchModel(SCHEDULE_FILE)
 SWITCH_MANAGER = SwitchManager(SWITCH_MODEL)
 
-PIN_SCHEMA = PinSchema(many=True)
 
-# make static folder the main '/' folder... Part 1/2
-APP = Flask(__name__, static_url_path='')
+APP = Flask(__name__)
 API = Api(APP)
-
-# ######################################
-# # routes:
-# ######################################
-
-# make static folder the main '/' folder... Part 2/2
-@APP.route('/')
-def root():
-    return APP.send_static_file('index.html')
-
-@APP.route('/shutdown')
-def shutdown():
-    SWITCH_MANAGER.stop()
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
-    return 'Server shutting down...'
 
 # ######################################
 # # flask_restful:
 # ######################################
 
-resource_kwargs = {'switch_manager':SWITCH_MANAGER}
+PINS_SCHEMA = PinSchema(many=True)
+PIN_SCHEMA  = PinSchema(many=False)
 
-API.add_resource(PinsResource, '/api/pins',
-                 resource_class_kwargs=resource_kwargs)
+SEQUENCES_SCHEMA = SequenceSchema(many=True)
+SEQUENCE_SCHEMA  = SequenceSchema(many=False)
 
-API.add_resource(PinResource, '/api/pins/<int:pin_id>',
-                 resource_class_kwargs=resource_kwargs)
+# --------------------------------------
+# Pins
+resource_kwargs_pins = {
+    'schema':       PINS_SCHEMA,
+    'getter_func':  SWITCH_MODEL.get_pins,
+    'setter_func':  SWITCH_MODEL.set_pin,
+    'delete_func':  SWITCH_MODEL.delete_pin
+    }
 
-API.add_resource(SequencesResource, '/api/pins/<int:pin_id>/sequences',
-                 '/api/sequences', resource_class_kwargs=resource_kwargs)
+API.add_resource(ManyRessource, URL_PREFIX + '/pins', endpoint='pins',
+                 resource_class_kwargs=resource_kwargs_pins)
+resource_kwargs_pin = {
+    'schema':       PIN_SCHEMA,
+    'getter_func':  SWITCH_MODEL.get_pin,
+    'setter_func':  SWITCH_MODEL.set_pin,
+    'delete_func':  SWITCH_MODEL.delete_pin
+    }
 
-API.add_resource(SequenceResource, '/api/sequences/<int:sequence_id>',
-                 resource_class_kwargs=resource_kwargs)
+API.add_resource(SingleResource, URL_PREFIX + '/pins/<int:pin_id>', endpoint='pin',
+                 resource_class_kwargs=resource_kwargs_pin)
 
-API.add_resource(TimeResource, '/api/server_time')
+# --------------------------------------
+# Sequences
+resource_kwargs_sequences = {
+    'schema':       SEQUENCES_SCHEMA,
+    'getter_func':  SWITCH_MODEL.get_sequences_for_pin,
+    'setter_func':  SWITCH_MODEL.set_sequence,
+    'delete_func':  SWITCH_MODEL.delete_sequence
+    }
+
+API.add_resource(ManyRessource, URL_PREFIX + '/pins/<int:pin_id>/sequences', endpoint='pins_sequences',
+                 resource_class_kwargs=resource_kwargs_sequences)
+
+resource_kwargs_sequences['getter_func'] = SWITCH_MODEL.get_sequences
+
+API.add_resource(ManyRessource, URL_PREFIX + '/sequences', URL_PREFIX + '/sequences', endpoint='sequences',
+                 resource_class_kwargs=resource_kwargs_sequences)
+
+resource_kwargs_sequence = resource_kwargs_sequences
+resource_kwargs_sequence['schema'] = SEQUENCE_SCHEMA
+resource_kwargs_sequence['getter_func'] = SWITCH_MODEL.get_sequence
+
+API.add_resource(SingleResource, URL_PREFIX + '/sequences/<int:sequence_id>', endpoint='sequence',
+                 resource_class_kwargs=resource_kwargs_sequence)
+
+# --------------------------------------
+# Time
+
 
 if __name__ == '__main__':
 

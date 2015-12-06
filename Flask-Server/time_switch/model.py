@@ -22,7 +22,7 @@ def create_db(filename):
     if os.path.exists(filename):
         os.remove(filename)
 
-    try:
+    with sql.connect(filename) as connection:
         connection = sql.connect(filename)
         cur = connection.cursor()
 
@@ -40,9 +40,6 @@ def create_db(filename):
             name TEXT)''')
 
         connection.close()
-
-    except sql.Error, e:
-        raise
 
 ## validate data
 
@@ -75,7 +72,6 @@ class PiSwitchModel(object):
 
     def __init__(self, filename):
         self.sql_file = filename
-
 
     def get_sequences(self):
         '''Returns all schedules in the dataset.'''

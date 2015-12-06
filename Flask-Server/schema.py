@@ -42,7 +42,6 @@ class SequenceSchema(Schema):
 
     @post_load
     def make_sequence(self, data):
-        print str(data)
         return Sequence(**data)
 
     def handle_error(self, exc, data):

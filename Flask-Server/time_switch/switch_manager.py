@@ -23,8 +23,10 @@ LOGGER = logging.getLogger(__name__)
 try:
     import RPi.GPIO as GPIO
 except ImportError:
-    LOGGER.warning('Running with gpio mockup! RPi.GPIO not installed?')
+    LOGGER.warning('Error importing RPi.GPIO! Running with gpio mockup! RPi.GPIO not installed?')
     import time_switch.no_gpio as GPIO
+except RuntimeError:
+    print("Error importing RPi.GPIO!  This is probably because you need superuser privileges.  You can achieve this by using 'sudo' to run your script")
 
 SWITCH_ON = GPIO.HIGH
 SWITCH_OFF = GPIO.LOW
@@ -52,19 +54,18 @@ def is_sequence_active(start_tm, end_tm):
     cur_time = time_struct.tm_hour * UNIT_PER_HOUR + time_struct.tm_min * UNIT_PER_MINUTE
     return time_in_sequence(start_tm, end_tm, cur_time)
 
-def pars_rel_time(time_str):
-    '''Takes a time string and converts it to an integer.
-
-        The string should have the format HH:MM. The returned
-        integer represents the passed minutes.'''
-
+def parse_rel_time(time_str):
+    '''Takes a string representing an integer in range 0, 1440.'''
     if not is_relative_time(time_str):
         raise TypeError("Expected a relativ time. A string\
  representing an integer between 0 and 1440. Got: " + time_str)
     return int(time_str)
 
-def pars_abs_time(time_str):
-    '''Takes a string and converts it to an integer.'''
+def parse_abs_time(time_str):
+    '''Takes a time string and converts it to an integer.
+
+        The string should have the format HH:MM. The returned
+        integer represents the passed minutes.'''
     if not is_absolute_time(time_str):
         raise TypeError("Expected an absulute time (HH:MM). Got: " + time_str)
     time_struct = time.strptime(time_str, "%H:%M")
@@ -75,6 +76,7 @@ class SwitchManager(object):
     def __init__(self, switch_model):
         self.switch_model = switch_model
         self.pins = self.switch_model.get_pins()
+        self.used_gpios = []
         self.diffusions = {}
         self.event = threading.Event()
         self.thread = threading.Thread(target=self._loop, args=())
@@ -88,6 +90,16 @@ class SwitchManager(object):
 
     def update(self):
         self.pins = self.switch_model.get_pins()
+
+        # find deleted pins
+        deleted_pins = self.used_gpios[:]
+        for pin in self.pins:
+            if pin.get_id() in deleted_pins:
+                deleted_pins.remove(pin.get_id())
+        # cleanup GPIOs which are no longer needed
+        GPIO.cleanup(deleted_pins)
+
+        # update the other pins
         self.update_all_gpios()
 
     def _get_diffusioned_intervall(self, sequence):
@@ -97,17 +109,23 @@ class SwitchManager(object):
         start_tm_str = sequence.get_start()
 
         if sequence_id not in self.diffusions:
-            if is_relative_time(start_tm_str[0]):
-                print str(start_tm_str)
-                start_tm = (pars_rel_time(start_tm_str[0]), pars_rel_time(start_tm_str[1]))
-                end_tm = (pars_abs_time(end_tm_str[0]), pars_rel_time(end_tm_str[1]))
+            # if deffusion is not calculated:
 
+            if is_relative_time(start_tm_str[0]):
+                # if start is relativ to the end time
+
+                # parse start and end time
+                start_tm = (parse_rel_time(start_tm_str[0]), parse_rel_time(start_tm_str[1]))
+                end_tm = (parse_abs_time(end_tm_str[0]), parse_rel_time(end_tm_str[1]))
+
+                # calculate randomized end time
                 rand_end = end_tm[0]
                 if end_tm[1] != 0:
                     rand_end += random.randint(-end_tm[1], end_tm[1])
 
+                # calculate start time depending on end.
                 duration = start_tm[0]
-                if start_tm[1] != 0:
+                if start_tm[1] != 0: # randomize start time if nessesary
                     duration += random.randint(-start_tm[1], start_tm[1])
                 rand_start = (rand_end - duration) % UNIT_PER_DAY
 
@@ -117,28 +135,44 @@ class SwitchManager(object):
                 self.diffusions[sequence_id] = (rand_start, rand_end)
 
             elif is_relative_time(end_tm_str[0]):
-                start_tm = (pars_abs_time(start_tm_str[0]), pars_rel_time(start_tm_str[1]))
-                end_tm = (pars_rel_time(end_tm_str[0]), pars_rel_time(end_tm_str[1]))
+                # if end is relativ to start time
 
-                rand_start = start_tm[0] + random.randint(-start_tm[1], start_tm[1])
-                duration = end_tm[0] + random.randint(-end_tm[1], end_tm[1])
-                rand_end = (rand_start + duration) % UNIT_PER_DAY
+                # parse start and end time
+                start_tm = (parse_abs_time(start_tm_str[0]), parse_rel_time(start_tm_str[1]))
+                end_tm = (parse_rel_time(end_tm_str[0]), parse_rel_time(end_tm_str[1]))
+
+                # calculate
+                rand_start = start_tm[0]
+                if end_tm[1] != 0:
+                    rand_end += random.randint(-end_tm[1], end_tm[1])
+
+                # calculate end time depending on start.
+                duration = end_tm[0]
+                if end_tm[1] != 0: # randomize end time if nessesary
+                    duration += random.randint(-end_tm[1], end_tm[1])
+                rand_end = (rand_start - duration) % UNIT_PER_DAY
 
                 if duration <= 0:
                     rand_end = rand_start
 
                 self.diffusions[sequence_id] = (rand_start, rand_end)
             else:
-                start_tm = (pars_abs_time(start_tm_str[0]), pars_rel_time(start_tm_str[1]))
-                end_tm = (pars_abs_time(end_tm_str[0]), pars_rel_time(end_tm_str[1]))
+                # if both are absolute times.
+                start_tm = (parse_abs_time(start_tm_str[0]), parse_rel_time(start_tm_str[1]))
+                end_tm = (parse_abs_time(end_tm_str[0]), parse_rel_time(end_tm_str[1]))
 
+                # calculate start
                 rand_start = start_tm[0] + random.randint(-start_tm[1], start_tm[1])
 
+                # calculate end
                 rand_end = end_tm[0] + random.randint(-end_tm[1], end_tm[1])
 
+                # calculate duration of on time befor and after randomization
                 tm_diff = end_tm[0] - start_tm[0]
                 rand_tm_diff = rand_end - rand_start
 
+                # if order of start and end time switched, make the sequence disapear.
+                # [morning]--[start]+++[end]---[evening] => [morning]++[end]--[start]++[evening]
                 if tm_diff * rand_tm_diff <= 0:
                     rand_start = rand_end
 
@@ -169,8 +203,9 @@ class SwitchManager(object):
     def switch_pin_on(self, pin):
         if pin.get_state() == 0:
             GPIO.setup(pin.get_id(), GPIO.OUT) # setup GPIO
+            self.used_gpios.append(pin.get_id())
         if (pin.get_state() != 1):
-            LOGGER.info("Switch ON " + str(pin.get_id()) + " (" + pin.get_name() +")")
+            LOGGER.info("Switch ON  {:2} ({})".format(pin.get_id(), pin.get_name()))
 
         pin.set_state(1)
         GPIO.output(pin.get_id(), SWITCH_ON)
@@ -178,9 +213,10 @@ class SwitchManager(object):
     def switch_pin_off(self, pin):
         if pin.get_state() == 0:
             GPIO.setup(pin.get_id(), GPIO.OUT) # setup GPIO
+            self.used_gpios.append(pin.get_id())
 
         if (pin.get_state() != -1):
-            LOGGER.info("Switch ON " + str(pin.get_id()) + " (" + pin.get_name() +")")
+            LOGGER.info("Switch OFF {:2} ({})".format(pin.get_id(), pin.get_name()))
 
         pin.set_state(-1)
         GPIO.output(pin.get_id(), SWITCH_OFF)
@@ -203,8 +239,6 @@ class SwitchManager(object):
         '''Tests every minute if a GPIO should be switcht on or off.'''
         cur_day = time.gmtime().tm_yday
         while not self.event.is_set(): # loop until (event is set -> thread should stop)
-            self.pins = self.switch_model.get_pins() # update model
-
             if cur_day != time.gmtime().tm_yday: # if new day started
                 cur_day = time.gmtime().tm_yday # update current day
                 self.diffusions.clear() # delete all times -> Calculate new random times.
