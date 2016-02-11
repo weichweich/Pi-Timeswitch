@@ -13,8 +13,21 @@ class NullHandler(logging.Handler):
 logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
 
+
+try:
+    import RPi.GPIO as GPIO
+except ImportError:
+    import time_switch.no_gpio as GPIO
+possible_gpios = [2, 5, 7, 8, 10, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24,
+                  26, 29, 31, 32, 33, 35, 36, 37, 38, 40]
+
+SWITCH_ON = 1
+SWITCH_OFF = 0
+SWITCH_UNDEF = -1
+
 ### Helper methodes
 ## create db
+
 
 def create_db(filename):
     '''Deletes the old database and creates all tables.'''
@@ -66,12 +79,28 @@ def get_sequences_from_rows(rows):
     return sequences
 
 ### MODEL ###
+PRIO_KEY = 'prio'
+STATE_KEY = 'state'
 
 class PiSwitchModel(object):
     '''This class saves and loads pins and schedules.'''
 
     def __init__(self, filename):
         self.sql_file = filename
+        self.observers = []
+        self.pin_info = {}
+        GPIO.setmode(GPIO.BOARD)
+
+    def _notify_all(self):
+        for observer in self.observers:
+            observer.changed()
+
+    def add_observer(self, observer):
+        if observer not in self.observers:
+            self.observers.append(observer)
+
+    def remove_observer(self, observer):
+        self.observers.remove(observer)
 
     def get_sequences(self):
         '''Returns all schedules in the dataset.'''
@@ -86,7 +115,6 @@ class PiSwitchModel(object):
                  start_range, end_time, end_range) in rows:
                 sequences.append(Sequence(start_time, start_range, end_time,
                                           end_range, sequence_id=sequence_id))
-
             return sequences
 
     def get_sequence(self, sequence_id):
@@ -195,6 +223,7 @@ class PiSwitchModel(object):
     def delete_pin(self, pin_id):
         '''Deletes all sequence for the pin and the pin it selfs.'''
         self.delete_sequences_for_pin(pin_id)
+        GPIO.cleanup(pin_id)
 
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
@@ -205,6 +234,11 @@ class PiSwitchModel(object):
     def set_pin(self, pin):
         '''Alters the pin name or adds the pin if he
         did not exist. Also adds sequences.'''
+        if pin.get_state() == SWITCH_ON:
+            self.switch_pin_on(pin, prio=1)
+        elif pin.get_state() == SWITCH_OFF:
+            self.switch_pin_off(pin, prio=1)
+
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''REPLACE INTO Pins(id, name)
@@ -214,6 +248,49 @@ class PiSwitchModel(object):
             if pin.get_sequences() is not None:
                 for sequence in pin.get_sequences():
                     self.set_sequence(sequence)
+
+    def switch_pin_on(self, pin, prio=0):
+        if not pin.get_id() in self.pin_info:
+            self._setup_info(pin, prio)
+
+        self._switch_state(pin, SWITCH_ON, prio)
+
+    def switch_pin_off(self, pin, prio=0):
+        if not pin.get_id() in self.pin_info:
+            self._setup_info(pin)
+
+        self._switch_state(pin, SWITCH_OFF, prio)
+
+    def _setup_info(self, pin):
+        self.pin_info[pin.get_id()] = {
+            STATE_KEY: SWITCH_UNDEF,
+            PRIO_KEY: 0
+        }
+        GPIO.setup(pin.get_id(), GPIO.OUT)
+
+    def _switch_state(self, pin, state, prio):
+        info = self.pin_info[pin.get_id()]
+        if not info[PRIO_KEY]:
+            info[PRIO_KEY] = prio
+
+        if info[STATE_KEY] != state and info[PRIO_KEY] <= prio:
+            LOGGER.info(u"Switch State: {0} Id: {1:2} Name: {2} Prio: {3}"
+                .format(state, pin.get_id(), pin.get_name(), prio))
+            pin.set_state(state)
+            info[STATE_KEY] = state
+            if state == SWITCH_ON:
+                GPIO.output(pin.get_id(), GPIO.HIGH)
+            elif state == SWITCH_OFF:
+                GPIO.output(pin.get_id(), GPIO.LOW)
+
+        elif info[STATE_KEY] == state:
+            info[PRIO_KEY] = prio
+        else:
+            LOGGER.info(u"No Switch needPrio:{0} prio:{1}"
+                .format(info[PRIO_KEY], prio))
+
+    def cleanup_all_pins(self):
+        GPIO.cleanup()
 
 ##### data access classes #####
 
@@ -285,10 +362,10 @@ class Pin(object):
         return self.state
 
     def set_state(self, new_state):
-        if (new_state in [-1, 0, 1]):
+        if (new_state in [SWITCH_ON, SWITCH_OFF, SWITCH_UNDEF]):
             self.state = new_state
         else:
-            raise ValueError("Pin state must be in [-1,0,1]")
+            raise ValueError("Pin state not valide.")
 
     def get_id(self):
         return self.pin_num

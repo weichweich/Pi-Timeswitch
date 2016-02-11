@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from time_switch.model import is_relative_time, is_absolute_time
+from time_switch.model import is_relative_time, is_absolute_time, SWITCH_OFF, SWITCH_ON, SWITCH_UNDEF
 import logging
 import threading
 import time
@@ -28,8 +28,6 @@ except ImportError:
 except RuntimeError:
     print("Error importing RPi.GPIO!  This is probably because you need superuser privileges.  You can achieve this by using 'sudo' to run your script")
 
-SWITCH_ON = GPIO.HIGH
-SWITCH_OFF = GPIO.LOW
 
 UNIT_PER_MINUTE = 1
 UNIT_PER_HOUR = 60
@@ -67,7 +65,7 @@ def parse_abs_time(time_str):
         The string should have the format HH:MM. The returned
         integer represents the passed minutes.'''
     if not is_absolute_time(time_str):
-        raise TypeError("Expected an absulute time (HH:MM). Got: " + time_str)
+        raise TypeError(u"Expected an absulute time (HH:MM). Got: " + time_str)
     time_struct = time.strptime(time_str, "%H:%M")
     return time_struct.tm_hour * UNIT_PER_HOUR + time_struct.tm_min * UNIT_PER_MINUTE
 
@@ -75,29 +73,25 @@ class SwitchManager(object):
     '''This class manages the GPIO pins.'''
     def __init__(self, switch_model):
         self.switch_model = switch_model
-        self.pins = self.switch_model.get_pins()
         self.used_gpios = []
+        self.manual_switched = {}
         self.diffusions = {}
         self.event = threading.Event()
-        self.thread = threading.Thread(target=self._loop, args=())
+        self.thread = threading.Thread(target=self.__loop, args=())
+        self.thread_running=False
 
     def get_model(self):
         '''Returns the current used model.'''
         return self.switch_model
 
-    def get_pins(self):
-        return self.pins
-
     def update(self):
-        self.pins = self.switch_model.get_pins()
-
+        pins = self.switch_model.get_pins()
+        
         # find deleted pins
         deleted_pins = self.used_gpios[:]
-        for pin in self.pins:
+        for pin in pins:
             if pin.get_id() in deleted_pins:
                 deleted_pins.remove(pin.get_id())
-        # cleanup GPIOs which are no longer needed
-        GPIO.cleanup(deleted_pins)
 
         # update the other pins
         self.update_all_gpios()
@@ -122,6 +116,7 @@ class SwitchManager(object):
                 rand_end = end_tm[0]
                 if end_tm[1] != 0:
                     rand_end += random.randint(-end_tm[1], end_tm[1])
+                    rand_end %= UNIT_PER_DAY
 
                 # calculate start time depending on end.
                 duration = start_tm[0]
@@ -143,14 +138,15 @@ class SwitchManager(object):
 
                 # calculate
                 rand_start = start_tm[0]
-                if end_tm[1] != 0:
-                    rand_end += random.randint(-end_tm[1], end_tm[1])
+                if start_tm[1] != 0:
+                    rand_start += random.randint(-start_tm[1], start_tm[1])
+                    rand_start %= UNIT_PER_DAY
 
                 # calculate end time depending on start.
                 duration = end_tm[0]
                 if end_tm[1] != 0: # randomize end time if nessesary
                     duration += random.randint(-end_tm[1], end_tm[1])
-                rand_end = (rand_start - duration) % UNIT_PER_DAY
+                rand_end = (rand_start + duration) % UNIT_PER_DAY
 
                 if duration <= 0:
                     rand_end = rand_start
@@ -182,60 +178,46 @@ class SwitchManager(object):
 
     def update_all_gpios(self):
         """Updates all GPIOs according to the schedule."""
-        for pin in self.pins: # iterate through all pins and update them
+        pins = self.switch_model.get_pins()
+        for pin in pins: # iterate through all pins and update them
             self.update_gpio_state(pin) # update GPIO state
 
     def update_gpio_state(self, pin):
         """Changes the state of the GPIO to high or low according to the schedule."""
         active_sequence_found = False
 
-        for sequence in pin.get_sequences(): # iterate through all squences.
+        for sequence in pin.sequences: # iterate through all squences.
             intervall = self._get_diffusioned_intervall(sequence)
             if is_sequence_active(*intervall): # if in sequence
                 active_sequence_found = True # set found true
                 break # and leave the loop
 
         if active_sequence_found:
-            self.switch_pin_on(pin)
+            self.__switch_pin_on(pin)
         elif not active_sequence_found:
-            self.switch_pin_off(pin)
+            self.__switch_pin_off(pin)
 
-    def switch_pin_on(self, pin):
-        if pin.get_state() == 0:
-            GPIO.setup(pin.get_id(), GPIO.OUT) # setup GPIO
-            self.used_gpios.append(pin.get_id())
-        if (pin.get_state() != 1):
-            LOGGER.info("Switch ON  {:2} ({})".format(pin.get_id(), pin.get_name()))
+    def __switch_pin_on(self, pin):
+        self.switch_model.switch_pin_on(pin)
 
-        pin.set_state(1)
-        GPIO.output(pin.get_id(), SWITCH_ON)
+    def __switch_pin_off(self, pin):
+        self.switch_model.switch_pin_off(pin)
 
-    def switch_pin_off(self, pin):
-        if pin.get_state() == 0:
-            GPIO.setup(pin.get_id(), GPIO.OUT) # setup GPIO
-            self.used_gpios.append(pin.get_id())
-
-        if (pin.get_state() != -1):
-            LOGGER.info("Switch OFF {:2} ({})".format(pin.get_id(), pin.get_name()))
-
-        pin.set_state(-1)
-        GPIO.output(pin.get_id(), SWITCH_OFF)
 
     def start(self):
         '''Starts the timeswitch and sets the GPIOs up.'''
         LOGGER.info("Start gpio manager")
-        GPIO.setmode(GPIO.BOARD)
-        self.thread.start()
+        if not self.thread_running:
+            self.thread.start()
+            self.thread_running = True
 
     def stop(self):
         '''Stops the timeswitch and cleansup the GPIOs.'''
         LOGGER.info("stop gpio manager")
         self.event.set()
-        GPIO.cleanup()
-        for pin in self.pins:
-            pin.set_state(0)
+        self.thread_running = False
 
-    def _loop(self):
+    def __loop(self):
         '''Tests every minute if a GPIO should be switcht on or off.'''
         cur_day = time.gmtime().tm_yday
         while not self.event.is_set(): # loop until (event is set -> thread should stop)
@@ -244,6 +226,6 @@ class SwitchManager(object):
                 self.diffusions.clear() # delete all times -> Calculate new random times.
 
             self.update_all_gpios() # update GPIOs
-            self.event.wait(61 - time.localtime().tm_sec) # wait a minute
+            self.event.wait(60) # wait a minute
 
         self.event.clear()
