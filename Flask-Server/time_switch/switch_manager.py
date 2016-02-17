@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from time_switch.model import is_relative_time, is_absolute_time, SWITCH_OFF, SWITCH_ON, SWITCH_UNDEF
@@ -202,7 +201,6 @@ class SwitchManager(object):
 
     def __switch_pin_off(self, pin):
         self.switch_model.switch_pin_off(pin)
-
 
     def start(self):
         '''Starts the timeswitch and sets the GPIOs up.'''

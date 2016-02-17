@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sqlite3 as sql
@@ -13,7 +12,6 @@ class NullHandler(logging.Handler):
 logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
 
-
 try:
     import RPi.GPIO as GPIO
 except ImportError:
@@ -21,24 +19,20 @@ except ImportError:
 possible_gpios = [2, 5, 7, 8, 10, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24,
                   26, 29, 31, 32, 33, 35, 36, 37, 38, 40]
 
-SWITCH_ON = 1
-SWITCH_OFF = 0
+SWITCH_ON    = 1
+SWITCH_OFF   = 0
 SWITCH_UNDEF = -1
 
 ### Helper methodes
 ## create db
-
-
 def create_db(filename):
     '''Deletes the old database and creates all tables.'''
-
     if os.path.exists(filename):
         os.remove(filename)
 
     with sql.connect(filename) as connection:
         connection = sql.connect(filename)
         cur = connection.cursor()
-
         cur.execute('''CREATE TABLE Sequences(
             id INTEGER PRIMARY KEY,
             pin_id INTEGER,
@@ -47,11 +41,9 @@ def create_db(filename):
             end_time TEXT,
             end_range TEXT,
             FOREIGN KEY(pin_id) REFERENCES Pins(id) ON UPDATE CASCADE)''')
-
         cur.execute('''CREATE TABLE Pins(
             id INTEGER PRIMARY KEY,
             name TEXT)''')
-
         connection.close()
 
 ## validate data
@@ -90,6 +82,11 @@ class PiSwitchModel(object):
         self.observers = []
         self.pin_info = {}
         GPIO.setmode(GPIO.BOARD)
+
+        try:
+            self.get_pins()
+        except:
+            create_db(filename)
 
     def _notify_all(self):
         for observer in self.observers:
@@ -335,7 +332,6 @@ class Pin(object):
 
     def __init__(self, pin_num, sequences=None, name=None, state=0):
         ''' State = 0 -> Undef | 1 -> ON | -1 -> OFF
-
         '''
         self.pin_num = pin_num
         self.sequences = sequences if sequences else []

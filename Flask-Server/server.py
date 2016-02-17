@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from flask import Flask, request
@@ -13,15 +12,14 @@ import argparse
 import logging
 
 # ######################################
-# # parsing args
+# # parsing commandline args
 # ######################################
 
 PARSER = argparse.ArgumentParser(description='Timeswitch for the\
  GPIOs of an Raspberry Pi with a webinterface.')
 PARSER.add_argument('--file', dest='schedule_file', metavar='file',
-                    type=str,
-                    help='A JSON-file containing the schedule.',
-                    required=True)
+                    type=str, default='gpio_time.db',
+                    help='A JSON-file containing the schedule.')
 
 PARSER.add_argument('--debug', dest='debug', default=False,
                     const=True, nargs="?",
@@ -73,7 +71,6 @@ if ARGS.create:
 SWITCH_MODEL = PiSwitchModel(SCHEDULE_FILE)
 SWITCH_MANAGER = SwitchManager(SWITCH_MODEL)
 
-
 APP = Flask(__name__)
 API = Api(APP)
 
@@ -87,9 +84,9 @@ PIN_SCHEMA  = PinSchema(many=False)
 SEQUENCES_SCHEMA = SequenceSchema(many=True)
 SEQUENCE_SCHEMA  = SequenceSchema(many=False)
 
-# --------------------------------------
+# ––––––––––––––––––––––––––––––––––––––
 # Pins
-resource_kwargs_pins = {
+kwargs_pins = {
     'schema':       PINS_SCHEMA,
     'getter_func':  SWITCH_MODEL.get_pins,
     'setter_func':  SWITCH_MODEL.set_pin,
@@ -97,8 +94,8 @@ resource_kwargs_pins = {
     }
 
 API.add_resource(ManyRessource, URL_PREFIX + '/pins', endpoint='pins',
-                 resource_class_kwargs=resource_kwargs_pins)
-resource_kwargs_pin = {
+                 resource_class_kwargs=kwargs_pins)
+kwargs_pin = {
     'schema':       PIN_SCHEMA,
     'getter_func':  SWITCH_MODEL.get_pin,
     'setter_func':  SWITCH_MODEL.set_pin,
@@ -106,38 +103,36 @@ resource_kwargs_pin = {
     }
 
 API.add_resource(SingleResource, URL_PREFIX + '/pins/<int:pin_id>', endpoint='pin',
-                 resource_class_kwargs=resource_kwargs_pin)
+                 resource_class_kwargs=kwargs_pin)
 
-# --------------------------------------
+# ––––––––––––––––––––––––––––––––––––––
 # Sequences
-resource_kwargs_sequences = {
+kwargs_sequences = {
     'schema':       SEQUENCES_SCHEMA,
     'getter_func':  SWITCH_MODEL.get_sequences_for_pin,
     'setter_func':  SWITCH_MODEL.set_sequence,
     'delete_func':  SWITCH_MODEL.delete_sequence
     }
+sequences_url = URL_PREFIX + '/pins/<int:pin_id>/sequences'
+API.add_resource(ManyRessource, sequences_url, endpoint='pins_sequences',
+                 resource_class_kwargs=kwargs_sequences)
 
-API.add_resource(ManyRessource, URL_PREFIX + '/pins/<int:pin_id>/sequences', endpoint='pins_sequences',
-                 resource_class_kwargs=resource_kwargs_sequences)
+kwargs_sequences['getter_func'] = SWITCH_MODEL.get_sequences
 
-resource_kwargs_sequences['getter_func'] = SWITCH_MODEL.get_sequences
+API.add_resource(ManyRessource, URL_PREFIX + '/sequences', endpoint='sequences',
+                 resource_class_kwargs=kwargs_sequences)
 
-API.add_resource(ManyRessource, URL_PREFIX + '/sequences', URL_PREFIX + '/sequences', endpoint='sequences',
-                 resource_class_kwargs=resource_kwargs_sequences)
+kwargs_sequence = kwargs_sequences
+kwargs_sequence['schema'] = SEQUENCE_SCHEMA
+kwargs_sequence['getter_func'] = SWITCH_MODEL.get_sequence
 
-resource_kwargs_sequence = resource_kwargs_sequences
-resource_kwargs_sequence['schema'] = SEQUENCE_SCHEMA
-resource_kwargs_sequence['getter_func'] = SWITCH_MODEL.get_sequence
+API.add_resource(SingleResource, URL_PREFIX + '/sequences/<int:sequence_id>',
+                 endpoint='sequence', resource_class_kwargs=kwargs_sequence)
 
-API.add_resource(SingleResource, URL_PREFIX + '/sequences/<int:sequence_id>', endpoint='sequence',
-                 resource_class_kwargs=resource_kwargs_sequence)
-
-# --------------------------------------
+# ––––––––––––––––––––––––––––––––––––––
 # Time
 
-
 if __name__ == '__main__':
-
     SWITCH_MANAGER.start()
     try:
         APP.run(debug=ARGS.debug)
