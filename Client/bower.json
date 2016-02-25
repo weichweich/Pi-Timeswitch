@@ -1,0 +1,22 @@
+{
+  "name": "Client",
+  "homepage": "https://github.com/weichweich/Pi-Timeswitch",
+  "authors": [
+    "Albrecht Weiche <weich@posteo.de>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "knockout": "^3.4.0",
+    "jQuery": "^2.2.1"
+  }
+}
