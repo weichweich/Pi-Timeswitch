@@ -10,16 +10,38 @@ body {
     -o-font-smoothing: antialiased;
     font-smoothing: antialiased;
 }
-.add-form {
-    padding: 20px;
-    font-size: 0.9em;
-    border: 1px solid #ccc;
-    background: #D8F6CE;
+
+.nav ul {
+    list-style: none;
+    background-color: #006600;
+    text-align: left;
+    padding: 0;
+    margin: 0;
 }
 
-.add-form dl {
-    font-weight: bold; 
-    width: 50%;
+.nav li img {
+    height: 40px;
+    position: relative;
+    bottom: 0px;
+}
+
+.nav li.icon {
+    float: left;
+}
+
+.nav li.info{
+    float: right;
+}
+
+.nav li {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #fff;
+    border-bottom: none;
+    font-size: 1.2em;
+    line-height: 30px;
+    height:40px;
+    padding: 5px;
+    display: inline-block;
 }
 
 .flash  {
@@ -32,264 +54,6 @@ body {
 .center {
     margin:0 auto;
     width: 50%;
-}
-
-.nav ul {
-    list-style: none;
-    background-color: #006600;
-    text-align: center;
-    padding: 0;
-    margin: 0;
-}
-
-.nav li {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 1.2em;
-    line-height: 40px;
-    height: 40px;
-    border-bottom: 1px solid #888;
-}
-
-.nav a {
-    text-decoration: none;
-    color: #fff;
-    transition: .3s background-color;
-    padding: 10px 20px;
-}
-
-@media screen and (min-width: 600px) {
-    .nav li {
-        width: 120px;
-        border-bottom: none;
-        height: 50px;
-        line-height: 50px;
-        font-size: 1.4em;
-        display: inline-block;
-    }
-    .nav a {
-        text-decoration: none;
-        color: #fff;
-        transition: .3s background-color;
-        padding: 14px 20px;
-    }
-}
-
-.nav a:hover {
-    background-color: #00BB00;
-}
-
-.nav a.active {
-    background-color: #fff;
-    color: #444;
-}
-
-table button {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
-    font-size: 100%;
-    vertical-align: baseline;
-    font-family: inherit;
-    color: inherit;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    -ms-appearance: none;
-    -o-appearance: none;
-    appearance: none;
-}
-
-#timeTable td .destroy, #pinTable td .destroy {
-    position: relative;
-    right: 0px;
-    display: none;
-    width:  13px;
-    height: 13px;
-    font-size: 13px;
-    color: #a88a8a;
-    -webkit-transition: all 0.2s;
-    -moz-transition: all 0.2s;
-    -ms-transition: all 0.2s;
-    -o-transition: all 0.2s;
-    transition: all 0.2s;
-}
-
-#timeTable td .destroy:hover, #pinTable td .destroy:hover {
-    text-shadow: 0 0 1px #000,
-                 0 0 10px rgba(199, 107, 107, 0.8);
-    -webkit-transform: scale(1.3);
-    -moz-transform: scale(1.3);
-    -ms-transform: scale(1.3);
-    -o-transform: scale(1.3);
-    transform: scale(1.3);
-}
-
-#timeTable td .destroy:after, #pinTable td .destroy:after {
-    content: '✖';
-}
-
-#timeTable tr:hover .destroy, #pinTable tr:hover .destroy {
-    display: inline-block;
-}
-
-h1 {
-    text-align: center;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 2em;
-    -webkit-font-smoothing: antialiased;
-    -moz-font-smoothing: antialiased;
-    -ms-font-smoothing: antialiased;
-    -o-font-smoothing: antialiased;
-    font-smoothing: antialiased;
-}
-
-h2 {
-    text-align: center;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 1.5em;
-    -webkit-font-smoothing: antialiased;
-    -moz-font-smoothing: antialiased;
-    -ms-font-smoothing: antialiased;
-    -o-font-smoothing: antialiased;
-    font-smoothing: antialiased;
-}
-
-h3 {
-    text-align: center;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 1.17em;
-    margin-before: 1em;
-    margin-after: 1em;
-    -webkit-font-smoothing: antialiased;
-    -moz-font-smoothing: antialiased;
-    -ms-font-smoothing: antialiased;
-    -o-font-smoothing: antialiased;
-    font-smoothing: antialiased;
-}
-
-h4 {
-    text-align: center;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 1.12em;
-    margin-before: 1.33em;
-    margin-after: 1.33em;
-    margin-before: 1.33em;
-    margin-after: 1.33em;
-    -webkit-font-smoothing: antialiased;
-    -moz-font-smoothing: antialiased;
-    -ms-font-smoothing: antialiased;
-    -o-font-smoothing: antialiased;
-    font-smoothing: antialiased;
-}
-
-h5 {
-    text-align: center;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: .83em;
-    margin-before: 1.67em;
-    margin-after: 1.67em;
-    -webkit-font-smoothing: antialiased;
-    -moz-font-smoothing: antialiased;
-    -ms-font-smoothing: antialiased;
-    -o-font-smoothing: antialiased;
-    font-smoothing: antialiased;
-}
-
-h6 {
-    text-align: center;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: .67em;
-    margin-before: 2.33em;
-    margin-after: 2.33em;
-    -webkit-font-smoothing: antialiased;
-    -moz-font-smoothing: antialiased;
-    -ms-font-smoothing: antialiased;
-    -o-font-smoothing: antialiased;
-    font-smoothing: antialiased;
-}
-
-p { 
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 1em;
-    margin-before: 1em;
-    margin-after: 1em;
-    -webkit-font-smoothing: antialiased;
-    -moz-font-smoothing: antialiased;
-    -ms-font-smoothing: antialiased;
-    -o-font-smoothing: antialiased;
-    font-smoothing: antialiased;
-}
-
-#pinTable {
-  border: 0px;
-    border-collapse: collapse;
-    width: 350px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#timeTable {
-  border: 0px;
-    border-collapse: collapse;
-    width: 350px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-form input {
-    border-style: solid;
-    border-width: 1px;
-    background: #ffe;
-    box-sizing: border-box;
-    -webkit-box-sizing:border-box;
-    -moz-box-sizing: border-box;
-}
-
-form input.Err {
-    border-style: solid;
-    border-width: 5px;
-    background: #f99;
-    box-sizing: border-box;
-    -webkit-box-sizing:border-box;
-    -moz-box-sizing: border-box;
-}
-
-table input {
-    border: 0px;
-    background: #ffe;
-    width: 100%; 
-    box-sizing: border-box;
-    -webkit-box-sizing:border-box;
-    -moz-box-sizing: border-box;
-}
-
-table input.Err {
-    border: 0px;
-    background: #f99;
-    width: 100%; 
-    box-sizing: border-box;
-    -webkit-box-sizing:border-box;
-    -moz-box-sizing: border-box;
-}
-
-.numeric {
-    border: solid 1px #000000;
-    text-align: center;
-}
-
-.borderedCell {
-    border: solid 1px #000000;
-    text-align: center;
-}
-
-tr, td {
-    border: solid 0px #000000;
-    text-align: left;
-}
-
-th {
-    border: solid 0px #000000;
-    text-align: center;
 }
 
 div.wappen {
