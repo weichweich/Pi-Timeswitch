@@ -52,7 +52,7 @@ class SequenceSchema(Schema):
 
 class PinSchema(Schema):
     id = fields.Str(dump_only=True)
-    pin_num = fields.Integer(required=True)
+    number = fields.Integer(required=True)
     name = fields.String(attribute='name')
     state = fields.Integer()
     sequences = fields.Relationship(

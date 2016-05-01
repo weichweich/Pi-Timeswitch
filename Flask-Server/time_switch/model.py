@@ -330,18 +330,18 @@ class Sequence(object):
 
 class Pin(object):
 
-    def __init__(self, pin_num, sequences=None, name=None, state=0):
+    def __init__(self, number, sequences=None, name=None, state=0):
         ''' State = 0 -> Undef | 1 -> ON | -1 -> OFF
         '''
-        self.pin_num = pin_num
+        self.number = number
         self.sequences = sequences if sequences else []
         for sequence in self.sequences:
             sequence.set_pin(self)
 
         self.state = state
-        self.id = pin_num
+        self.id = number
         if name is None:
-            self.name = "Pin {0}".format(pin_num)
+            self.name = "Pin {0}".format(number)
         else:
             self.name = name
 
@@ -364,7 +364,7 @@ class Pin(object):
             raise ValueError("Pin state not valide.")
 
     def get_id(self):
-        return self.pin_num
+        return self.number
 
     def set_id(self, pin_id):
-        self.pin_num = pin_id
+        self.number = pin_id
