@@ -3,7 +3,7 @@ body {
     padding: 0;
     height: 100%;
     font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: url('/img/bg.png');
+    background: url('/images/bg.png');
     -webkit-font-smoothing: antialiased;
     -moz-font-smoothing: antialiased;
     -ms-font-smoothing: antialiased;
@@ -16,7 +16,8 @@ body {
     background-color: #006600;
     text-align: left;
     padding: 0;
-    margin: 0;
+    margin-top: 0px;
+    margin-bottom: 17px;
 }
 
 .nav li img {

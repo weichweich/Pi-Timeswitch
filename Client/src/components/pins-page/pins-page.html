@@ -1,0 +1,20 @@
+<table id="pinTable">
+    <thead>
+        <tr>
+        <th width="20">State</th>
+        <th class="borderedCell" width="50">Pin</th>
+        <th class="borderedCell">Name</th>
+        <th width="20"></th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: pins">
+        <tr data-bind="click: $parent.pinClicked">
+            <td data-bind="text: state"></td>
+            <td data-bind="text: number" class="numeric"></td>
+            <td data-bind="text: name"></td>
+            <td>
+                <button data-bind="click: $parent.removePin, clickBubble: false" class="destroy"></button>
+            </td>
+        </tr>
+    </tbody>
+</table>

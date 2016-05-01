@@ -1,19 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Switching Site</title>
-    <!-- build:css -->
-      <link href="css/styles.css" rel="stylesheet">
-    <!-- endbuild -->
-    <!-- build:js -->
-      <script src="app/require.config.js"></script>
-      <script data-main="app/startup" src="bower_modules/requirejs/require.js"></script>
-    <!-- endbuild -->
-  </head>
-  <body>
-    <nav-bar params="route: route"></nav-bar>
-    <div id="page" class="container" data-bind="component: { name: route().page, params: route }"></div>
-  </body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>timeswitch-client</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<div class="nav">
+    <ul>
+        <li class="icon"><img src="images/favicons/android-chrome-192x192.png"></li>
+        <li>Pi-Timeswitch</li>
+        <li class="info"><a href="login">Login/Logout</a></li>
+    </ul>
+</div>
+
+<div class="container" data-bind="component: { name: route().page, params: {route, model} }"></div>
+
+<div class="wappen">
+    <img src="/images/Wappen.png" width="25" hight="25">
+    <a href="http://flask.pocoo.org/">
+        <img 
+            src="http://flask.pocoo.org/static/badges/made-with-flask-s.png"
+            border="0"
+            alt="made with Flask"
+            title="made with Flask">
+    </a>
+</div>
+
+<script src="libs.js"></script>
+<script src="app.js"></script>
+
+</body>
+
 </html>
