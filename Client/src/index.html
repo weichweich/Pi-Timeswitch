@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,18 +7,19 @@
     <title>timeswitch-client</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-
 <body>
 
 <div class="nav">
     <ul>
-        <li class="icon"><img src="images/favicons/android-chrome-192x192.png"></li>
+        <li class="icon"><a href="/"><img src="images/favicons/android-chrome-192x192.png"></a></li>
         <li>Pi-Timeswitch</li>
         <li class="info"><a href="login">Login/Logout</a></li>
     </ul>
 </div>
 
-<div class="container" data-bind="component: { name: route().page, params: {route, model} }"></div>
+<div class="container" data-bind="foreach: routeStack">
+    <div data-bind="component: { name: page, params: {model: $parent.model, vals: vals_ } }"></div>
+</div>
 
 <div class="wappen">
     <img src="/images/Wappen.png" width="25" hight="25">
@@ -36,5 +36,4 @@
 <script src="app.js"></script>
 
 </body>
-
 </html>

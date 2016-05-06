@@ -1,5 +1,5 @@
 var ko = require('knockout'),
-	template = require('./sequences-page.html');
+	template = require('./sequences-fragment.html');
 
 var viewModel = function () {
 };

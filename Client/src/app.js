@@ -3,8 +3,13 @@ var ko = require('knockout'),
     model = require('./model.js');
 
 ko.components.register('main-page', require('./components/main-page/main-page.js'));
-ko.components.register('pins-page', require('./components/pins-page/pins-page.js'));
-ko.components.register('sequences-page', require('./components/sequences-page/sequences-page.js'));
+ko.components.register('pins-fragment', require('./components/pins-fragment/pins-fragment.js'));
+ko.components.register('sequences-fragment', require('./components/sequences-fragment/sequences-fragment.js'));
+
+ko.components.register('add-pin-fragment', require('./components/add-pin-fragment/add-pin-fragment.js'));
 
 // apply the view-model using KnockoutJS as normal
-ko.applyBindings({ route: router.currentRoute, model: model });
+ko.applyBindings({ 
+	routeStack: router.currentRouteStack, 
+	model: model
+});

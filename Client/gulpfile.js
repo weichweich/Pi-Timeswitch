@@ -1,4 +1,6 @@
 var gulp = require('gulp'),
+    debug = require('gulp-debug'),
+    filter = require('gulp-filter'),
     browserify = require('browserify'),
     stringify = require('stringify'),
     source = require('vinyl-source-stream')
@@ -13,13 +15,16 @@ var gulp = require('gulp'),
 // static directories
 var srcDir = './src',
     destDir = './build',
-    imgDir =  srcDir + '/images',
-    compsDir = srcDir + '/components'
+    imgSrcDir =  srcDir + '/images',
+    compsDir = srcDir + '/components',
+    cssSrcDir = srcDir + '/css',
+    cssDestDir = destDir + '/css',
 // static files
     mainFile = 'app.js',
     indexHTML = 'index.html',
-    cssFile = 'css/styles.css',
-    libFile = 'libs.js'
+    cssFile = 'styles.css',
+    libJSFile = 'libs.js',
+    libCSSFile = 'libs.css',
 // other
     backendAPI = 'http://localhost:5000';
 
@@ -53,23 +58,34 @@ gulp.task('browserify', function() {
   return bundle();
 });
 
-gulp.task('copy-libs', function() {
+gulp.task('copy-libs-css', function() {
+  var f = filter(['**/*.css']);
   return gulp.src(mainBowerFiles())
-    .pipe(concat(libFile))
+    .pipe(f)
+    .pipe(gulp.dest(cssDestDir))
+});
+
+gulp.task('copy-libs-js', function() {
+  var f = filter(['**/*.js'])
+  return gulp.src(mainBowerFiles())
+    .pipe(f)
+    .pipe(concat(libJSFile))
     .pipe(uglify())
     .pipe(gulp.dest(destDir))
 });
+
+gulp.task('copy-libs', ['copy-libs-css', 'copy-libs-js']);
 
 gulp.task('copy-index', function() {
   return gulp.copy(srcDir + '/' + indexHTML, destDir)
 });
 
 gulp.task('copy-css', function() {
-  return gulp.copy(srcDir + '/' + cssFile, destDir)
+  return gulp.copy(cssSrcDir + '/' + cssFile, destDir)
 });
 
 gulp.task('copy-images', function() {
-  return gulp.copy(srcDir + '/' + imgDir + '/**/*', destDir)
+  return gulp.copy(imgSrcDir + '/**/*', destDir)
 });
 
 gulp.task('clean', function() {
@@ -80,9 +96,10 @@ gulp.task('clean', function() {
 gulp.task('build', ['browserify', 'copy-index', 'copy-libs', 'copy-css', 'copy-images']);
 
 gulp.task('watch', ['build'], function() {
-  gulp.watch(imgDir, ['copy-images']);
+  gulp.watch(imgSrcDir + '/**/*', ['copy-images']);
   gulp.watch(compsDir + '/**/*', ['browserify']);
-  gulp.watch(cssFile, ['copy-css']);
+  gulp.watch(srcDir + '/*.js', ['browserify']);
+  gulp.watch(cssSrcDir + '/**/*', ['copy-css']);
   gulp.watch(srcDir + '/' + indexHTML, ['copy-index']);
 });
 

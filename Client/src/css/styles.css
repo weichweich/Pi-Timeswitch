@@ -45,6 +45,30 @@ body {
     display: inline-block;
 }
 
+.container {
+    padding: 20px;
+}
+
+.fragment {
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+
+    padding: 5px;
+    margin-left: auto;
+    margin-right: auto;
+
+    -webkit-border-radius: 17px;
+    -moz-border-radius: 17px;
+    border-radius: 17px;
+    border: 2px solid #006600;
+    background: rgba(227,208,193,0.5);
+
+    -webkit-box-shadow: #B3B3B3 4px 4px 4px;
+    -moz-box-shadow: #B3B3B3 4px 4px 4px;
+     box-shadow: #B3B3B3 4px 4px 4px;
+}
+
 .flash  {
     background: #cee5F5; 
     padding: 0.5em;
