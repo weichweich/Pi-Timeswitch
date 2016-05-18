@@ -21,10 +21,11 @@ LOGGER = logging.getLogger(__name__)
 
 class SingleResource(Resource):
     def __init__(self, schema, getter_func=None, setter_func=None, delete_func=None, auth_func=None):
-        self.getter_func = getter_func;
-        self.setter_func = setter_func;
-        self.delete_func = delete_func;
-        self.schema = schema;
+        self.getter_func = getter_func
+        self.setter_func = setter_func
+        self.delete_func = delete_func
+        self.schemaMany = schema(many=True)
+        self.schemaSingle = schema(many=False)
         self.auth_func = auth_func
 
     def get(self, *args, **kwargs):
@@ -35,7 +36,7 @@ class SingleResource(Resource):
             return "Unauthorized", 401
 
         recource = self.getter_func(*args, **kwargs)
-        result = self.schema.dump(recource)
+        result = self.schemaMany.dump(recource)
         return result.data, 200
 
     def post(self, *args, **kwargs):
@@ -47,7 +48,7 @@ class SingleResource(Resource):
 
         request_json = request.get_json(force=True)
         try:
-            self.schema.validate(request_json)
+            self.schemaMany.validate(request_json)
         except ValidationError as err:
             LOGGER.warn("ValidationError POST \n\t"\
                 + str(err.messages) + "\n" + str(request_json))
@@ -57,7 +58,7 @@ class SingleResource(Resource):
              + str(err.messages) + "\n" + str(request_json))
             return err.messages, 400
 
-        result = self.schema.load(request_json)
+        result = self.schemaMany.load(request_json)
         self.setter_func(result.data, *args, **kwargs)
         return "", 200
 
@@ -67,7 +68,7 @@ class SingleResource(Resource):
         elif self.auth_func and not self.auth_func():
             return "Unauthorized", 401
 
-        self.delete_func(obj_id, *args, **kwargs)
+        self.delete_func(*args, **kwargs)
         return "", 204
 
     def patch(self, *args, **kwargs):
@@ -78,7 +79,7 @@ class SingleResource(Resource):
 
         request_json = request.get_json(force=True)
         try:
-            self.schema.validate(request_json)
+            self.schemaMany.validate(request_json)
         except ValidationError as err:
             LOGGER.warn("ValidationError PATCH \n"\
                 + str(err.messages) + "\n" + str(request_json))
@@ -88,7 +89,7 @@ class SingleResource(Resource):
              + str(err.messages) + "\n" + str(request_json))
             return err.messages, 400
 
-        result = self.schema.load(request_json)
+        result = self.schemaMany.load(request_json)
         self.setter_func(result.data, *args, **kwargs)
         return "", 204
 
@@ -98,10 +99,11 @@ class SingleResource(Resource):
 
 class ManyRessource(Resource):
     def __init__(self, schema, getter_func=None, setter_func=None, delete_func=None, auth_func=None):
-        self.getter_func = getter_func;
-        self.setter_func = setter_func;
-        self.delete_func = delete_func;
-        self.schema = schema;
+        self.getter_func = getter_func
+        self.setter_func = setter_func
+        self.delete_func = delete_func
+        self.schemaMany = schema(many=True)
+        self.schemaSingle = schema(many=False)
         self.auth_func = auth_func
 
     def get(self, *args, **kwargs):
@@ -111,8 +113,8 @@ class ManyRessource(Resource):
         elif self.auth_func and not self.auth_func():
             return "Unauthorized", 401
 
-        recource = self.getter_func()
-        result = self.schema.dump(recource)
+        resource = self.getter_func()
+        result = self.schemaMany.dump(resource)
         return result.data, 200
 
     def post(self, *args, **kwargs):
@@ -124,7 +126,7 @@ class ManyRessource(Resource):
 
         request_json = request.get_json(force=True)
         try:
-            self.schema.validate(request_json)
+            self.schemaSingle.validate(request_json)
         except ValidationError as err:
             LOGGER.warn("ValidationError POST \n"\
                 + str(err.messages) + "\n" + str(request_json))
@@ -134,10 +136,9 @@ class ManyRessource(Resource):
              + str(err.messages) + "\n" + str(request_json))
             return err.messages, 400
 
-        result = self.schema.load(request_json)
-        for data in result.data:
-            self.setter_func(data, *args, **kwargs)
-        return "Ok!", 201
+        result = self.schemaSingle.load(request_json)
+        self.setter_func(result.data, *args, **kwargs)
+        return request_json, 201
 
     def delete(self, *args, **kwargs):
         if not self.delete_func:

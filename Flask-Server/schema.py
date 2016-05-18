@@ -59,7 +59,8 @@ class PinSchema(Schema):
         related_url='/api/pins/{pin_id}/sequences',
         related_url_kwargs={'pin_id': '<id>'},
         # Include resource linkage
-        many=True, include_data=True,
+        many=True,
+        include_data=True,
         type_='sequences'
     )
 

@@ -87,7 +87,7 @@ SEQUENCE_SCHEMA  = SequenceSchema(many=False)
 # ––––––––––––––––––––––––––––––––––––––
 # Pins
 kwargs_pins = {
-    'schema':       PINS_SCHEMA,
+    'schema':       PinSchema,
     'getter_func':  SWITCH_MODEL.get_pins,
     'setter_func':  SWITCH_MODEL.set_pin,
     'delete_func':  SWITCH_MODEL.delete_pin
@@ -96,7 +96,7 @@ kwargs_pins = {
 API.add_resource(ManyRessource, URL_PREFIX + '/pins', endpoint='pins',
                  resource_class_kwargs=kwargs_pins)
 kwargs_pin = {
-    'schema':       PIN_SCHEMA,
+    'schema':       PinSchema,
     'getter_func':  SWITCH_MODEL.get_pin,
     'setter_func':  SWITCH_MODEL.set_pin,
     'delete_func':  SWITCH_MODEL.delete_pin
@@ -108,7 +108,7 @@ API.add_resource(SingleResource, URL_PREFIX + '/pins/<int:pin_id>', endpoint='pi
 # ––––––––––––––––––––––––––––––––––––––
 # Sequences
 kwargs_sequences = {
-    'schema':       SEQUENCES_SCHEMA,
+    'schema':       SequenceSchema,
     'getter_func':  SWITCH_MODEL.get_sequences_for_pin,
     'setter_func':  SWITCH_MODEL.set_sequence,
     'delete_func':  SWITCH_MODEL.delete_sequence
@@ -122,12 +122,10 @@ kwargs_sequences['getter_func'] = SWITCH_MODEL.get_sequences
 API.add_resource(ManyRessource, URL_PREFIX + '/sequences', endpoint='sequences',
                  resource_class_kwargs=kwargs_sequences)
 
-kwargs_sequence = kwargs_sequences
-kwargs_sequence['schema'] = SEQUENCE_SCHEMA
-kwargs_sequence['getter_func'] = SWITCH_MODEL.get_sequence
+kwargs_sequences['getter_func'] = SWITCH_MODEL.get_sequence
 
 API.add_resource(SingleResource, URL_PREFIX + '/sequences/<int:sequence_id>',
-                 endpoint='sequence', resource_class_kwargs=kwargs_sequence)
+                 endpoint='sequence', resource_class_kwargs=kwargs_sequences)
 
 # ––––––––––––––––––––––––––––––––––––––
 # Time

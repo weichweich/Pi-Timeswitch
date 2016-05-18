@@ -25,5 +25,5 @@ def setmode(mode):
 def setup(pin, pinType):
 	LOGGER.debug('Pin {0:d} is set to {1:s}'.format(pin, pinType))
 
-def cleanup():
-	LOGGER.debug('cleanup')
+def cleanup(*args, **kwargs):
+	LOGGER.debug('cleanup args: ' + str(args) + ' |kwargs: ' + str(kwargs))
