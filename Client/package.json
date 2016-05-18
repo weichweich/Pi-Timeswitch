@@ -8,24 +8,12 @@
   },
   "author": "",
   "license": "ISC",
-  "browserify": {
-    "transform": [
-      "browserify-global-shim"
-    ]
-  },
-  "browserify-global-shim": {
-    "jQuery": "$",
-    "knockout": "ko",
-    "crossroads": "crossroads",
-    "hasher": "hasher",
-    "jsonapi-datastore": "JsonApiDataStore",
-    "vex": "vex"
-  },
+  "browserify": {},
   "devDependencies": {
-    "bower": "^1.7.9",
     "browserify": "^13.0.0",
-    "browserify-global-shim": "^1.0.3",
+    "debug": "^2.2.0",
     "gulp": "^3.9.1",
+    "gulp-add-src": "^0.2.0",
     "gulp-changed": "^1.3.0",
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.0",
@@ -35,9 +23,18 @@
     "gulp-uglify": "^1.5.3",
     "gulp-watch": "^4.3.5",
     "http-proxy-middleware": "^0.14.0",
-    "main-bower-files": "^2.13.0",
     "stringify": "^5.1.0",
+    "tsify": "^0.15.3",
+    "typing": "^0.1.9",
     "vinyl-source-stream": "^1.1.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "crossroads": "^0.12.2",
+    "devour-client": "^1.3.0",
+    "hasher": "^1.2.0",
+    "jQuery": "^1.7.4",
+    "jquery": "^2.2.3",
+    "knockout": "^3.4.0",
+    "ts-promise": "^0.3.0"
+  }
 }

@@ -1,10 +1,10 @@
+/// <reference path="../../../typings/main.d.ts" />
+
 var ko = require('knockout'),
   template = require('./main-page.html');
 
 var viewModel = function(params) {
     var self = this;
-    self.model = params.model.model;
-    self.store = params.model.store;
 
     self.title = ko.observable('Overview');
     self.pins = ko.observableArray([{
@@ -29,11 +29,6 @@ var viewModel = function(params) {
             sequences: []
         }]);
 
-    self.model.pullAll('pins', function() {
-        self.pins.removeAll();
-        var newPins = self.store.findAll('pins');
-        self.pins(newPins);
-    })
     return self;
 };
 

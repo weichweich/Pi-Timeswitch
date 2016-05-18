@@ -4,23 +4,26 @@ var gulp = require('gulp'),
     browserify = require('browserify'),
     stringify = require('stringify'),
     source = require('vinyl-source-stream')
-    mainBowerFiles = require('main-bower-files'),
     connect = require('gulp-connect'),
     proxy = require('http-proxy-middleware'),
     clean = require('gulp-clean'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
-    watch = require('gulp-watch');
+    watch = require('gulp-watch'),
+    addsrc = require('gulp-add-src'),
+    tsify = require('tsify');
 
 // static directories
 var srcDir = './src',
     destDir = './build',
     imgSrcDir =  srcDir + '/images',
     compsDir = srcDir + '/components',
+    modelDir = srcDir + '/model',
     cssSrcDir = srcDir + '/css',
     cssDestDir = destDir + '/css',
+    nodeModulDir = './node_modules'
 // static files
-    mainFile = 'app.js',
+    mainFile = 'app.ts',
     indexHTML = 'index.html',
     cssFile = 'styles.css',
     libJSFile = 'libs.js',
@@ -28,92 +31,82 @@ var srcDir = './src',
 // other
     backendAPI = 'http://localhost:5000';
 
+function swallowError (error) {
 
-gulp.copy=function(src, dest){
+  // If you want details of the error in the console
+  console.log(error.toString());
+
+  this.emit('end');
+}
+
+gulp.copy = function(src, dest){
     return gulp.src(src, {base: srcDir})
         .pipe(gulp.dest(dest));
 };
 
 gulp.task('browserify', function() {
-  var bundleMethod = global.isWatching ? watchify : browserify;
-
-  var bundler = bundleMethod({
-    // Specify the entry point of your app
-    entries: [srcDir + '/' + mainFile]
-  });
-
-  var bundle = function() {
-    return bundler
-      .transform(stringify(['.html']))
-      // Enable source maps!
-      .bundle()
-      // Use vinyl-source-stream to make the
-      // stream gulp compatible. Specifiy the
-      // desired output filename here.
-      .pipe(source(mainFile))
-      // Specify the output destination
-      .pipe(gulp.dest(destDir));
-  };
-
-  return bundle();
+    return browserify({
+            basedir: srcDir,
+            debug: true
+        })
+    	.transform(stringify(['.html']))
+        .add(mainFile)
+        .plugin(tsify)
+		.on('error', swallowError)
+        .bundle()
+        .pipe(source(mainFile))
+        .pipe(gulp.dest(destDir))
+		.on('error', swallowError);
+    // return browserify({basedir: '.'})
+    //     .add(srcDir + '/' + mainFile)
+    //     .plugin(tsify)
+    //     .transform(debowerify)
+    //     .transform(stringify(['.html']))
+    //     .bundle()
+    //     .pipe(source(mainFile))
+    //     .pipe(gulp.dest(destDir));
 });
-
-gulp.task('copy-libs-css', function() {
-  var f = filter(['**/*.css']);
-  return gulp.src(mainBowerFiles())
-    .pipe(f)
-    .pipe(gulp.dest(cssDestDir))
-});
-
-gulp.task('copy-libs-js', function() {
-  var f = filter(['**/*.js'])
-  return gulp.src(mainBowerFiles())
-    .pipe(f)
-    .pipe(concat(libJSFile))
-    .pipe(uglify())
-    .pipe(gulp.dest(destDir))
-});
-
-gulp.task('copy-libs', ['copy-libs-css', 'copy-libs-js']);
 
 gulp.task('copy-index', function() {
-  return gulp.copy(srcDir + '/' + indexHTML, destDir)
+    return gulp.copy(srcDir + '/' + indexHTML, destDir)
 });
 
 gulp.task('copy-css', function() {
-  return gulp.copy(cssSrcDir + '/' + cssFile, destDir)
+    return gulp.copy(cssSrcDir + '/' + cssFile, destDir)
 });
 
 gulp.task('copy-images', function() {
-  return gulp.copy(imgSrcDir + '/**/*', destDir)
+    return gulp.copy(imgSrcDir + '/**/*', destDir)
 });
 
 gulp.task('clean', function() {
     return gulp.src(destDir)
-      .pipe(clean());
+        .pipe(clean());
 });
 
-gulp.task('build', ['browserify', 'copy-index', 'copy-libs', 'copy-css', 'copy-images']);
+gulp.task('build', ['browserify', 'copy-index', 'copy-css', 'copy-images']);
 
 gulp.task('watch', ['build'], function() {
-  gulp.watch(imgSrcDir + '/**/*', ['copy-images']);
-  gulp.watch(compsDir + '/**/*', ['browserify']);
-  gulp.watch(srcDir + '/*.js', ['browserify']);
-  gulp.watch(cssSrcDir + '/**/*', ['copy-css']);
-  gulp.watch(srcDir + '/' + indexHTML, ['copy-index']);
+    gulp.watch(imgSrcDir + '/**/*', ['copy-images']);
+    gulp.watch(compsDir + '/**/*', ['browserify']);
+    gulp.watch(modelDir + '/**/*', ['browserify']);
+    gulp.watch(srcDir + '/*.js', ['browserify']);
+    gulp.watch(srcDir + '/*.ts', ['browserify']);
+    gulp.watch(cssSrcDir + '/**/*', ['copy-css']);
+    gulp.watch(srcDir + '/' + indexHTML, ['copy-index']);
 });
 
 gulp.task('server', ['build'], function() {
     return connect.server({ 
-      root: destDir,
-      middleware: function(connect, opt) {
-        return [
-            proxy('/api', {
-                target: backendAPI,
-                changeOrigin: true
-            })
-        ]
-      }
+        root: destDir,
+        middleware: function(connect, opt) {
+            return [
+                proxy('/api', {
+                    target: backendAPI,
+                    changeOrigin: true
+                })
+            ]
+        }
     });
 });
 

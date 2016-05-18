@@ -46,6 +46,10 @@ body {
 }
 
 .container {
+    
+    margin-left: auto;
+    margin-right: auto;
+
     padding: 20px;
 }
 
@@ -54,9 +58,12 @@ body {
     width: -moz-fit-content;
     width: fit-content;
 
+    min-width: 70px;
+
     padding: 5px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 5px;
+
+    float: left;
 
     -webkit-border-radius: 17px;
     -moz-border-radius: 17px;

@@ -17,9 +17,11 @@
     </ul>
 </div>
 
-<div class="container" data-bind="foreach: routeStack">
-    <div data-bind="component: { name: page, params: {model: $parent.model, vals: vals_ } }"></div>
-</div>
+<table class="container">
+    <tr data-bind="foreach: routeStack">
+        <td data-bind="component: { name: page, params: {model: $parent.model, vals: vals_ } }"></td>
+    </tr>
+</table>
 
 <div class="wappen">
     <img src="/images/Wappen.png" width="25" hight="25">
@@ -31,9 +33,6 @@
             title="made with Flask">
     </a>
 </div>
-
-<script src="libs.js"></script>
-<script src="app.js"></script>
-
+<script src="app.ts"></script>
 </body>
 </html>
