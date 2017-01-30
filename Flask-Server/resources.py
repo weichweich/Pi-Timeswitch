@@ -24,7 +24,7 @@ class SingleResource(Resource):
         self.getter_func = getter_func
         self.setter_func = setter_func
         self.delete_func = delete_func
-        self.schemaMany = schema(many=True)
+        self.schemaSingle = schema(many=True)
         self.schemaSingle = schema(many=False)
         self.auth_func = auth_func
 
@@ -36,7 +36,7 @@ class SingleResource(Resource):
             return "Unauthorized", 401
 
         recource = self.getter_func(*args, **kwargs)
-        result = self.schemaMany.dump(recource)
+        result = self.schemaSingle.dump(recource)
         return result.data, 200
 
     def post(self, *args, **kwargs):
@@ -48,7 +48,7 @@ class SingleResource(Resource):
 
         request_json = request.get_json(force=True)
         try:
-            self.schemaMany.validate(request_json)
+            self.schemaSingle.validate(request_json)
         except ValidationError as err:
             LOGGER.warn("ValidationError POST \n\t"\
                 + str(err.messages) + "\n" + str(request_json))
@@ -58,7 +58,7 @@ class SingleResource(Resource):
              + str(err.messages) + "\n" + str(request_json))
             return err.messages, 400
 
-        result = self.schemaMany.load(request_json)
+        result = self.schemaSingle.load(request_json)
         self.setter_func(result.data, *args, **kwargs)
         return "", 200
 
@@ -79,7 +79,7 @@ class SingleResource(Resource):
 
         request_json = request.get_json(force=True)
         try:
-            self.schemaMany.validate(request_json)
+            self.schemaSingle.validate(request_json)
         except ValidationError as err:
             LOGGER.warn("ValidationError PATCH \n"\
                 + str(err.messages) + "\n" + str(request_json))
@@ -89,7 +89,7 @@ class SingleResource(Resource):
              + str(err.messages) + "\n" + str(request_json))
             return err.messages, 400
 
-        result = self.schemaMany.load(request_json)
+        result = self.schemaSingle.load(request_json)
         self.setter_func(result.data, *args, **kwargs)
         return "", 204
 
@@ -113,7 +113,9 @@ class ManyRessource(Resource):
         elif self.auth_func and not self.auth_func():
             return "Unauthorized", 401
 
-        resource = self.getter_func()
+        resource = self.getter_func(*args, **kwargs)
+        for res in resource:
+            print str(res)
         result = self.schemaMany.dump(resource)
         return result.data, 200
 

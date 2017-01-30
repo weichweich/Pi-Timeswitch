@@ -14,10 +14,10 @@
                 <td class="numeric" data-bind="text: number"></td>
                 <td data-bind="text: name"></td>
                 <td>
-                    <button class="destroy" data-bind="click: $parent.removePin, clickBubble: false" ></button>
+                    <button class="destroy" data-bind="click: $parent.pushRemove, clickBubble: false" ></button>
                 </td>
             </tr>
         </tbody>
     </table>
-    <button onclick="window.location.href='#/pins/add'">add pin!</button>
+    <button data-bind="click: pushAdd">add pin!</button>
 </div>

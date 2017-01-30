@@ -19,19 +19,12 @@
 
 <table class="container">
     <tr data-bind="foreach: routeStack">
-        <td data-bind="component: { name: page, params: {model: $parent.model, vals: vals_ } }"></td>
+        <td data-bind="component: { name: page, params: {model: $parent.model, vals: vals, router: $parent.router } }"></td>
     </tr>
 </table>
 
 <div class="wappen">
     <img src="/images/Wappen.png" width="25" hight="25">
-    <a href="http://flask.pocoo.org/">
-        <img 
-            src="http://flask.pocoo.org/static/badges/made-with-flask-s.png"
-            border="0"
-            alt="made with Flask"
-            title="made with Flask">
-    </a>
 </div>
 <script src="app.ts"></script>
 </body>

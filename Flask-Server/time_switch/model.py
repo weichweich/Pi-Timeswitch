@@ -110,8 +110,11 @@ class PiSwitchModel(object):
 
             for (sequence_id, pin_id, start_time,
                  start_range, end_time, end_range) in rows:
+                pin = self._get_pin_for_sequence(sequence_id)
+                if pin is None:
+                    print "none?"
                 sequences.append(Sequence(start_time, start_range, end_time,
-                                          end_range, sequence_id=sequence_id))
+                                          end_range, pin=pin, sequence_id=sequence_id))
             return sequences
 
     def get_sequence(self, sequence_id):
@@ -125,20 +128,28 @@ class PiSwitchModel(object):
                         WHERE id=?''', (sequence_id,))
 
             row = cur.fetchone()
+            pin = self._get_pin_for_sequence(sequence_id)
+
             if row is None:
                 return None
+            elif pin is None:
+                print "none?"
+                return None
             else:
-                return Sequence(**row)
+                return Sequence(pin=pin, **row)
 
-    def set_sequence(self, sequence):
+    def set_sequence(self, sequence, pin_id=-1):
         '''Adds the given sequence to the dataset.\
            Removes the old schedule if it exists.'''
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
+            if (sequence.get_pin()):
+                pin_id = sequence.get_pin().get_id()
+
             if sequence.get_id() == -1:
                 LOGGER.info("set_sequence({0}) - adding new sequence"\
                     .format(sequence.get_id()))
-                vals = (sequence.get_pin().get_id(), sequence.get_start()[0],
+                vals = (pin_id, sequence.get_start()[0],
                         sequence.get_start()[1], sequence.get_end()[0],
                         sequence.get_end()[1])
 
@@ -149,7 +160,7 @@ class PiSwitchModel(object):
             else:
                 LOGGER.info("set_sequence({0}) - updating sequence"\
                     .format(sequence.get_id()))
-                vals = (sequence.sequence_id, sequence.get_pin().get_id(),
+                vals = (sequence.sequence_id, pin_id,
                         sequence.get_start()[0], sequence.get_start()[1],
                         sequence.get_end()[0], sequence.get_end()[1])
                 cur.execute('''REPLACE INTO
@@ -174,9 +185,30 @@ class PiSwitchModel(object):
 
             rows = cur.fetchall()
 
-            return get_sequences_from_rows(rows)
+            sequences = []
+            for (sequence_id, pin_id, start_time, start_range, end_time, end_range) in rows:
+                pin = self._get_pin_for_sequence(sequence_id)
+                sequences.append(Sequence(start_time, start_range, end_time,
+                                  end_range, sequence_id=sequence_id, pin=pin))
+            return sequences
 
-    def delete_sequences_for_pin(self, pin_id):
+
+    def _get_pin_for_sequence(self, sequence_id):
+        '''Returns all sequences for the pin.'''
+        with sql.connect(self.sql_file) as connection:
+            cur = connection.cursor()
+            cur.execute('''SELECT Pins.id, Pins.name FROM pins
+                JOIN Sequences
+                ON Sequences.pin_id = Pins.id
+                WHERE Sequences.id =?''', (str(sequence_id),))
+
+            row = cur.fetchone()
+            if row is None:
+                return None
+
+            return Pin(row[0], None, row[1])
+
+    def _delete_sequences_for_pin(self, pin_id):
         '''Deletes all sequences for the pin.'''
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
@@ -219,7 +251,7 @@ class PiSwitchModel(object):
 
     def delete_pin(self, pin_id):
         '''Deletes all sequence for the pin and the pin it selfs.'''
-        self.delete_sequences_for_pin(pin_id)
+        self._delete_sequences_for_pin(pin_id)
         GPIO.cleanup(pin_id)
 
         with sql.connect(self.sql_file) as connection:
@@ -327,6 +359,14 @@ class Sequence(object):
 
     def set_end(self, end_time, end_range):
         self.end_time, self.end_range = end_time, end_range
+
+    def __str__(self):
+        if self.pin is None:
+            return "<Sequence: Start " + self.start_time + " End " +\
+                    self.end_time + " Pin none>"
+        else:
+            return "<Sequence: Start " + self.start_time + " End " +\
+                    self.end_time + " Pin " + str(self.pin) + ">"
 
 class Pin(object):
 

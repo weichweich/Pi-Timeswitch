@@ -1,56 +1,55 @@
 /// <reference path="./../typings/main.d.ts" />
 
-import ko = require('knockout')
-import crossroads = require('crossroads')
-import hasher = require('hasher')
+var cherrytree = require('cherrytree/standalone')
 
-class Router {
-    currentRouteStack :KnockoutObservableArray<any>
-    nextRouteStack :any[]
+// Init properties
+let router = new cherrytree()
 
-    constructor(config: any) {
-        this.currentRouteStack = ko.observableArray()
-        this.nextRouteStack = []
+// define routes
+router.map(function(route) {
+    route('/', { page: 'main-page', stack: false }, function() {
+        route('pins', { page: 'pins-fragment', stack: true }, function() {
+            route('add-pin', { path: '/pin/add', page: 'add-pin-fragment', stack: true })
+            route('sequences', { path: '/pins/:pinId', page: 'sequences-fragment', stack: true }, function() {
+                route('add-sequence', { path: '/pins/:pinId/add', page: 'add-sequence-fragment', stack: true })
+            })
+        })
+    })
+})
 
-        ko.utils.arrayForEach(config.routes, (routeConfig: any) => {
-            let route = crossroads.addRoute(routeConfig.url, (requestParams) => {
-                this.nextRouteStack.push(ko.utils.extend(requestParams, routeConfig.params));
-            }, routeConfig.prio);
-            route.greedy = routeConfig.greedy;
-        });
+// create transition to update the current route stack.
+router.use((transition) => {
 
-        crossroads.greedyEnabled = true;
-        crossroads.normalizeFn = crossroads.NORM_AS_OBJECT;
-    
-        hasher.initialized.add(this.parseHash, this);
-        hasher.changed.add(this.changeHash, this);
-        hasher.init();
+    let { routes, params } = transition
+    let nextRouteStack = []
+
+    // if only one route matches the given path
+    // draw also routes that should not stack
+    if (routes.length == 1) {
+        nextRouteStack.push({
+            page: routes[0].options.page,
+            vals:routes[0].params
+        })
+
+    // if multiple routes match the current path
+    // draw every route which stackes (stack == true)
+    } else {
+        // array of configurations for the next routes.
+        for (let route of routes) {
+            if (route.options.stack) {
+                nextRouteStack.push({
+                    // the component which should be displayed
+                    page: route.options.page,
+                    // the params for this component
+                    vals: route.params
+                })
+            }
+        }
     }
+    // return nextRouteStack for use in next 
+    return nextRouteStack
+})
 
-    parseHash(newHash, oldHash): void {
-        crossroads.parse(newHash);
+router.listen()
 
-        this.currentRouteStack(this.nextRouteStack);
-        this.nextRouteStack = [];
-    }
-
-    changeHash(newHash, oldHash): void {
-        var route = newHash;
-        crossroads.parse(newHash);
-
-        this.currentRouteStack(this.nextRouteStack);
-        console.log(this.nextRouteStack);
-        this.nextRouteStack = [];
-    }
-}
-
-let routes = {
-    routes: [
-        { greedy: false, prio: 2, url: '', params: { page: 'main-page' } },
-        { greedy: true,  prio: 2, url: '/pins/:add:', params: { page: 'pins-fragment' } },
-        { greedy: true,  prio: 1, url: '/pins/add', params: { page: 'add-pin-fragment' } },
-        // { greedy: true,  prio: 2, url: '/pin/{id}', params: { page: 'sequences-fragment' } },
-    ]
-};
-
-export = new Router(routes);
+export default router

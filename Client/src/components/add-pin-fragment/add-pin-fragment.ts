@@ -7,13 +7,13 @@ import { Model } from '../../Model'
 
 class ViewModel {
     
-    model :Model
-    name :KnockoutObservable<string>
-    number :KnockoutObservable<number>
+    model: Model<Pin>
+    name: KnockoutObservable<string>
+    number: KnockoutObservable<number>
     state: KnockoutObservable<string>
 
     constructor(params) {
-        this.model = params.model
+        this.model = params.model.pin
         this.name = ko.observable('')
         this.number = ko.observable(-1)
         this.state = ko.observable('ready') // possible: ready, uploading 
@@ -27,18 +27,21 @@ class ViewModel {
         if (this.state() !== 'ready') {
             return
         }
-
         this.stateUploading()
 
         let aName = ko.utils.unwrapObservable(this.name)
         let aNumber = ko.utils.unwrapObservable(this.number)
 
-        this.model.createPin(new Pin(aNumber, aNumber, aName, 0, []))
-                  .then((respons) => {
-                        this.name('')
-                        this.number(0)
-                        this.stateReady()
-                  })
+        let pin = new Pin(aNumber, aNumber, aName, 0)
+
+        this.model.create(pin, {
+            relation: [],
+            attributes: []
+        }).then((respons) => {
+            this.name('')
+            this.number(0)
+            this.stateReady()
+        })
     }
 
     public stateUploading = () => {

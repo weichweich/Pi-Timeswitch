@@ -33,7 +33,7 @@ class SequenceSchema(Schema):
     end_range = fields.String(required=True)
     pin = fields.Relationship(
         related_url='/api/pins/{pin_id}',
-        related_url_kwargs={'pin_id': '<pin.id>'},
+        related_url_kwargs={'pin_id': '<pin>'},
         # Include resource linkage
         many=False, include_data=True,
         type_='pins'
@@ -46,9 +46,17 @@ class SequenceSchema(Schema):
     def handle_error(self, exc, data):
         raise ValidationError('An error occurred with input: {0} \n {1}'.format(data, exc.messages))
 
+    def __str__(self):
+        if self.pin is None:
+            return "<Sequence: Start " + self.start_time + " End " +\
+                    self.end_time + " Pin none>"
+        else:
+            return "<Sequence: Start " + self.start_time + " End " +\
+                    self.end_time + " Pin " + str(self.pin) + ">"
+
     class Meta:
         type_ = 'sequences'
-        inflect = dasherize
+        # inflect = dasherize
 
 class PinSchema(Schema):
     id = fields.Str(dump_only=True)
@@ -73,4 +81,4 @@ class PinSchema(Schema):
 
     class Meta:
         type_ = 'pins'
-        inflect = dasherize
+        # inflect = dasherize

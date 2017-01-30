@@ -3,7 +3,7 @@ body {
     padding: 0;
     height: 100%;
     font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: url('/images/bg.png');
+    /* background: url('/images/bg.png');*/
     -webkit-font-smoothing: antialiased;
     -moz-font-smoothing: antialiased;
     -ms-font-smoothing: antialiased;
@@ -69,7 +69,7 @@ body {
     -moz-border-radius: 17px;
     border-radius: 17px;
     border: 2px solid #006600;
-    background: rgba(227,208,193,0.5);
+    background: rgba(247, 255, 244, 1);
 
     -webkit-box-shadow: #B3B3B3 4px 4px 4px;
     -moz-box-shadow: #B3B3B3 4px 4px 4px;

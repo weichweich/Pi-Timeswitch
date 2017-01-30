@@ -4,115 +4,109 @@ import config = require('./config')
 
 import $ = require('jquery')
 import ko = require('knockout')
-var JsonApi = require('devour-client')
 import promise = require('ts-promise')
 let Promise = promise.Promise
 
-import { Pin } from './model/pin.ts'
-import { Sequence } from './model/sequence.ts'
+import { Cache } from './model/Cache.ts'
+import { ServerConnector, Relation } from './model/ServerConnector.ts'
 
+import { Identifiable } from './model/Interfaces.ts'
 
-export class Model {
+export interface UpdateFunc<E extends Identifiable> {
+	(obj: E): void
+}
 
-	jsonApi: any
+export interface Observer<E extends Identifiable> {
+	objectAdded: UpdateFunc<E>
+	objectRemoved: UpdateFunc<E>
+	objectModified: UpdateFunc<E>
+}
 
-	pins: KnockoutObservableArray<Pin>
+export interface Filter {
+	relation: Relation[]
+	attributes: any[]
+}
 
-	constructor() {
-		this.jsonApi = new JsonApi({ apiUrl: config.backendURL })
-		this.pins = ko.observableArray([])
-		this.pins.subscribe(() => {
-            console.log('got it! Model')
-        })
-		this.jsonApi.define('pin', {
-			name: '',
-			number: '',
-			state: '',
-			sequences: {
-				jsonApi: 'hasMany',
-				type: 'sequence'
-			}
-		}, {})
+export class Model<E extends Identifiable> {
+	cache: Cache<E>
+	connection: ServerConnector<E>
+	observers: Observer<E>[]
 
-		this.jsonApi.define('sequence', {
-			start_time: '',
-			start_range: '',
-			end_time: '',
-			end_range: '',
-		}, {})
+	constructor(type: string, definition: {}, options: {}, parser) {
+		this.connection = new ServerConnector(type, definition, options, parser)
+		this.cache = new Cache<E>()
+		this.observers = []
+	}
 
-		this.findPins().then((newPins) => {
-			this.pins(newPins)
+	public addObserver = (observer: Observer<E>) => {
+		this.observers.push(observer)
+	}
+
+	public notifyAdded = (obj: E) => {
+		for (let observer of this.observers) {
+			observer.objectAdded(obj)
+		}
+	}
+
+	public notifyModified = (obj: E) => {
+		for (let observer of this.observers) {
+			observer.objectModified(obj)
+		}
+	}
+
+	public notifyRemoved = (obj: E) => {
+		for (let observer of this.observers) {
+			observer.objectRemoved(obj)
+		}
+	}
+
+	public findAll = (config: Filter) => {
+		if (config.attributes.length != 0) {
+			console.error("attributes filter not implemented yet!!")
+		}
+		let localObjs = this.cache.retrieveAll()
+		if (localObjs.length != 0) {
+			return new Promise((resolve, reject) => {
+				resolve(localObjs)
+			})
+		} else {
+			return this.connection.getAll(config.relation)
+		}
+	}
+
+	public findOne = (pin_id: number) => {
+		let localPin = this.cache.retrieve(pin_id)
+		if (localPin) {
+			return new Promise((resolve, reject) => {
+				resolve(localPin)
+			})
+		} else {
+			return this.connection.getOne(pin_id)
+		}
+	}
+
+	public update = (obj: E, config: Filter) => {
+		return this.connection.update(obj, config.relation)
+				.then((created: E) => {
+			this.cache.store(obj)
+			this.notifyModified(obj)
+		})	
+	}
+
+	public remove = (obj: E, config: Filter) => {
+		return this.connection.remove(obj, config.relation)
+				.then((removed: E) => {
+			this.cache.remove(removed)
+			this.notifyRemoved(removed)
+			return removed
 		})
 	}
 
-	jsonToPin(json) {
-		let sequences: Sequence[] = []
-		if ('sequences' in json)
-			for (let sequence of <any[]>json.sequences) {
-				let sequenceObj = new Sequence(sequence.id, sequence.start_time, sequence.start_range,
-					sequence.end_time, sequence.end_range)
-
-				sequences.push(sequenceObj)
-			}
-
-		return new Pin(json.id, json.number, json.name, json.state, sequences)
-	}
-
-	pinToJSON(pin: Pin) {
-		let jsonSequences = []
-		for (let sequence of pin.sequences()) {
-			jsonSequences.push(this.sequenceToJSON(sequence))
-		}
-		return {
-			id: pin.id,
-			name: ko.utils.unwrapObservable(pin.name),
-			number: ko.utils.unwrapObservable(pin.number),
-			state: ko.utils.unwrapObservable(pin.state),
-			sequences: jsonSequences
-		}
-	}
-
-	sequenceToJSON(sequence: Sequence) {
-		return {}
-	}
-
-	public findPins = () => {
-		return this.jsonApi.findAll('pins')
-			.then((data: any[]) => {
-
-				// then: convert raw pins to Pin-objects
-				let pins: Pin[] = []
-				for (let json of data) {
-					pins.push(this.jsonToPin(json))
-				}
-				console.log(pins)
-				return pins
-			}, (data) => { return data })
-	}
-
-	public updatePins = (pins: Pin[]) => {
-		return this.jsonApi.update('pin', pins)
-	}
-
-	public deletePin = (pin: Pin) => {
-		return this.jsonApi.destroy('pin', pin.id)
-			.then((respons) => {
-				let index = this.pins().indexOf(pin, 0);
-				if (index > -1) {
-					this.pins.splice(index, 1);
-				}
-			})
-	}
-
-	public createPin = (pin: Pin) => {
-		let jsonPin = this.pinToJSON(pin)
-
-		console.log(jsonPin)
-		return this.jsonApi.create('pin', jsonPin).then((serverPin) => {
-			let pin = this.jsonToPin(serverPin)
-			this.pins.push(pin)
+	public create = (obj: E, config: Filter) => {
+		return this.connection.create(obj, config.relation)
+				.then((created: E) => {
+			this.cache.store(obj)
+			this.notifyAdded(obj)
 		})
 	}
 }
-
