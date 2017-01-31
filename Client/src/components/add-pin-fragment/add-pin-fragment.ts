@@ -10,7 +10,7 @@ class ViewModel {
     model: Model<Pin>
     name: KnockoutObservable<string>
     number: KnockoutObservable<number>
-    state: KnockoutObservable<string>
+    state: KnockoutObservable<string>y
 
     constructor(params) {
         this.router = params.router

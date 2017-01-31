@@ -8,15 +8,19 @@ import { Model } from '../../Model'
 import router from '../../router.ts'
 
 class ViewModel {
+    router: any
     pinModel: Model<Pin>
     sequenceModel: Model<Sequence>
+    index: number
 
     pin: KnockoutObservable<Pin>
     sequences: KnockoutObservableArray<Sequence>
 
 	constructor(params) {
+        this.router = params.router
         this.pinModel = params.model.pin
         this.sequenceModel = params.model.sequence
+        this.index = params.index
 
         this.pin = ko.observable(undefined)
         this.sequences = ko.observableArray([])
@@ -25,6 +29,12 @@ class ViewModel {
             objectAdded: this.addSequence,
             objectModified: this.modifySequence,
             objectRemoved: this.removeSequence
+        })
+
+        this.pinModel.addObserver({
+            objectAdded: (pin: Pin) => {},
+            objectModified: (pin: Pin) => {},
+            objectRemoved: this.pinDeleted
         })
 
         this.pinModel.findOne(params.vals.pinId).then((pin: Pin) => {
@@ -52,6 +62,18 @@ class ViewModel {
 
     public removeSequence = (sequence: Sequence) => {
         this.sequences.remove(sequence)
+    }
+
+    public pinDeleted = (pin: Pin) => {
+        if (pin.id == this.pin().id) {
+            this.pushClose(pin)
+        }
+    }
+
+    public pushClose = (params) => {
+        // get the route bevor the current route
+        let last_route = this.router.state.routes[this.index]
+        this.router.transitionTo(last_route.name)
     }
 
     public pushRemove = (sequence: Sequence) => {

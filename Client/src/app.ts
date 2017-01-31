@@ -75,7 +75,7 @@ let pinModel = new Model<Pin>('pin', pinDef, {}, pinParser)
 // ************** Register Components **************
 
 ko.components.register('main-page', {
-	viewModel: require('./components/main-page/main-page.js'),
+	viewModel: require('./components/main-page/main-page'),
 	template: require('./components/main-page/main-page.html')
 })
 ko.components.register('pins-fragment', {
@@ -84,7 +84,7 @@ ko.components.register('pins-fragment', {
 
 });
 ko.components.register('sequences-fragment', {
-	viewModel: require('./components/sequences-fragment/sequences-fragment.ts'),
+	viewModel: require('./components/sequences-fragment/sequences-fragment'),
 	template: require('./components/sequences-fragment/sequences-fragment.html')
 });
 

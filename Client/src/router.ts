@@ -28,21 +28,26 @@ router.use((transition) => {
     if (routes.length == 1) {
         nextRouteStack.push({
             page: routes[0].options.page,
-            vals: routes[0].params
+            vals: routes[0].params,
+            index: 0
         })
 
     // if multiple routes match the current path
     // draw every route which stackes (stack == true)
     } else {
         // array of configurations for the next routes.
+        var _i = 0
         for (let route of routes) {
+
             if (route.options.stack) {
                 nextRouteStack.push({
                     // the component which should be displayed
                     page: route.options.page,
                     // the params for this component
-                    vals: route.params
+                    vals: route.params,
+                    index: _i
                 })
+                _i++
             }
         }
     }
