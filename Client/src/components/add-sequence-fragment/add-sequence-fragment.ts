@@ -8,6 +8,7 @@ import { Model } from '../../Model'
 class ViewModel {
     sequenceModel :Model<Sequence>
     state: KnockoutObservable<string>
+    router: any
 
     start_time: KnockoutObservable<string>
     start_range: KnockoutObservable<string>
@@ -18,8 +19,9 @@ class ViewModel {
     pinId: number
 
     constructor(params: any) {
-        console.log(params)
+        this.router = params.router
         this.sequenceModel = params.model.sequence
+
         this.state = ko.observable('ready') // possible: ready, uploading 
 
         this.pinId = params.vals.pinId
@@ -30,7 +32,11 @@ class ViewModel {
     }
 
     public cancle = (params) => {
-        window.location.href = '#/pins'
+        // length of current route stack
+        let length = this.router.state.routes.length
+        // get the route bevor the current route
+        let last_route = this.router.state.routes[length-2]
+        this.router.transitionTo(last_route.name)
     }
 
     public addSequence = (params) => {

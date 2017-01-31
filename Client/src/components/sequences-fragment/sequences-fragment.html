@@ -18,11 +18,11 @@
                     <td data-bind="text: end_time"></td>
                     <td data-bind="text: end_range"></td>
                     <td>
-                        <button class="destroy" data-bind="click: $parent.remove, clickBubble: false" ></button>
+                        <button class="destroy" data-bind="click: $parent.pushRemove, clickBubble: false" ></button>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <button data-bind="click: showAdd">add sequence!</button>
+        <button data-bind="click: pushAdd">add sequence!</button>
     </div>
 </div>

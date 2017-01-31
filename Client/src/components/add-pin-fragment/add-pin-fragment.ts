@@ -6,21 +6,26 @@ import { Sequence } from '../../model/sequence.ts'
 import { Model } from '../../Model'
 
 class ViewModel {
-    
+    router: any
     model: Model<Pin>
     name: KnockoutObservable<string>
     number: KnockoutObservable<number>
     state: KnockoutObservable<string>
 
     constructor(params) {
+        this.router = params.router
         this.model = params.model.pin
         this.name = ko.observable('')
-        this.number = ko.observable(-1)
+        this.number = ko.observable(0)
         this.state = ko.observable('ready') // possible: ready, uploading 
     }
 
     public cancle = (params) => {
-        window.location.href = '#/pins'
+        // length of current route stack
+        let length = this.router.state.routes.length
+        // get the route bevor the current route
+        let last_route = this.router.state.routes[length-2]
+        this.router.transitionTo(last_route.name)
     }
 
     public addPin = (params) => {

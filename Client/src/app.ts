@@ -1,5 +1,6 @@
 /// <reference path="./../typings/main.d.ts" />
 
+var _ = require('lodash')
 import ko = require('knockout')
 import router from './router.ts'
 import { Model } from './model'
@@ -14,8 +15,30 @@ let currentRouteStack = ko.observableArray([])
 
 router.use(function(transition, nextRouteStack){
 	// swap next route stack with current stack
-	console.log("RouteStack: ", nextRouteStack)
-	currentRouteStack(nextRouteStack)
+	let remove_count = currentRouteStack().length - nextRouteStack.length
+	if (remove_count > 0) {
+		currentRouteStack.splice(nextRouteStack.length, remove_count)
+	}
+
+	for (var _i = 0; _i < nextRouteStack.length; _i++) {
+		let new_route = nextRouteStack[_i]
+
+		if (currentRouteStack().length <= _i) {
+			// current route stack is shorter 
+			currentRouteStack.push(new_route)
+
+		} else if (!_.isEqual(new_route, currentRouteStack()[_i])) {
+			// if routes are not equal, replace with new one
+			currentRouteStack()[_i] = new_route
+
+			// remove all routes after the current item on current stack
+			// stack: [0, ..., _i, ... remove ...]
+			if (currentRouteStack().length > _i) {
+				let remove_count = currentRouteStack().length -_i -1
+				currentRouteStack.splice(_i, remove_count)
+			}
+		}
+	}
 })
 
 // ************** Define Model **************

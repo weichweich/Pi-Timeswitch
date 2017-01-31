@@ -13,7 +13,6 @@ class ViewModel {
     pins: KnockoutObservableArray<Pin>
 
     constructor (params) {
-        console.log("Pin params ", params)
         this.pinModel = params.model.pin
         this.pins = ko.observableArray([])
 
@@ -32,7 +31,6 @@ class ViewModel {
     }
 
     public addPin = (pin: Pin) => {
-        console.log('Pins ViewModel', 'added Pin')
         this.pins.push(pin)
     }
 
@@ -56,7 +54,7 @@ class ViewModel {
         router.transitionTo('add-pin')
     }
 
-    public pinClicked = (pin: Pin, event) => {
+    public pushPin = (pin: Pin, event) => {
         router.transitionTo('sequences', { pinId: pin.id })
     }
 

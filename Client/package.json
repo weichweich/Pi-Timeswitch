@@ -35,6 +35,7 @@
     "hasher": "^1.2.0",
     "jquery": "^2.2.3",
     "knockout": "^3.4.0",
+    "lodash": "^4.17.4",
     "ts-promise": "^0.3.0"
   }
 }

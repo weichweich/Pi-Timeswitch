@@ -28,7 +28,7 @@ router.use((transition) => {
     if (routes.length == 1) {
         nextRouteStack.push({
             page: routes[0].options.page,
-            vals:routes[0].params
+            vals: routes[0].params
         })
 
     // if multiple routes match the current path

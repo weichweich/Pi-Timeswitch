@@ -21,6 +21,12 @@ class ViewModel {
         this.pin = ko.observable(undefined)
         this.sequences = ko.observableArray([])
 
+        this.sequenceModel.addObserver({
+            objectAdded: this.addSequence,
+            objectModified: this.modifySequence,
+            objectRemoved: this.removeSequence
+        })
+
         this.pinModel.findOne(params.vals.pinId).then((pin: Pin) => {
             this.pin(pin)
         })
@@ -31,12 +37,24 @@ class ViewModel {
             }],
             attributes: []
         }).then((sequences: Sequence[]) => {
-            console.log("sequences", sequences)
             this.sequences(sequences)
         })
 	}
 
-    public remove = (sequence: Sequence) => {
+    public addSequence = (sequence: Sequence) => {
+        this.sequences.push(sequence)
+    }
+
+    public modifySequence = (sequence: Sequence) => {
+        this.removeSequence(sequence)
+        this.addSequence(sequence)
+    }
+
+    public removeSequence = (sequence: Sequence) => {
+        this.sequences.remove(sequence)
+    }
+
+    public pushRemove = (sequence: Sequence) => {
         this.sequenceModel.remove(sequence, {
             relation: [],
             attributes: []
@@ -45,7 +63,7 @@ class ViewModel {
         })    	
     }
 
-    public showAdd = (params) => {
+    public pushAdd = (params) => {
         router.transitionTo('add-sequence', { pinId: this.pin().id })
     }
 }
