@@ -15,7 +15,7 @@ sudo easy_install pip
 
 ### Virtualenv
 
-At first i recommend to create a virtual environment using [Virtualenv]().
+At first i recommend to create a virtual environment using [Virtualenv](https://virtualenv.pypa.io/en/stable/).
 
 Install Virtualenv:
 
@@ -59,7 +59,7 @@ Install the dependencies:
 
 ```bash
 cd <project-root>/Client
-npm install && bower install
+npm install
 ```
 
 ###  Start the development Server
@@ -86,7 +86,5 @@ Options for server.py:
 
 ```bash
 cd <project-root>/Client
-gulp serve:dist
+gulp
 ```
-
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=weichweich&url=https://github.com/weichweich/Pi-Timeswitch&title=Pi-Timeswitch&language=python&tags=github&category=software)

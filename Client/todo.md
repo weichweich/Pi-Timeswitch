@@ -1,5 +1,16 @@
-# TODO:
+#Client todo
 
-
-- remove vex? Currently not used...
-
+- improve UI
+	* modify pin name, state
+	* modify sequence
+	* close sequence page if corresponding pin is deleted [implemented]
+	* input validation
+	* bind keys to buttons
+- Login/Logout
+	* authentication
+	* delete all stored data on logout
+- Overview Page
+- live updates from server
+- typings
+	* type for cherrytree router
+	* type for ViewModel constructor param
