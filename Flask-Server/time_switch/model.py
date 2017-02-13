@@ -112,7 +112,7 @@ class PiSwitchModel(object):
                  start_range, end_time, end_range) in rows:
                 pin = self._get_pin_for_sequence(sequence_id)
                 if pin is None:
-                    print "none?"
+                    print("none?")
                 sequences.append(Sequence(start_time, start_range, end_time,
                                           end_range, pin=pin, sequence_id=sequence_id))
             return sequences
@@ -133,7 +133,7 @@ class PiSwitchModel(object):
             if row is None:
                 return None
             elif pin is None:
-                print "none?"
+                print("none?")
                 return None
             else:
                 return Sequence(pin=pin, **row)

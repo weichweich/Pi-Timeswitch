@@ -20,20 +20,19 @@ LOGGER = logging.getLogger(__name__)
 # ######################################
 
 class SingleResource(Resource):
-    def __init__(self, schema, getter_func=None, setter_func=None, delete_func=None, auth_func=None):
+    method_decorators = []
+    def __init__(self, schema, getter_func=None, setter_func=None, delete_func=None, decorators=[]):
         self.getter_func = getter_func
         self.setter_func = setter_func
         self.delete_func = delete_func
         self.schemaSingle = schema(many=True)
         self.schemaSingle = schema(many=False)
-        self.auth_func = auth_func
+        self.method_decorators = decorators
 
     def get(self, *args, **kwargs):
         '''Handels a GET message.'''
         if not self.getter_func:
             return "Methode not allowed!", 405
-        elif self.auth_func and not self.auth_func():
-            return "Unauthorized", 401
 
         recource = self.getter_func(*args, **kwargs)
         result = self.schemaSingle.dump(recource)
@@ -43,8 +42,6 @@ class SingleResource(Resource):
         '''Handels a POST message.'''
         if not self.setter_func:
             return "Methode not allowed!", 405
-        elif self.auth_func and not self.auth_func():
-            return "Unauthorized", 401
 
         request_json = request.get_json(force=True)
         try:
@@ -65,8 +62,6 @@ class SingleResource(Resource):
     def delete(self, *args, **kwargs):
         if not self.delete_func:
             return "Methode not allowed!", 405
-        elif self.auth_func and not self.auth_func():
-            return "Unauthorized", 401
 
         self.delete_func(*args, **kwargs)
         return "", 204
@@ -74,8 +69,6 @@ class SingleResource(Resource):
     def patch(self, *args, **kwargs):
         if not self.setter_func:
             return "Methode not allowed!", 405
-        elif self.auth_func and not self.auth_func():
-            return "Unauthorized", 401
 
         request_json = request.get_json(force=True)
         try:
@@ -98,24 +91,19 @@ class SingleResource(Resource):
 # ######################################
 
 class ManyRessource(Resource):
-    def __init__(self, schema, getter_func=None, setter_func=None, delete_func=None, auth_func=None):
+    def __init__(self, schema, getter_func=None, setter_func=None, delete_func=None, decorators=None):
         self.getter_func = getter_func
         self.setter_func = setter_func
         self.delete_func = delete_func
         self.schemaMany = schema(many=True)
         self.schemaSingle = schema(many=False)
-        self.auth_func = auth_func
 
     def get(self, *args, **kwargs):
         '''Handels a GET message.'''
         if not self.getter_func:
             return "Methode not allowed!", 405
-        elif self.auth_func and not self.auth_func():
-            return "Unauthorized", 401
 
         resource = self.getter_func(*args, **kwargs)
-        for res in resource:
-            print str(res)
         result = self.schemaMany.dump(resource)
         return result.data, 200
 
@@ -123,8 +111,6 @@ class ManyRessource(Resource):
         '''Handels a POST message.'''
         if not self.setter_func:
             return "Methode not allowed!", 405
-        elif self.auth_func and not self.auth_func():
-            return "Unauthorized", 401
 
         request_json = request.get_json(force=True)
         try:
@@ -145,13 +131,9 @@ class ManyRessource(Resource):
     def delete(self, *args, **kwargs):
         if not self.delete_func:
             return "Methode not allowed!", 405
-        elif self.auth_func and not self.auth_func():
-            return "Unauthorized", 401
         return "Not Implemented", 501
 
     def patch(self, *args, **kwargs):
         if not self.setter_func:
             return "Methode not allowed!", 405
-        elif self.auth_func and not self.auth_func():
-            return "Unauthorized", 401
         return "Not Implemented", 501
