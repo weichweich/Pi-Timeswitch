@@ -91,12 +91,14 @@ class SingleResource(Resource):
 # ######################################
 
 class ManyRessource(Resource):
+    method_decorators = []
     def __init__(self, schema, getter_func=None, setter_func=None, delete_func=None, decorators=None):
         self.getter_func = getter_func
         self.setter_func = setter_func
         self.delete_func = delete_func
         self.schemaMany = schema(many=True)
         self.schemaSingle = schema(many=False)
+        self.method_decorators = decorators
 
     def get(self, *args, **kwargs):
         '''Handels a GET message.'''
