@@ -1,6 +1,6 @@
 /// <reference path="./../typings/main.d.ts" />
 
-var cherrytree = require('cherrytree/standalone')
+let cherrytree: any = require('cherrytree/standalone')
 
 // Init properties
 let router = new cherrytree()

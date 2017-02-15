@@ -1,8 +1,8 @@
 /// <reference path="./../../../typings/main.d.ts" />
 
 import ko = require('knockout')
-import { Pin } from '../../model/pin.ts'
-import { Sequence } from '../../model/sequence.ts'
+import { Pin } from '../../model/pin'
+import { Sequence } from '../../model/sequence'
 import { Model } from '../../Model'
 
 class ViewModel {
@@ -10,7 +10,7 @@ class ViewModel {
     model: Model<Pin>
     name: KnockoutObservable<string>
     number: KnockoutObservable<number>
-    state: KnockoutObservable<string>y
+    state: KnockoutObservable<string>
 
     constructor(params) {
         this.router = params.router

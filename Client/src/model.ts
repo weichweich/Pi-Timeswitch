@@ -7,10 +7,10 @@ import ko = require('knockout')
 import promise = require('ts-promise')
 let Promise = promise.Promise
 
-import { Cache } from './model/Cache.ts'
-import { ServerConnector, Relation } from './model/ServerConnector.ts'
+import { Cache } from './model/Cache'
+import { ServerConnector, Relation } from './model/ServerConnector'
 
-import { Identifiable } from './model/Interfaces.ts'
+import { Identifiable } from './model/Interfaces'
 
 export interface UpdateFunc<E extends Identifiable> {
 	(obj: E): void

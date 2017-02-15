@@ -2,11 +2,12 @@
 
 import config = require('./../config')
 
-var JsonApi = require('devour-client')
+let JsonApi: any = require('devour-client')
 
-let jsonApi = new JsonApi({ apiUrl: config.backendURL })
+let jsonApi: any = new JsonApi({ apiUrl: config.backendURL })
+jsonApi.headers['auth'] = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4ifQ.Oetm7xvhkYbiItRiqNx-z7LZ6ZkmDe1z_95igbPUSjA'
 
-import { Identifiable } from './Interfaces.ts'
+import { Identifiable } from './Interfaces'
 
 export interface Relation {
 	type: string
