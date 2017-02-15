@@ -25,7 +25,7 @@ def dasherize(text):
     return text.replace('_', '-')
 
 class SequenceSchema(Schema):
-    id = fields.Str(dump_only=True)
+    id = fields.String(dump_only=True)
 
     start_time = fields.String(required=True)
     start_range = fields.String(required=True)

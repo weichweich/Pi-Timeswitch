@@ -7,6 +7,7 @@ from flask import request, current_app
 from flask_restful import Resource, abort
 import bcrypt
 import jwt
+from marshmallow import ValidationError
 
 import auth
 from auth.schema import UserSchema
@@ -64,9 +65,10 @@ class UserResource(Resource):
 
 		result = self.schema.load(request_json)
 
-		resources = auth.add_user(result)
-		result = self.schema.dump(resources)
-		return result.data, 200
+		auth.add_user(result.data)
+
+		updated_result = self.schema.dump(result.data)
+		return updated_result.data, 200
 
 	def delete(self, user_name):
 		'''delete an existing user'''

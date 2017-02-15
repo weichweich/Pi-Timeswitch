@@ -23,10 +23,6 @@ class NullHandler(logging.Handler):
 logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
 
-# def get_hashed_password(plain_text_password):
-#     # Hash a password for the first time
-#     #   (Using bcrypt, the salt is saved into the hash itself)
-#     return bcrypt.hashpw(plain_text_password, bcrypt.gensalt())
 
 
 # Privileges
@@ -48,7 +44,7 @@ def create_db():
 			email TEXT,
 			CONSTRAINT unique_name UNIQUE (name))''')
 
-	add_user(User(-1, 'admin', PRIVILEGE_ADMIN, last_loggin=datetime.utcnow()), \
+	add_user(User('admin', PRIVILEGE_ADMIN, user_id=-1, last_loggin=datetime.utcnow()), \
 				  'admin')
 
 def add_user(user, password_clear=None):
@@ -119,6 +115,11 @@ def check_password(user_name, plain_text_password):
     # Check hashed password. Useing bcrypt, 
     # the salt is saved into the hash itself
     return bcrypt.checkpw(plain_text_password, hashed_password)
+
+def get_hashed_password(plain_text_password):
+    # Hash a password for the first time
+    #   (Using bcrypt, the salt is saved into the hash itself)
+    return bcrypt.hashpw(plain_text_password, bcrypt.gensalt())
 
 def dec_auth(func):
 	@wraps(func)

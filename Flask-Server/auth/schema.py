@@ -10,7 +10,7 @@ from marshmallow import ValidationError, post_load, validates_schema
 from marshmallow_jsonapi import Schema, fields
 from marshmallow_jsonapi.exceptions import IncorrectTypeError
 
-
+from auth import get_hashed_password
 from auth.dao import User
 
 class NullHandler(logging.Handler):
@@ -27,15 +27,19 @@ def dasherize(text):
 	return text.replace('_', '-')
 
 class UserSchema(Schema):
-	id = fields.Str(dump_only=True)
+	id = fields.String(dump_only=True)
 
 	name = fields.String(required=True)
+	password = fields.String(load_only=True, required=False, attribute="pwd_salty_hash")
 	email = fields.String(required=False)
 	last_loggin = fields.String(required=False)
 	privilege = fields.Integer(required=False)
 
 	@post_load
 	def make_user(self, data):
+		if "pwd_salty_hash" in data:
+			data["pwd_salty_hash"] = get_hashed_password(data["pwd_salty_hash"])
+		print(str(data))
 		return User(**data)
 
 	def handle_error(self, exc, data):
