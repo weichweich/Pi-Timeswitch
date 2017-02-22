@@ -19,7 +19,7 @@
 
 <table class="container">
     <tr data-bind="foreach: routeStack">
-        <td data-bind="component: { name: page, params: {model: $parent.model, vals: vals, index: index, router: $parent.router } }"></td>
+        <td data-bind="component: { name: viewState.route.page, params: {viewState: viewState, appState: appState} }"></td>
     </tr>
 </table>
 

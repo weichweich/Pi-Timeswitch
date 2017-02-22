@@ -1,45 +1,12 @@
 /// <reference path="./../typings/main.d.ts" />
 
-var _ = require('lodash')
+let _ = require('lodash')
 import ko = require('knockout')
-import router from './router.ts'
+import router from './router'
 import { Model } from './model'
 
-import { Pin, PinJson, pinToJson, jsonToPin } from './model/pin.ts'
-import { Sequence, SequenceJson, sequenceToJson, jsonToSequence } from './model/Sequence.ts'
-
-// ************** Setup Router **************
-
-// observable array of current displayed routes
-let currentRouteStack = ko.observableArray([])
-
-router.use(function(transition, nextRouteStack){
-	// swap next route stack with current stack
-	let remove_count = currentRouteStack().length - nextRouteStack.length
-	if (remove_count > 0) {
-		currentRouteStack.splice(nextRouteStack.length, remove_count)
-	}
-
-	for (var _i = 0; _i < nextRouteStack.length; _i++) {
-		let new_route = nextRouteStack[_i]
-
-		if (currentRouteStack().length <= _i) {
-			// current route stack is shorter 
-			currentRouteStack.push(new_route)
-
-		} else if (!_.isEqual(new_route, currentRouteStack()[_i])) {
-			// if routes are not equal, replace with new one
-			currentRouteStack()[_i] = new_route
-
-			// remove all routes after the current item on current stack
-			// stack: [0, ..., _i, ... remove ...]
-			if (currentRouteStack().length > _i) {
-				let remove_count = currentRouteStack().length -_i -1
-				currentRouteStack.splice(_i, remove_count)
-			}
-		}
-	}
-})
+import { Pin, PinJson, pinToJson, jsonToPin } from './model/pin'
+import { Sequence, SequenceJson, sequenceToJson, jsonToSequence } from './model/Sequence'
 
 // ************** Define Model **************
 
@@ -71,6 +38,54 @@ let pinParser = {
 }
 let pinModel = new Model<Pin>('pin', pinDef, {}, pinParser)
 
+// ************** Setup Router **************
+
+let appState = {
+	router: router,
+	model: {
+		sequence: sequenceModel,
+		pin: pinModel
+	}
+}
+
+// observable array of current displayed routes
+let currentRouteStack = ko.observableArray([])
+
+// routes are extended with global obejcts and route specific properties:
+// router, view state, application state
+router.use(function(transition, nextRouteStack){
+	// update the currentRouteStack to macht the nextRouteStack
+	let remove_count = currentRouteStack().length - nextRouteStack.length
+	if (remove_count > 0) {
+		currentRouteStack.splice(nextRouteStack.length, remove_count)
+	}
+
+	for (var _i = 0; _i < nextRouteStack.length; _i++) {
+		let new_route = {
+			viewState: {
+				index: _i,
+				route: nextRouteStack[_i]
+			},
+			appState: appState
+		} 
+
+		if (currentRouteStack().length <= _i) {
+			// current route stack is shorter 
+			currentRouteStack.push(new_route)
+
+		} else if (!_.isEqual(new_route, currentRouteStack()[_i])) {
+			// if routes are not equal, replace with new one
+			currentRouteStack()[_i] = new_route
+
+			// remove all routes after the current item on current stack
+			// stack: [0, ..., _i, ... remove ...]
+			if (currentRouteStack().length > _i) {
+				let remove_count = currentRouteStack().length -_i -1
+				currentRouteStack.splice(_i, remove_count)
+			}
+		}
+	}
+})
 
 // ************** Register Components **************
 

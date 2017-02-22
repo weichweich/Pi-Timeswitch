@@ -2,18 +2,21 @@
 
 import ko = require('knockout')
 
-import { Pin } from '../../model/pin.ts'
-import { Sequence } from '../../model/sequence.ts'
+import { Pin } from '../../model/pin'
+import { Sequence } from '../../model/sequence'
 import { Model } from '../../Model'
-import router from '../../router.ts'
+import router from '../../router'
 
 
 class ViewModel {
     pinModel: Model<Pin>
     pins: KnockoutObservableArray<Pin>
 
-    constructor (params) {
-        this.pinModel = params.model.pin
+	constructor(params) {
+		let viewState = params.viewState
+		let appState = params.appState
+
+        this.pinModel = appState.model.pin
         this.pins = ko.observableArray([])
 
         this.pinModel.addObserver({

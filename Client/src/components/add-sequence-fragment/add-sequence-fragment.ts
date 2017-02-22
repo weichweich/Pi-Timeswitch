@@ -1,8 +1,8 @@
 /// <reference path="./../../../typings/main.d.ts" />
 
 import ko = require('knockout')
-import { Pin } from '../../model/pin.ts'
-import { Sequence } from '../../model/Sequence.ts'
+import { Pin } from '../../model/pin'
+import { Sequence } from '../../model/Sequence'
 import { Model } from '../../Model'
 
 class ViewModel {
@@ -18,13 +18,16 @@ class ViewModel {
 
     pinId: number
 
-    constructor(params: any) {
-        this.router = params.router
-        this.sequenceModel = params.model.sequence
+	constructor(params) {
+		let viewState = params.viewState
+		let appState = params.appState
+
+        this.router = appState.router
+        this.sequenceModel = appState.model.sequence
 
         this.state = ko.observable('ready') // possible: ready, uploading 
 
-        this.pinId = params.vals.pinId
+        this.pinId = viewState.route.vals.pinId
         this.start_time = ko.observable('')
         this.start_range = ko.observable('')
         this.end_time = ko.observable('')

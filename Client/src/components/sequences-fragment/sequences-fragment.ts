@@ -2,10 +2,10 @@
 
 import ko = require('knockout')
 
-import { Pin } from '../../model/pin.ts'
-import { Sequence } from '../../model/sequence.ts'
+import { Pin } from '../../model/pin'
+import { Sequence } from '../../model/sequence'
 import { Model } from '../../Model'
-import router from '../../router.ts'
+import router from '../../router'
 
 class ViewModel {
     router: any
@@ -17,10 +17,13 @@ class ViewModel {
     sequences: KnockoutObservableArray<Sequence>
 
 	constructor(params) {
-        this.router = params.router
-        this.pinModel = params.model.pin
-        this.sequenceModel = params.model.sequence
-        this.index = params.index
+		let viewState = params.viewState
+		let appState = params.appState
+
+        this.router = appState.router
+        this.pinModel = appState.model.pin
+        this.sequenceModel = appState.model.sequence
+        this.index = viewState.index
 
         this.pin = ko.observable(undefined)
         this.sequences = ko.observableArray([])
@@ -37,13 +40,13 @@ class ViewModel {
             objectRemoved: this.pinDeleted
         })
 
-        this.pinModel.findOne(params.vals.pinId).then((pin: Pin) => {
+        this.pinModel.findOne(viewState.route.vals.pinId).then((pin: Pin) => {
             this.pin(pin)
         })
         this.sequenceModel.findAll({
             relation: [{
                 type: 'pin',
-                id: params.vals.pinId
+                id: viewState.route.vals.pinId
             }],
             attributes: []
         }).then((sequences: Sequence[]) => {

@@ -12,9 +12,11 @@ class ViewModel {
     number: KnockoutObservable<number>
     state: KnockoutObservable<string>
 
-    constructor(params) {
-        this.router = params.router
-        this.model = params.model.pin
+	constructor(params) {
+		let viewState = params.viewState
+		let appState = params.appState
+        this.router = appState.router
+        this.model = appState.model.pin
         this.name = ko.observable('')
         this.number = ko.observable(0)
         this.state = ko.observable('ready') // possible: ready, uploading 
