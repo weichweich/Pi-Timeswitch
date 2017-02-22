@@ -3,10 +3,10 @@
 from functools import wraps
 import sqlite3 as sql
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
-from flask import request, current_app
+from flask import request, current_app, g
 from flask_restful import abort
 import bcrypt
 import jwt
@@ -27,8 +27,18 @@ LOGGER = logging.getLogger(__name__)
 
 # Privileges
 
-PRIVILEGE_ADMIN = 0
-PRIVILEGE_USER  = 1
+PRIVILEGE_ADMIN = 1
+PRIVILEGE_USER  = 0
+
+JWT_EXPERATIONTIME = {
+	"days":1,
+	"seconds":0,
+	"microseconds":0,
+	"milliseconds":0,
+	"minutes":0,
+	"hours":0,
+	"weeks":0
+}
 
 
 def create_db():
@@ -106,10 +116,15 @@ def update_user(user, password_clear=None):
 				User(name, privilege, last_loggin, password)
 				VALUES (?, ?, ?, ?)''', vals)
 
-def create_token(user, password):
-	LOGGER.info("TODO: Test pwd (salted hash)")
+def create_token(user):
 	secret = current_app.config['SECRET_KEY']
-	return jwt.encode({'user': 'admin'}, secret, algorithm='HS256')
+	jwt_token = jwt.encode({
+			'user': user.name,
+			'id': user.id,
+			'iat': datetime.utcnow(),
+			'exp': datetime.utcnow() + timedelta(**JWT_EXPERATIONTIME)
+		}, secret, algorithm='HS256')
+	return str(jwt_token)
 
 def check_password(user_name, plain_text_password):
     # Check hashed password. Useing bcrypt, 
@@ -134,6 +149,16 @@ def dec_auth(func):
 				LOGGER.info("ACCESS GRANTED: User {0} {1} {2}"
 							.format(token_data['user'], \
 									request.method, request.url))
+				user = get_user(token_data['user'])
+				if user is None:
+					msg="User is not known!"
+					abort(401, description=msg)
+					return
+				g.auth_user = user
+			else:
+				msg="Missing data in token!"
+				abort(401, description=msg)
+				return
 
 		except InvalidTokenError:
 			msg="The supplied token was not valide!"

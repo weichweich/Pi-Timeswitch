@@ -27,7 +27,7 @@ def dasherize(text):
 	return text.replace('_', '-')
 
 class UserSchema(Schema):
-	id = fields.String(dump_only=True)
+	id = fields.String(dump_only=True, required=True)
 
 	name = fields.String(required=True)
 	password = fields.String(load_only=True, required=False, attribute="pwd_salty_hash")

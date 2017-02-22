@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import json
 from datetime import datetime
 
-from flask import request, current_app
+from flask import request, current_app, g
 from flask_restful import Resource, abort
 import bcrypt
 import jwt
@@ -20,9 +21,20 @@ logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
 
 class LoginResource(Resource):
+	method_decorators = [auth.dec_auth]
 
 	def post(self):
-		return 500
+		auth_user = getattr(g, 'auth_user', 0)
+		
+		if auth_user is None:
+			return "No user found.", 500
+
+		LOGGER.info('User {0} logged in.'.format(auth_user.name))
+		
+		token = auth.create_token(auth_user)
+		body_json = { 'token': token }
+
+		return json.dumps(body_json), 200
 
 class UsersResource(Resource):
 	method_decorators = [auth.dec_auth]

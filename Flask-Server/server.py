@@ -8,7 +8,7 @@ from time_switch.model import create_db as time_db_init, PiSwitchModel
 from time_switch.schema import PinSchema, SequenceSchema
 from rest_model_adapter import ManyRessource, SingleResource
 from auth import create_db as auth_db_init, dec_auth
-from auth.resource import UsersResource, UserResource
+from auth.resource import UsersResource, UserResource, LoginResource
 
 import argparse
 import logging
@@ -135,12 +135,15 @@ api.add_resource(SingleResource, URL_PREFIX + '/sequences/<int:sequence_id>',
 
 # ––––––––––––––––––––––––––––––––––––––
 # User
-
 api.add_resource(UsersResource, URL_PREFIX + '/users',
 				 endpoint='users')
 
 api.add_resource(UserResource, URL_PREFIX + '/users/<string:user_name>',
 				 endpoint='user')
+
+# ––––––––––––––––––––––––––––––––––––––
+# Login
+api.add_resource(LoginResource, URL_PREFIX + "/login", endpoint='login')
 
 if __name__ == '__main__':
 	switch_manager.start()
