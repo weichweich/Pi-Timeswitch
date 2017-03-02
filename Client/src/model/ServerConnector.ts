@@ -3,6 +3,14 @@
 import config = require('./../config')
 let JsonApi: any = require('devour-client')
 
+let errorMiddleware = {
+  name: 'custom-error-handler',
+  error: function (payload) {
+  	console.log("mh", payload)
+  	return 'error!!'
+  }
+}
+
 import { Identifiable } from './Interfaces'
 
 export interface Relation {
@@ -18,6 +26,8 @@ export class ServerConnector<E extends Identifiable> {
 
 	constructor(type: string, definition: {}, options: {}, parser: any) {
 		this.jsonApi = new JsonApi({ apiUrl: config.backendURL })
+		// this.jsonApi.replaceMiddleware('errors', errorMiddleware)
+
 		this.jsonApi.define(type, definition, options)
 		this.jsonToObject = parser.jsonToObject
 		this.objectToJson = parser.objectToJson
@@ -25,7 +35,7 @@ export class ServerConnector<E extends Identifiable> {
 	}
 
 	public setJWTToken = (token: string) => {
-		this.jsonApi.header['auth'] = token
+		this.jsonApi.headers['auth'] = token
 	}
 
 	public getAll = (relations: Relation[]) => {

@@ -88,6 +88,10 @@ body {
     width: 50%;
 }
 
+button.submit {
+    float: right;
+}
+
 div.wappen {
     margin-right: auto;
     margin-left: auto;

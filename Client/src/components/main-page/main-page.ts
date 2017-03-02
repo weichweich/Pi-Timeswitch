@@ -8,30 +8,34 @@ import { Model } from '../../Model'
 import router from '../../router'
 
 class ViewModel {
-    router: any
-    pinModel: Model<Pin>
-    index: number
+	router: any
+	pinModel: Model<Pin>
+	index: number
 
-    title: KnockoutObservable<string>
-    pins: KnockoutObservableArray<Pin>
+	title: KnockoutObservable<string>
+	pins: KnockoutObservableArray<Pin>
 
 	constructor(params) {
 		let viewState = params.viewState
 		let appState = params.appState
 
-        this.router = appState.router
-        this.index = viewState.index
-        this.pinModel = appState.model.pin
-        this.pins = ko.observableArray([])
-        this.title = ko.observable('Overview!')
+		this.router = appState.router
+		this.index = viewState.index
+		this.pinModel = appState.model.pin
 
-        this.pinModel.findAll({
-            relation: [],
-            attributes: []
-        }).then((pins) => {
-            this.pins(pins)
-        })
-    }
+		this.pins = ko.observableArray([])
+		this.title = ko.observable('Overview!')
+
+		this.pinModel.findAll({
+			relation: [],
+			attributes: []
+		}).then((pins) => {
+			this.pins(pins)
+		}).catch((error) => {
+			console.log("Error!", error)
+			this.router.transitionTo('login')
+		})
+	}
 };
 
 export = ViewModel

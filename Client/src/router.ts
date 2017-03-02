@@ -7,6 +7,7 @@ let router = new cherrytree()
 
 // define routes
 router.map(function(route) {
+	route('login', { page: 'login-page', stack: false })
     route('/', { page: 'main-page', stack: false }, function() {
         route('pins', { page: 'pins-fragment', stack: true }, function() {
             route('add-pin', { path: '/pin/add', page: 'add-pin-fragment', stack: true })

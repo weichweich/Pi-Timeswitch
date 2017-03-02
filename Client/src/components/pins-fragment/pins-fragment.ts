@@ -5,16 +5,17 @@ import ko = require('knockout')
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/sequence'
 import { Model } from '../../Model'
-import router from '../../router'
-
 
 class ViewModel {
+	router: any
     pinModel: Model<Pin>
     pins: KnockoutObservableArray<Pin>
 
 	constructor(params) {
 		let viewState = params.viewState
 		let appState = params.appState
+
+        this.router = appState.router
 
         this.pinModel = appState.model.pin
         this.pins = ko.observableArray([])
@@ -30,7 +31,10 @@ class ViewModel {
             attributes: []
         }).then((pins) => {
             this.pins(pins)
-        })
+        }).catch((error) => {
+			console.log("Error!")
+			this.router.transitionTo('login')
+		})
     }
 
     public addPin = (pin: Pin) => {
@@ -54,11 +58,11 @@ class ViewModel {
     }
 
     public pushAdd = (params) => {
-        router.transitionTo('add-pin')
+        this.router.transitionTo('add-pin')
     }
 
     public pushPin = (pin: Pin, event) => {
-        router.transitionTo('sequences', { pinId: pin.id })
+        this.router.transitionTo('sequences', { pinId: pin.id })
     }
 
     public dispose = () => {

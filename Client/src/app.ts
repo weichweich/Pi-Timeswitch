@@ -21,7 +21,7 @@ let sequenceParser = {
 	jsonToObject: jsonToSequence, 
 	objectToJson: sequenceToJson
 }
-let sequenceModel = new Model<Sequence>('sequence', sequenceDef, {}, sequenceParser)
+let sequenceModel: Model<Sequence> = new Model<Sequence>('sequence', sequenceDef, {}, sequenceParser)
 
 let pinDef = {
 	name: '',
@@ -36,7 +36,7 @@ let pinParser = {
 	jsonToObject: jsonToPin,
 	objectToJson: pinToJson
 }
-let pinModel = new Model<Pin>('pin', pinDef, {}, pinParser)
+let pinModel: Model<Pin> = new Model<Pin>('pin', pinDef, {}, pinParser)
 
 // ************** Setup Router **************
 
@@ -45,6 +45,10 @@ let appState = {
 	model: {
 		sequence: sequenceModel,
 		pin: pinModel
+	},
+	login_func: (token: string) => {
+		sequenceModel.connection.setJWTToken(token)
+		pinModel.connection.setJWTToken(token)
 	}
 }
 
@@ -61,7 +65,7 @@ router.use(function(transition, nextRouteStack){
 	}
 
 	for (var _i = 0; _i < nextRouteStack.length; _i++) {
-		let new_route = {
+		let newRoute = {
 			viewState: {
 				index: _i,
 				route: nextRouteStack[_i]
@@ -71,11 +75,11 @@ router.use(function(transition, nextRouteStack){
 
 		if (currentRouteStack().length <= _i) {
 			// current route stack is shorter 
-			currentRouteStack.push(new_route)
+			currentRouteStack.push(newRoute)
 
-		} else if (!_.isEqual(new_route, currentRouteStack()[_i])) {
+		} else if (!_.isEqual(newRoute, currentRouteStack()[_i])) {
 			// if routes are not equal, replace with new one
-			currentRouteStack()[_i] = new_route
+			currentRouteStack()[_i] = newRoute
 
 			// remove all routes after the current item on current stack
 			// stack: [0, ..., _i, ... remove ...]
@@ -89,6 +93,10 @@ router.use(function(transition, nextRouteStack){
 
 // ************** Register Components **************
 
+ko.components.register('login-page', {
+	viewModel: require('./components/login-page/login-page'),
+	template: require('./components/login-page/login-page.html')
+})
 ko.components.register('main-page', {
 	viewModel: require('./components/main-page/main-page'),
 	template: require('./components/main-page/main-page.html')
