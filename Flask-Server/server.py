@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, g
+from flask import Flask, g, make_response
 from flask_restful import Api
 
 from time_switch.switch_manager import SwitchManager
 from time_switch.model import create_db as time_db_init, PiSwitchModel
 from time_switch.schema import PinSchema, SequenceSchema
 from rest_model_adapter import ManyRessource, SingleResource
-from auth import create_db as auth_db_init, dec_auth
+from auth import dec_auth
+from auth.model import create_db as auth_db_init
 from auth.resource import UsersResource, UserResource, LoginResource
 
 import argparse
@@ -69,7 +70,7 @@ URL_PREFIX = '/api'
 
 
 app = Flask(__name__)
-api = Api(app)
+api = Api(app, default_mediatype='application/vnd.api+json')
 app.config['SECRET_KEY'] = 'secret'
 app.config['SQL_FILE'] = args.schedule_file
 
@@ -86,6 +87,12 @@ switch_manager = SwitchManager(switch_model)
 # ######################################
 # # flask_restful:
 # ######################################
+
+@api.representation('application/vnd.api+json')
+def output_json(data, code, headers=None):
+    resp = make_response(str(data), code)
+    resp.headers.extend(headers or {})
+    return resp
 
 # ––––––––––––––––––––––––––––––––––––––
 # Pins

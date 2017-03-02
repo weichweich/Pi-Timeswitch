@@ -21,17 +21,35 @@ logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
 
 class LoginResource(Resource):
-	method_decorators = [auth.dec_auth]
+	method_decorators = []
 
 	def post(self):
-		auth_user = getattr(g, 'auth_user', 0)
+		json_data = request.get_json(force=True)
 		
-		if auth_user is None:
-			return "No user found.", 500
+		if 'name' not in json_data:
+			LOGGER.info('Access denied: No username given.')
+			return "No username found.", 400
+		elif 'password' not in json_data:
+			LOGGER.info('Access denied: No password given.')
+			return "No password found.", 400
 
-		LOGGER.info('User {0} logged in.'.format(auth_user.name))
+		try:
+			user_name = json_data['name'].encode('utf-8')
+			password = json_data['password'].encode('utf-8')
+
+			if not auth.check_password(auth.get_user(user_name), password):
+				LOGGER.info('Access denied: wrong password.')
+				return "Invalide password or username.", 400
+		except LookupError:
+			LOGGER.info('Access denied: User not found.')
+			return "Invalide password or username.", 400
+		except Exception as e:
+			LOGGER.warn('Access denied: unknown error: {}'.format(e))
+			return "Unknowen error.", 500
+
+		LOGGER.info('User {0} logged in.'.format(json_data['name']))
 		
-		token = auth.create_token(auth_user)
+		token = auth.create_token(auth.get_user(json_data['name']))
 		body_json = { 'token': token }
 
 		return json.dumps(body_json), 200
