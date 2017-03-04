@@ -34,14 +34,14 @@ class LoginResource(Resource):
 			return "No password found.", 400
 
 		try:
-			user_name = json_data['name'].encode('utf-8')
-			password = json_data['password'].encode('utf-8')
+			user_name = json_data['name']
+			password = json_data['password']
 
 			if not auth.check_password(auth.get_user(user_name), password):
 				LOGGER.info('Access denied: wrong password.')
 				return "Invalide password or username.", 400
 		except LookupError:
-			LOGGER.info('Access denied: User not found.')
+			LOGGER.info('Access denied: User not found. {}'.format(user_name))
 			return "Invalide password or username.", 400
 		except Exception as e:
 			LOGGER.warn('Access denied: unknown error: {}'.format(e))

@@ -17,7 +17,14 @@ from jwt.exceptions import InvalidTokenError, DecodeError, \
 from auth.dao import User
 from auth.model import get_user
 
-JWT_EXPERATIONTIME = {
+class NullHandler(logging.Handler):
+	def emit(self, record):
+		pass
+
+logging.getLogger(__name__).addHandler(NullHandler())
+LOGGER = logging.getLogger(__name__)
+
+__JWT_EXPERATIONTIME = {
 	"days":1,
 	"seconds":0,
 	"microseconds":0,
@@ -34,7 +41,7 @@ def create_token(user):
 			'user': user.name,
 			'id': user.id,
 			'iat': datetime.utcnow(),
-			'exp': datetime.utcnow() + timedelta(**JWT_EXPERATIONTIME)
+			'exp': datetime.utcnow() + timedelta(**__JWT_EXPERATIONTIME)
 		}, secret, algorithm='HS256')
 	return jwt_token.decode('utf-8')
 
@@ -42,14 +49,14 @@ def check_password(user, plain_text_password):
     # Check hashed password. Useing bcrypt, 
     # the salt is saved into the hash itself
     hashed_password = user.pwd_salty_hash
-    return bcrypt.checkpw(plain_text_password, hashed_password)
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_password)
 
 def get_hashed_password(plain_text_password):
     # Hash a password for the first time
     #   (Using bcrypt, the salt is saved into the hash itself)
     return bcrypt.hashpw(plain_text_password, bcrypt.gensalt())
 
-def make_auth_error(code, detail):
+def __make_auth_error(code, detail):
 	return {
 		'status': '401',
 		'code': code,
@@ -77,35 +84,35 @@ def dec_auth(func):
 				user = get_user(token_data['user'])
 				if user is None:
 					msg="User is not known!"
-					errors.append(make_auth_error(401, msg))
+					errors.append(__make_auth_error(401, msg))
 				else:
 					g.auth_user = user
 			else:
 				msg="Missing data in token!"
-				errors.append(make_auth_error(401, msg))
+				errors.append(__make_auth_error(401, msg))
 
 		except InvalidTokenError:
 			msg="The supplied token was not valide!"
-			errors.append(make_auth_error(401, msg))
+			errors.append(__make_auth_error(401, msg))
 		except DecodeError:
 			msg="The token was not singed corretly!"
-			errors.append(make_auth_error(401, msg))
+			errors.append(__make_auth_error(401, msg))
 		except ExpiredSignatureError:
 			msg="The token expired!"
-			errors.append(make_auth_error(401, msg))
+			errors.append(__make_auth_error(401, msg))
 		except InvalidAlgorithmError:
 			msg="The used algorithem is not suppoerted by the server!"
-			errors.append(make_auth_error(401, msg))
+			errors.append(__make_auth_error(401, msg))
 		except MissingRequiredClaimError:
 			msg="The token is missing a claim!"
-			errors.append(make_auth_error(401, msg))
+			errors.append(__make_auth_error(401, msg))
 		except KeyError:
 			msg="The token is not provided!"
-			errors.append(make_auth_error(401, msg))
+			errors.append(__make_auth_error(401, msg))
 		except Exception as e:
 			msg="Unknown token error!"
 			LOGGER.warn(str(e))
-			errors.append(make_auth_error(401, msg))
+			errors.append(__make_auth_error(401, msg))
 
 		if len(errors) == 0:
 			return func(*args, **kwargs)

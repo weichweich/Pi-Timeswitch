@@ -7,7 +7,7 @@ from time_switch.switch_manager import SwitchManager
 from time_switch.model import create_db as time_db_init, PiSwitchModel
 from time_switch.schema import PinSchema, SequenceSchema
 from rest_model_adapter import ManyRessource, SingleResource
-from auth import dec_auth
+import auth
 from auth.model import create_db as auth_db_init
 from auth.resource import UsersResource, UserResource, LoginResource
 
@@ -97,7 +97,7 @@ def output_json(data, code, headers=None):
 # ––––––––––––––––––––––––––––––––––––––
 # Pins
 kwargs_pins = {
-	'decorators':   [dec_auth],
+	'decorators':   [auth.dec_auth],
 	'schema':       PinSchema,
 	'getter_func':  switch_model.get_pins,
 	'setter_func':  switch_model.set_pin,
@@ -107,7 +107,7 @@ kwargs_pins = {
 api.add_resource(ManyRessource, URL_PREFIX + '/pins', endpoint='pins',
 				 resource_class_kwargs=kwargs_pins)
 kwargs_pin = {
-	'decorators':   [dec_auth],
+	'decorators':   [auth.dec_auth],
 	'schema':       PinSchema,
 	'getter_func':  switch_model.get_pin,
 	'setter_func':  switch_model.set_pin,
@@ -120,7 +120,7 @@ api.add_resource(SingleResource, URL_PREFIX + '/pins/<int:pin_id>', endpoint='pi
 # ––––––––––––––––––––––––––––––––––––––
 # Sequences
 kwargs_sequences = {
-	'decorators':   [dec_auth],
+	'decorators':   [auth.dec_auth],
 	'schema':       SequenceSchema,
 	'getter_func':  switch_model.get_sequences_for_pin,
 	'setter_func':  switch_model.set_sequence,

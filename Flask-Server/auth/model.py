@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
+
+import bcrypt
 import logging
 import sqlite3 as sql
 from flask import request, current_app, g
+from datetime import datetime, timedelta
 
 from auth.dao import User
 
@@ -38,7 +42,7 @@ def add_user(user, password_clear=None):
 
         pwd_salted_hashed = ''
         if password_clear is not None: 
-            pwd_salted_hashed = bcrypt.hashpw(password_clear, bcrypt.gensalt())
+            pwd_salted_hashed = bcrypt.hashpw(password_clear.encode('utf-8'), bcrypt.gensalt())
         else:
             pwd_salted_hashed = user.pwd_salty_hash
 
@@ -54,7 +58,7 @@ def get_user(user_name):
         cur = connection.cursor()
 
         cur.execute('''SELECT * FROM User
-                WHERE name = ?''', (user_name,))
+                WHERE name=?''', (user_name,))
         row = cur.fetchone()
         if row is None:
             raise LookupError('User not found!')
@@ -81,10 +85,10 @@ def remove_user(user_name):
         cur.execute('''DELETE FROM User
                     WHERE name=?''', (user_name,))
 
-def update_user(user, password_clear=None):
+def update_user(user, password_clear):
     with sql.connect(current_app.config['SQL_FILE']) as connection:
         cur = connection.cursor()
-        pwd_salted_hashed = bcrypt.hashpw(password_clear, bcrypt.gensalt())
+        pwd_salted_hashed = bcrypt.hashpw(password_clear.encode('utf-8'), bcrypt.gensalt())
         val = (user.name, user.privilege, user.last_loggin, pwd_salted_hashed)
         cur.execute('''REPLACE INTO
                 User(name, privilege, last_loggin, password)
