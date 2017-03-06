@@ -1,16 +1,14 @@
-/// <reference path="./../typings/main.d.ts" />
-
-import config = require('./config')
+/// <reference path="./../../../typings/main.d.ts" />
 
 import $ = require('jquery')
 import ko = require('knockout')
 import promise = require('ts-promise')
 let Promise = promise.Promise
 
-import { Cache } from './model/Cache'
-import { ServerConnector, Relation } from './model/ServerConnector'
+import { Cache } from './Cache'
+import { ServerConnector, Relation } from './ServerConnector'
 
-import { Identifiable } from './model/Interfaces'
+import { Identifiable } from './Interfaces'
 
 export interface UpdateFunc<E extends Identifiable> {
 	(obj: E): void

@@ -2,7 +2,22 @@
 
 import ko = require('knockout')
 
-import { Identifiable } from './Interfaces.ts'
+import { Identifiable } from '../frame'
+
+export let definition = {
+	name: '',
+	state: '',
+	number: '',
+	sequences: {
+		jsonApi: 'hasMany',
+		type: 'sequences'
+	}
+}
+
+export let parser = {
+	jsonToObject: jsonToPin,
+	objectToJson: pinToJson
+}
 
 export interface PinJson {
 	id: number
@@ -12,7 +27,7 @@ export interface PinJson {
 	state: number
 }
 
-export function jsonToPin(json) {
+export function jsonToPin(json: any): Pin {
 	return new Pin(json.id, json.number, json.name, json.state)
 }
 

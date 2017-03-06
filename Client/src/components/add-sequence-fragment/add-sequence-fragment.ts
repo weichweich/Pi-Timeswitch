@@ -3,12 +3,15 @@
 import ko = require('knockout')
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/Sequence'
-import { Model } from '../../Model'
+import { Model } from '../../frame'
+import { AppState } from '../../AppState'
+import { Constants } from '../../config'
 
 class ViewModel {
     sequenceModel :Model<Sequence>
     state: KnockoutObservable<string>
     router: any
+    appState: AppState
 
     start_time: KnockoutObservable<string>
     start_range: KnockoutObservable<string>
@@ -23,7 +26,7 @@ class ViewModel {
 		let appState = params.appState
 
         this.router = appState.router
-        this.sequenceModel = appState.model.sequence
+        this.sequenceModel = appState.getModel(Constants.model.sequence)
 
         this.state = ko.observable('ready') // possible: ready, uploading 
 
@@ -75,6 +78,7 @@ class ViewModel {
     public stateUploading = () => {
         this.state('uploading')
     }
+    
     public stateReady = () => {
         this.state('ready')
     }

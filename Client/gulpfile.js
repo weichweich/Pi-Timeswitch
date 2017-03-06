@@ -52,19 +52,11 @@ gulp.task('browserify', function() {
     	.transform(stringify(['.html']))
         .add(mainFile)
         .plugin(tsify)
-		.on('error', swallowError)
         .bundle()
+        .on('error', swallowError)
         .pipe(source(mainFile))
         .pipe(gulp.dest(destDir))
-		.on('error', swallowError);
-    // return browserify({basedir: '.'})
-    //     .add(srcDir + '/' + mainFile)
-    //     .plugin(tsify)
-    //     .transform(debowerify)
-    //     .transform(stringify(['.html']))
-    //     .bundle()
-    //     .pipe(source(mainFile))
-    //     .pipe(gulp.dest(destDir));
+        ;
 });
 
 gulp.task('copy-index', function() {

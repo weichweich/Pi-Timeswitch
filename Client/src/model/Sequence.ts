@@ -2,7 +2,20 @@
 
 import ko = require('knockout')
 
-import { Identifiable } from './Interfaces.ts'
+import { Identifiable } from '../frame'
+
+export let definition = {
+	start_time: '',
+	start_range: '',
+	end_time: '',
+	end_range: '',
+	pin_id: ''
+}
+
+export let parser = { 
+	jsonToObject: jsonToSequence, 
+	objectToJson: sequenceToJson
+}
 
 export interface SequenceJson extends Identifiable {
 	id: number

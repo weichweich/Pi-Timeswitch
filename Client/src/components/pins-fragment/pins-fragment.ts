@@ -4,12 +4,15 @@ import ko = require('knockout')
 
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/sequence'
-import { Model } from '../../Model'
+import { Model } from '../../frame'
+import { AppState } from '../../AppState'
+import { Constants } from '../../config'
 
 class ViewModel {
 	router: any
     pinModel: Model<Pin>
     pins: KnockoutObservableArray<Pin>
+    appState: AppState
 
 	constructor(params) {
 		let viewState = params.viewState
@@ -17,7 +20,7 @@ class ViewModel {
 
         this.router = appState.router
 
-        this.pinModel = appState.model.pin
+        this.pinModel = appState.getModel(Constants.model.pin)
         this.pins = ko.observableArray([])
 
         this.pinModel.addObserver({
@@ -26,15 +29,18 @@ class ViewModel {
             objectRemoved: this.removePin
         })
 
+        let globThis = this
         this.pinModel.findAll({
             relation: [],
             attributes: []
         }).then((pins) => {
             this.pins(pins)
-        }).catch((error) => {
-			console.log("Error!")
-			this.router.transitionTo('login')
-		})
+        }, (error) => {
+            console.log("Error!")
+            globThis.router.transitionTo('login', { 
+                backRoute: globThis.router.state.path 
+            })
+        })
     }
 
     public addPin = (pin: Pin) => {

@@ -1,25 +1,12 @@
-/// <reference path="./../typings/main.d.ts" />
+/// <reference path="./../../typings/main.d.ts" />
 
 let cherrytree: any = require('cherrytree/standalone')
 
 // Init properties
-let router = new cherrytree()
-
-// define routes
-router.map(function(route) {
-	route('login', { page: 'login-page', stack: false })
-    route('/', { page: 'main-page', stack: false }, function() {
-        route('pins', { page: 'pins-fragment', stack: true }, function() {
-            route('add-pin', { path: '/pin/add', page: 'add-pin-fragment', stack: true })
-            route('sequences', { path: '/pins/:pinId', page: 'sequences-fragment', stack: true }, function() {
-                route('add-sequence', { path: '/pins/:pinId/add', page: 'add-sequence-fragment', stack: true })
-            })
-        })
-    })
-})
+let cherryRouter = new cherrytree()
 
 // create transition to update the current route stack.
-router.use((transition) => {
+cherryRouter.use((transition) => {
 
     let { routes, params } = transition
     let nextRouteStack = []
@@ -52,6 +39,9 @@ router.use((transition) => {
     return nextRouteStack
 })
 
-router.listen()
 
-export default router
+export let router = cherryRouter
+
+export function startRouter() {
+    cherryRouter.listen()
+}

@@ -1,6 +1,6 @@
-/// <reference path="./../../typings/main.d.ts" />
+/// <reference path="./../../../typings/main.d.ts" />
 
-import { Identifiable } from './Interfaces.ts'
+import { Identifiable } from './Interfaces'
 
 
 export class Cache<E extends Identifiable> {

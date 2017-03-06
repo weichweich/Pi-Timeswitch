@@ -4,11 +4,13 @@ import ko = require('knockout')
 
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/sequence'
-import { Model } from '../../Model'
-import router from '../../router'
+import { Model } from '../../frame'
+import { AppState } from '../../AppState'
+import { Constants } from '../../config'
 
 class ViewModel {
     router: any
+    appState: AppState
     pinModel: Model<Pin>
     sequenceModel: Model<Sequence>
     index: number
@@ -21,8 +23,8 @@ class ViewModel {
 		let appState = params.appState
 
         this.router = appState.router
-        this.pinModel = appState.model.pin
-        this.sequenceModel = appState.model.sequence
+        this.pinModel = appState.getModel(Constants.model.pin)
+        this.sequenceModel = appState.getModel(Constants.model.sequence)
         this.index = viewState.index
 
         this.pin = ko.observable(undefined)
@@ -89,7 +91,7 @@ class ViewModel {
     }
 
     public pushAdd = (params) => {
-        router.transitionTo('add-sequence', { pinId: this.pin().id })
+        this.router.transitionTo('add-sequence', { pinId: this.pin().id })
     }
 }
 

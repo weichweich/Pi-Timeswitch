@@ -3,11 +3,14 @@
 import ko = require('knockout')
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/sequence'
-import { Model } from '../../Model'
+import { Model } from '../../frame'
+import { AppState } from '../../AppState'
+import { Constants } from '../../config'
 
 class ViewModel {
 	router: any
-	model: Model<Pin>
+    appState: AppState
+	pinModel: Model<Pin>
 	name: KnockoutObservable<string>
 	number: KnockoutObservable<number>
 	state: KnockoutObservable<string>
@@ -16,13 +19,13 @@ class ViewModel {
 		let viewState = params.viewState
 		let appState = params.appState
 		this.router = appState.router
-		this.model = appState.model.pin
+        this.pinModel = appState.getModel(Constants.model.pin)
 		this.name = ko.observable('')
 		this.number = ko.observable(0)
 		this.state = ko.observable('ready') // possible: ready, uploading 
 	}
 
-	public cancle = (params) => {
+	public cancle (params) {
 		// length of current route stack
 		let length = this.router.state.routes.length
 		// get the route bevor the current route
@@ -30,7 +33,7 @@ class ViewModel {
 		this.router.transitionTo(last_route.name)
 	}
 
-	public addPin = (params) => {
+	public addPin (params) {
 		if (this.state() !== 'ready') {
 			return
 		}
@@ -42,7 +45,7 @@ class ViewModel {
 
 		let pin = new Pin(aNumber, aNumber, aName, 0)
 
-		this.model.create(pin, {
+		this.pinModel.create(pin, {
 			relation: [],
 			attributes: []
 		}).then((respons) => {
@@ -54,10 +57,10 @@ class ViewModel {
 		})
 	}
 
-	public stateUploading = () => {
+	public stateUploading () {
 		this.state('uploading')
 	}
-	public stateReady = () => {
+	public stateReady () {
 		this.state('ready')
 	}
 }
