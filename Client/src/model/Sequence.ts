@@ -62,6 +62,7 @@ export function sequenceToJson(sequence: Sequence): SequenceJson {
 }
 
 export function jsonToSequence(sequence: SequenceJson): Sequence {
+	console.log('sequence ->', sequence)
 	return new Sequence(
 		sequence.id,
 		sequence.pin_id,

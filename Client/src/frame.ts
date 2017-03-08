@@ -7,6 +7,7 @@ import { routes } from "./routes"
 import { AppState } from "./AppState"
 
 export * from "./frame/router"
+export * from "./frame/model/cookie"
 export * from "./frame/model/model"
 export * from "./frame/model/Interfaces"
 
@@ -30,8 +31,7 @@ export function startApp() {
 				viewState: {
 					index: _i,
 					route: nextRouteStack[_i]
-				},
-				appState: appState
+				}
 			} 
 	
 			if (currentRouteStack().length <= _i) {
@@ -57,7 +57,8 @@ export function startApp() {
 	startRouter()
 
 	// ************** Set Root ViewModel **************
-	ko.applyBindings({ 
+	ko.applyBindings({
+		appState: appState,
 		routeStack: currentRouteStack, 
 		router: router
 	});

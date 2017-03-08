@@ -9,23 +9,17 @@
 </head>
 <body>
 
-<div class="nav">
-    <ul>
-        <li class="icon"><a href="/"><img src="images/favicons/android-chrome-192x192.png"></a></li>
-        <li>Pi-Timeswitch</li>
-        <li class="info"><a href="login">Login/Logout</a></li>
-    </ul>
-</div>
+<div data-bind="component: { name: 'header', params: {appState: appState} }"></div>
 
 <table class="container">
     <tr data-bind="foreach: routeStack">
-        <td data-bind="component: { name: viewState.route.page, params: {viewState: viewState, appState: appState} }"></td>
+        <td data-bind="component: { name: viewState.route.page, params: {viewState: viewState, appState: $parent.appState} }"></td>
     </tr>
 </table>
 
 <div class="wappen">
     <img src="/images/Wappen.png" width="25" hight="25">
 </div>
-<script src="app.ts"></script>
+<script src="app.js"></script>
 </body>
 </html>

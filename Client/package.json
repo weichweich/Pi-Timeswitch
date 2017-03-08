@@ -10,7 +10,7 @@
   "license": "ISC",
   "browserify": {},
   "devDependencies": {
-    "browserify": "^13.0.0",
+    "browserify": "^13.3.0",
     "debug": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-add-src": "^0.2.0",
@@ -24,7 +24,8 @@
     "gulp-watch": "^4.3.5",
     "http-proxy-middleware": "^0.14.0",
     "stringify": "^5.1.0",
-    "tsify": "^0.15.3",
+    "tsify": "^3.0.1",
+    "typescript": "^2.2.1",
     "typing": "^0.1.9",
     "vinyl-source-stream": "^1.1.0"
   },

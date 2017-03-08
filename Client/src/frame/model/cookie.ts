@@ -1,4 +1,4 @@
-module cookie {
+export namespace cookie {
 
     export function read(name: string) {
         var result = new RegExp('(?:^|; )' + encodeURIComponent(name) + '=([^;]*)').exec(document.cookie);

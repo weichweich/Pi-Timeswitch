@@ -103,8 +103,12 @@ export class Model<E extends Identifiable> {
 	public create = (obj: E, config: Filter) => {
 		return this.connection.create(obj, config.relation)
 				.then((created: E) => {
-			this.cache.store(obj)
-			this.notifyAdded(obj)
+			console.log("created", created)
+			this.cache.store(created)
+			this.notifyAdded(created)
+		}, (error) => {
+			console.log("error", error)
+			throw "Error while adding";
 		})
 	}
 }

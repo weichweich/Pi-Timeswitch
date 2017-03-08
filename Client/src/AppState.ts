@@ -1,18 +1,22 @@
 /// <reference path="./../typings/main.d.ts" />
 
-import { Model } from "./frame"
+import { Model, cookie } from "./frame"
 import $ = require('jquery')
 
 export class AppState {
 	private models: { [id: string] : Model<any> }
+	private token: string
 	router: any
+	static readonly JWT_IDENTIFIER = 'AppState.jwt'
 
 	constructor(router: any) {
 		this.models = {}
 		this.router = router
+		this.setToken(cookie.read(AppState.JWT_IDENTIFIER))
 	}
 
-	private setJWTToken(token: string) {
+	private setToken(token: string) {
+		this.token = token
 		for (var name in this.models) {
 		    this.models[name].connection.setJWTToken(token)
 		}
@@ -24,6 +28,7 @@ export class AppState {
 
 	public setModel(name: string, model: Model<any>) {
 		this.models[name] = model
+		this.models[name].connection.setJWTToken(this.token)
 	}
 
 	public getModel(name: string): Model<any> {
@@ -35,7 +40,7 @@ export class AppState {
 	// }
 
 	public logout() {
-		location.reload()
+		cookie.remove(AppState.JWT_IDENTIFIER)
 	}
 
 	public login(username: string, password: string) {
@@ -53,7 +58,8 @@ export class AppState {
 		}).then(function(data) {
 			let jsonObj = JSON.parse(data)
 			if (jsonObj.token != null) {
-				globThis.setJWTToken(jsonObj.token)
+				globThis.setToken(jsonObj.token)
+				cookie.write(AppState.JWT_IDENTIFIER, jsonObj.token)
 			} else {
 				throw "login failed. JWT missing."
 			}

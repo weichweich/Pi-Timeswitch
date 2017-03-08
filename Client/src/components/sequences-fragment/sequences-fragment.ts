@@ -47,7 +47,7 @@ class ViewModel {
         })
         this.sequenceModel.findAll({
             relation: [{
-                type: 'pin',
+                type: Constants.model.pin,
                 id: viewState.route.vals.pinId
             }],
             attributes: []
@@ -57,6 +57,7 @@ class ViewModel {
 	}
 
     public addSequence = (sequence: Sequence) => {
+        console.log('added Sequence')
         this.sequences.push(sequence)
     }
 

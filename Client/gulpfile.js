@@ -14,20 +14,22 @@ var gulp = require('gulp'),
     tsify = require('tsify');
 
 // static directories
-var srcDir = './src',
-    destDir = './build',
+var baseDir = '.',
+    srcDir = baseDir + '/src',
+    destDir = baseDir + '/build',
     imgSrcDir =  srcDir + '/images',
     compsDir = srcDir + '/components',
     modelDir = srcDir + '/model',
     cssSrcDir = srcDir + '/css',
     cssDestDir = destDir + '/css',
-    nodeModulDir = './node_modules'
+    nodeModulDir = baseDir + '/node_modules',
 // static files
     mainFile = 'app.ts',
     indexHTML = 'index.html',
     cssFile = 'styles.css',
     libJSFile = 'libs.js',
     libCSSFile = 'libs.css',
+    destFile = 'app.js'
 // other
     backendAPI = 'http://localhost:5000';
 
@@ -54,7 +56,7 @@ gulp.task('browserify', function() {
         .plugin(tsify)
         .bundle()
         .on('error', swallowError)
-        .pipe(source(mainFile))
+        .pipe(source(destFile))
         .pipe(gulp.dest(destDir))
         ;
 });

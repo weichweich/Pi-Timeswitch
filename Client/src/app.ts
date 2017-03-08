@@ -12,6 +12,10 @@ import { AppState } from "./AppState"
 
 console.log('Register Componentes')
 
+ko.components.register('header', {
+	viewModel: require('./components/header/header'),
+	template: require('./components/header/header.html')
+})
 ko.components.register('login-page', {
 	viewModel: require('./components/login-page/login-page'),
 	template: require('./components/login-page/login-page.html')
