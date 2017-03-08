@@ -263,7 +263,7 @@ class PiSwitchModel(object):
 						(str(pin_id),))
 
 
-	def set_pin(self, pin):
+	def set_pin(self, pin, pin_id=-1):
 		'''Alters the pin name or adds the pin if he
 		did not exist. Also adds sequences.'''
 		if pin.get_state() == SWITCH_ON:
@@ -284,7 +284,7 @@ class PiSwitchModel(object):
 
 	def switch_pin_on(self, pin, prio=0):
 		if not pin.get_id() in self.pin_info:
-			self.__setup_info(pin, prio)
+			self.__setup_info(pin)
 
 		self.__switch_state(pin, SWITCH_ON, prio)
 
@@ -319,7 +319,7 @@ class PiSwitchModel(object):
 		elif info[STATE_KEY] == state:
 			info[PRIO_KEY] = prio
 		else:
-			LOGGER.info(u"No Switch needPrio:{0} prio:{1}"
+			LOGGER.info(u"No switching done. Current prio:{0} - order prio:{1}"
 				.format(info[PRIO_KEY], prio))
 
 	def cleanup_all_pins(self):

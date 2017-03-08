@@ -71,6 +71,18 @@ class ViewModel {
         this.router.transitionTo('sequences', { pinId: pin.id })
     }
 
+    public pushSwitchState = (pin: Pin, event) => {
+    	if (pin.state() == Pin.ON) {
+    		pin.state(Pin.OFF)
+    	} else if (pin.state() == Pin.OFF) {
+    		pin.state(Pin.ON)
+    	}
+    	this.pinModel.update(pin, {
+           relation: [],
+            attributes: []
+    	})
+    }
+
     public dispose = () => {
 
     }

@@ -92,6 +92,11 @@ button.submit {
     float: right;
 }
 
+button.image {
+    border:0;
+    background:rgba(255, 255, 255, 0)
+}
+
 div.wappen {
     margin-right: auto;
     margin-left: auto;

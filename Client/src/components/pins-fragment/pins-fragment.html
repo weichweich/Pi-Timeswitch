@@ -1,25 +1,27 @@
 <div class="fragment">
-    <table id="pinTable">
-        <thead>
-            <tr>
-            <th width="20">State</th>
-            <th class="borderedCell" width="50">Pin</th>
-            <th class="borderedCell">Name</th>
-            <th width="20"></th>
-            </tr>
-        </thead>
-        <tbody data-bind="foreach: pins">
-            <tr data-bind="click: $parent.pushPin, clickBubble: false">
-                <td data-bind="text: state">
-                    
-                </td>
-                <td class="numeric" data-bind="text: number"></td>
-                <td data-bind="text: name"></td>
-                <td>
-                    <button class="destroy" data-bind="click: $parent.pushRemove, clickBubble: false" ></button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <button data-bind="click: pushAdd">add pin!</button>
+  <table id="pinTable">
+    <thead>
+      <tr>
+      <th width="20">State</th>
+      <th class="borderedCell" width="50">Pin</th>
+      <th class="borderedCell">Name</th>
+      <th width="20"></th>
+      </tr>
+    </thead>
+    <tbody data-bind="foreach: pins">
+        <tr data-bind="click: $parent.pushPin, clickBubble: false">
+          <td>
+          	<button class="image" data-bind="click: $parent.pushSwitchState, clickBubble: false">
+            	<img data-bind="attr: {src: stateImage}" width="20">
+            </button>
+          </td>
+          <td class="numeric" data-bind="text: number"></td>
+          <td data-bind="text: name"></td>
+          <td>
+            <button class="destroy" data-bind="click: $parent.pushRemove, clickBubble: false" ></button>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+  <button data-bind="click: pushAdd">add pin!</button>
 </div>

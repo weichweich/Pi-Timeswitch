@@ -52,7 +52,10 @@ class ViewModel {
 			this.name('')
 			this.number(0)
 			this.stateReady()
-		}).catch((error) => { 
+		}, (error) => { 
+			this.name('')
+			this.number(0)
+			this.stateReady()
 			console.log(error)
 		})
 	}
