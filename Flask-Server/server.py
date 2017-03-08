@@ -14,6 +14,7 @@ from auth.resource import UsersResource, UserResource, LoginResource
 import argparse
 import logging
 import os
+import json
 
 # ######################################
 # # parsing commandline args
@@ -90,7 +91,7 @@ switch_manager = SwitchManager(switch_model)
 
 @api.representation('application/vnd.api+json')
 def output_json(data, code, headers=None):
-    resp = make_response(str(data), code)
+    resp = make_response(json.dumps(data), code)
     resp.headers.extend(headers or {})
     return resp
 

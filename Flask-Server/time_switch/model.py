@@ -57,6 +57,11 @@ def is_relative_time(check_time):
 	except ValueError:
 		return False
 
+def get_sequence_from_row(row):
+	(sequence_id, pin_id, start_time, start_range, end_time, end_range) = row
+	return Sequence(start_time, start_range, end_time,
+								  end_range, sequence_id=sequence_id)
+
 def get_sequences_from_rows(rows):
 	sequences = []
 	for (sequence_id, pin_id, start_time, start_range, end_time, end_range) in rows:
@@ -83,7 +88,7 @@ class PiSwitchModel(object):
 		except:
 			create_db(filename)
 
-	def _notify_all(self):
+	def __notify_all(self):
 		for observer in self.observers:
 			observer.changed()
 
@@ -105,7 +110,7 @@ class PiSwitchModel(object):
 
 			for (sequence_id, pin_id, start_time,
 				 start_range, end_time, end_range) in rows:
-				pin = self._get_pin_for_sequence(sequence_id)
+				pin = self.__get_pin_for_sequence(sequence_id)
 				if pin is None:
 					print("none?")
 				sequences.append(Sequence(start_time, start_range, end_time,
@@ -123,7 +128,7 @@ class PiSwitchModel(object):
 						WHERE id=?''', (sequence_id,))
 
 			row = cur.fetchone()
-			pin = self._get_pin_for_sequence(sequence_id)
+			pin = self.__get_pin_for_sequence(sequence_id)
 
 			if row is None:
 				return None
@@ -131,14 +136,16 @@ class PiSwitchModel(object):
 				print("none?")
 				return None
 			else:
-				return Sequence(pin=pin, **row)
+				sequence = get_sequence_from_row(row)
+				sequence.set_pin(pin)
+				return sequence
 
 	def set_sequence(self, sequence, pin_id=-1):
 		'''Adds the given sequence to the dataset.\
 		   Removes the old schedule if it exists.'''
 		with sql.connect(self.sql_file) as connection:
 			cur = connection.cursor()
-			if (sequence.get_pin()):
+			if sequence.get_pin() and pin_id==-1:
 				pin_id = sequence.get_pin().get_id()
 
 			if sequence.get_id() == -1:
@@ -163,7 +170,7 @@ class PiSwitchModel(object):
 							Sequences(id, pin_id, start_time, start_range,\
 							end_time, end_range)
 							VALUES (?, ?, ?, ?, ?, ?)''', vals)
-
+		return self.get_sequence(sequence.get_id())
 
 	def delete_sequence(self, sequence_id):
 		'''Deletes the sequences with the given id.'''
@@ -183,13 +190,13 @@ class PiSwitchModel(object):
 
 			sequences = []
 			for (sequence_id, pin_id, start_time, start_range, end_time, end_range) in rows:
-				pin = self._get_pin_for_sequence(sequence_id)
+				pin = self.__get_pin_for_sequence(sequence_id)
 				sequences.append(Sequence(start_time, start_range, end_time,
 								  end_range, sequence_id=sequence_id, pin=pin))
 			return sequences
 
 
-	def _get_pin_for_sequence(self, sequence_id):
+	def __get_pin_for_sequence(self, sequence_id):
 		'''Returns all sequences for the pin.'''
 		with sql.connect(self.sql_file) as connection:
 			cur = connection.cursor()
@@ -204,7 +211,7 @@ class PiSwitchModel(object):
 
 			return Pin(row[0], None, row[1])
 
-	def _delete_sequences_for_pin(self, pin_id):
+	def __delete_sequences_for_pin(self, pin_id):
 		'''Deletes all sequences for the pin.'''
 		with sql.connect(self.sql_file) as connection:
 			cur = connection.cursor()
@@ -247,7 +254,7 @@ class PiSwitchModel(object):
 
 	def delete_pin(self, pin_id):
 		'''Deletes all sequence for the pin and the pin it selfs.'''
-		self._delete_sequences_for_pin(pin_id)
+		self.__delete_sequences_for_pin(pin_id)
 		GPIO.cleanup(pin_id)
 
 		with sql.connect(self.sql_file) as connection:
@@ -273,27 +280,28 @@ class PiSwitchModel(object):
 			if pin.get_sequences() is not None:
 				for sequence in pin.get_sequences():
 					self.set_sequence(sequence)
+		return self.get_pin(pin.get_id())
 
 	def switch_pin_on(self, pin, prio=0):
 		if not pin.get_id() in self.pin_info:
-			self._setup_info(pin, prio)
+			self.__setup_info(pin, prio)
 
-		self._switch_state(pin, SWITCH_ON, prio)
+		self.__switch_state(pin, SWITCH_ON, prio)
 
 	def switch_pin_off(self, pin, prio=0):
 		if not pin.get_id() in self.pin_info:
-			self._setup_info(pin)
+			self.__setup_info(pin)
 
-		self._switch_state(pin, SWITCH_OFF, prio)
+		self.__switch_state(pin, SWITCH_OFF, prio)
 
-	def _setup_info(self, pin):
+	def __setup_info(self, pin):
 		self.pin_info[pin.get_id()] = {
 			STATE_KEY: SWITCH_UNDEF,
 			PRIO_KEY: 0
 		}
 		GPIO.setup(pin.get_id(), GPIO.OUT)
 
-	def _switch_state(self, pin, state, prio):
+	def __switch_state(self, pin, state, prio):
 		info = self.pin_info[pin.get_id()]
 		if not info[PRIO_KEY]:
 			info[PRIO_KEY] = prio

@@ -35,7 +35,7 @@ class SequenceSchema(Schema):
         related_url='/api/pins/{pin_id}',
         related_url_kwargs={'pin_id': '<pin>'},
         # Include resource linkage
-        many=False, include_data=True,
+        many=False, include_data=False,
         type_='pins'
     )
 
@@ -56,7 +56,7 @@ class SequenceSchema(Schema):
 
     class Meta:
         type_ = 'sequences'
-        # inflect = dasherize
+        strict = True
 
 class PinSchema(Schema):
     id = fields.Str(dump_only=True)
@@ -69,7 +69,8 @@ class PinSchema(Schema):
         # Include resource linkage
         many=True,
         include_data=True,
-        type_='sequences'
+        type_='sequences',
+        schema='SequenceSchema'
     )
 
     @post_load
@@ -81,4 +82,5 @@ class PinSchema(Schema):
 
     class Meta:
         type_ = 'pins'
-        # inflect = dasherize
+        strict = True
+

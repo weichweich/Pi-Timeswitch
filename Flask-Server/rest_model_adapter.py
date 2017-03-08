@@ -56,8 +56,10 @@ class SingleResource(Resource):
             return err.messages, 400
 
         result = self.schemaSingle.load(request_json)
-        self.setter_func(result.data, *args, **kwargs)
-        return "", 200
+        addedItem = result.data
+        self.setter_func(addedItem, *args, **kwargs)
+        addedItem_json = self.schemaSingle.dump(addedItem)
+        return addedItem_json, 201
 
     def delete(self, *args, **kwargs):
         if not self.delete_func:
@@ -127,8 +129,9 @@ class ManyRessource(Resource):
             return err.messages, 400
 
         result = self.schemaSingle.load(request_json)
-        self.setter_func(result.data, *args, **kwargs)
-        return request_json, 201
+        addedItem = self.setter_func(result.data, *args, **kwargs)
+        addedItem_json = self.schemaSingle.dump(addedItem)
+        return addedItem_json.data, 201
 
     def delete(self, *args, **kwargs):
         if not self.delete_func:
