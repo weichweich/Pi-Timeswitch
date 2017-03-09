@@ -11,6 +11,26 @@ body {
     font-smoothing: antialiased;
 }
 
+h2 {
+	margin-top: 5px;
+	margin-bottom: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+	text-align:center; 
+}
+
+h3 {
+	margin-top: 5px;
+	margin-bottom: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+	text-align:center; 
+}
+
 .nav ul {
     list-style: none;
     background-color: #006600;
@@ -65,9 +85,9 @@ body {
 
     float: left;
 
-    -webkit-border-radius: 17px;
-    -moz-border-radius: 17px;
-    border-radius: 17px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
     border: 2px solid #006600;
     background: rgba(247, 255, 244, 1);
 
@@ -76,25 +96,39 @@ body {
      box-shadow: #B3B3B3 4px 4px 4px;
 }
 
-.flash  {
-    background: #cee5F5; 
-    padding: 0.5em;
-    border: 1px solid #aacbe2;
-    width: 50%;
-}
-
 .center {
     margin:0 auto;
     width: 50%;
 }
 
+td.numeric {
+	text-align:center; 
+}
+
 button.submit {
     float: right;
+    cursor: pointer;
+}
+
+button.destroy {
+    margin: 0px;
+    padding: 0px;
+	opacity: 0;
+    border:0;
+    background:rgba(255, 255, 255, 0);
+    cursor: pointer;
+}
+
+tr:hover > td > button.destroy {
+	opacity: 1;
 }
 
 button.image {
     border:0;
-    background:rgba(255, 255, 255, 0)
+    margin: 0px;
+    padding: 0px;
+    background:rgba(255, 255, 255, 0);
+    cursor: pointer;
 }
 
 div.wappen {

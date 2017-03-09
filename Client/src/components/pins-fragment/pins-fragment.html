@@ -1,6 +1,7 @@
 <div class="fragment">
+  <h2>Pins</h2>
   <table id="pinTable">
-    <thead>
+<!--     <thead>
       <tr>
       <th width="20">State</th>
       <th class="borderedCell" width="50">Pin</th>
@@ -8,7 +9,7 @@
       <th width="20"></th>
       </tr>
     </thead>
-    <tbody data-bind="foreach: pins">
+ -->    <tbody data-bind="foreach: pins">
         <tr data-bind="click: $parent.pushPin, clickBubble: false">
           <td>
           	<button class="image" data-bind="click: $parent.pushSwitchState, clickBubble: false">
@@ -18,7 +19,9 @@
           <td class="numeric" data-bind="text: number"></td>
           <td data-bind="text: name"></td>
           <td>
-            <button class="destroy" data-bind="click: $parent.pushRemove, clickBubble: false" ></button>
+            <button class="destroy" data-bind="click: $parent.pushRemove, clickBubble: false" >
+            	<img src="/images/delete.svg" width="15">
+            </button>
           </td>
         </tr>
     </tbody>
