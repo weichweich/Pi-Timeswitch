@@ -1,8 +1,19 @@
 <div class="fragment">
 	<h3>Add Pin</h3>
-	<input placeholder="Name" data-bind="textInput: name"/><br>
-	<input placeholder="Number" data-bind="textInput: number"/><br>
-
+    <table>
+    <tr>
+    <td><label for="Name">Name:</label></td>
+	<td><input placeholder="Name"
+               id="Name" 
+	           data-bind="textInput: name"/><br></td>
+	</tr>
+	<tr>
+	<td><label for="Number">Number:</label></td>
+	<td><input placeholder="Number" 
+               id="Number" 
+			   data-bind="textInput: number"/><br></td>
+	</tr>
+	</table>
 	<button data-bind="click: cancle">cancle</button>
 	<button data-bind="click: addPin">Add Pin</button>
 </div>

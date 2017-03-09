@@ -66,4 +66,17 @@ export class Pin {
 			return images[this.state()]
 		})
 	}
+
+	public copy():Pin {
+		return new Pin(this.id, this.number(), this.name(), this.state())
+	}
+
+	public update(pin: Pin) {
+		if (this.id != pin.id) {
+			throw "Updating pin with diffrent pin!"
+		}
+		this.number(pin.number())
+		this.name(pin.name())
+		this.state(pin.state())
+	}
 }

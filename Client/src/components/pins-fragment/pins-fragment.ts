@@ -48,8 +48,14 @@ class ViewModel {
     }
 
     public modifyPin = (pin: Pin) => {
-        this.removePin(pin)
-        this.addPin(pin)
+    	var oldPin = ko.utils.arrayFirst(this.pins(), (testPin: Pin) => {
+    		return testPin.id == pin.id
+    	})
+    	if (!oldPin) {
+    		throw "Updated pin not found!"
+    	} else {
+    		oldPin.update(pin)
+    	}
     }
 
     public removePin = (pin: Pin) => {
@@ -72,19 +78,20 @@ class ViewModel {
     }
 
     public pushSwitchState = (pin: Pin, event) => {
-    	if (pin.state() == Pin.ON) {
-    		pin.state(Pin.OFF)
-    	} else if (pin.state() == Pin.OFF) {
-    		pin.state(Pin.ON)
+    	let pinCopy = pin.copy()
+    	pin.state(Pin.UNDEF)
+    	if (pinCopy.state() == Pin.ON) {
+    		pinCopy.state(Pin.OFF)
+    	} else if (pinCopy.state() == Pin.OFF) {
+    		pinCopy.state(Pin.ON)
     	}
-    	this.pinModel.update(pin, {
+        let globThis = this
+    	this.pinModel.update(pinCopy, {
            relation: [],
             attributes: []
+    	}).catch((error) => {
+            console.log("Error!", error)
     	})
-    }
-
-    public dispose = () => {
-
     }
 }
 
