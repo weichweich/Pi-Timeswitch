@@ -40,9 +40,7 @@ source venv/bin/activate
 Then you need to install [Flask](http://flask.pocoo.org), [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO), [marshmallow](http://marshmallow.readthedocs.org/en/latest/), [marshmallow-jsonapi](https://marshmallow-jsonapi.readthedocs.org/en/latest/).
 
 ~~~
-pip install Flask flask-restful
-pip install -U marshmallow --pre
-pip install marshmallow-jsonapi
+pip install -r requirements.txt
 
 # Only on Raspberry Pi:
 sudo apt-get install python-dev  
