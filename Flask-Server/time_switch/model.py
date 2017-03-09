@@ -86,7 +86,7 @@ class PiSwitchModel(object):
 		try:
 			self.get_pins()
 		except:
-			create_db(filename)
+			create_db()
 
 	def __notify_all(self):
 		for observer in self.observers:
@@ -233,8 +233,12 @@ class PiSwitchModel(object):
 
 			for row in rows:
 				sequences = self.get_sequences_for_pin(row[0])
-				pins.append(Pin(row[0], sequences, row[1]))
-
+				rawPin = row
+				pin = Pin(rawPin[0], sequences, rawPin[1])
+				if pin.get_id() in self.pin_info:
+					pin_state = self.pin_info[pin.get_id()][STATE_KEY]
+					pin.set_state(pin_state)
+				pins.append(pin)
 			return pins
 
 	def get_pin(self, pin_id):
@@ -250,7 +254,11 @@ class PiSwitchModel(object):
 
 			sequences = self.get_sequences_for_pin(pin_id)
 			rawPin = row
-			return Pin(rawPin[0], sequences, rawPin[1])
+			pin = Pin(rawPin[0], sequences, rawPin[1])
+			if pin.get_id() in self.pin_info:
+				pin_state = self.pin_info[pin.get_id()][STATE_KEY]
+				pin.set_state(pin_state)
+			return pin
 
 	def delete_pin(self, pin_id):
 		'''Deletes all sequence for the pin and the pin it selfs.'''
