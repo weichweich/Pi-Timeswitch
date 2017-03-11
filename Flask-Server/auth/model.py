@@ -53,15 +53,28 @@ def add_user(user, password_clear=None):
             VALUES (?, ?, ?, ?, ?)''', vals)
         user.id = cur.lastrowid
 
-def get_user(user_name):
+def get_user(user_id):
     with sql.connect(current_app.config['SQL_FILE']) as connection:
         cur = connection.cursor()
 
         cur.execute('''SELECT * FROM User
-                WHERE name=?''', (user_name,))
+                WHERE id=?''', (user_id,))
         row = cur.fetchone()
         if row is None:
-            raise LookupError('User not found!')
+            raise LookupError('User not found! (id == {})'.format(user_id))
+
+        return User(user_id=row[0], name=row[1], pwd_salty_hash=row[2],\
+                    privilege=row[4], last_loggin=row[3], email=row[5])
+
+def get_user_with_name(username):
+    with sql.connect(current_app.config['SQL_FILE']) as connection:
+        cur = connection.cursor()
+
+        cur.execute('''SELECT * FROM User
+                WHERE name=?''', (username,))
+        row = cur.fetchone()
+        if row is None:
+            raise LookupError('User not found! (name == {})'.format(username))
 
         return User(user_id=row[0], name=row[1], pwd_salty_hash=row[2],\
                     privilege=row[4], last_loggin=row[3], email=row[5])
@@ -79,11 +92,11 @@ def get_users():
 
         return users
 
-def remove_user(user_name):
+def remove_user(user_id):
     with sql.connect(current_app.config['SQL_FILE']) as connection:
         cur = connection.cursor()
         cur.execute('''DELETE FROM User
-                    WHERE name=?''', (user_name,))
+                    WHERE id=?''', (user_id,))
 
 def update_user(user, password_clear):
     with sql.connect(current_app.config['SQL_FILE']) as connection:

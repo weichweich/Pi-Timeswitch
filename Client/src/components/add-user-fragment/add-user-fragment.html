@@ -1,0 +1,31 @@
+<div class="fragment">
+	<h3>Add User</h3>
+    <table>
+    <tr>
+    <td><label for="Name">Name:</label></td>
+	<td><input placeholder="Name"
+               id="Name" 
+	           data-bind="textInput: name"/><br></td>
+	</tr>
+    <tr>
+    <td><label for="email">email:</label></td>
+	<td><input placeholder="email"
+               id="email" 
+	           data-bind="textInput: email"/><br></td>
+	</tr>
+	<tr>
+	<td><label for="Privilege">Privilege:</label></td>
+	<td><input placeholder="Privilege" 
+               id="Privilege" 
+			   data-bind="textInput: privilege"/><br></td>
+	</tr>
+	<tr>
+	<td><label for="Password">Password:</label></td>
+	<td><input placeholder="Password" 
+               id="Password" 
+			   data-bind="textInput: password"/><br></td>
+	</tr>
+	</table>
+	<button data-bind="click: cancle">cancle</button>
+	<button data-bind="click: addUser">Add User</button>
+</div>

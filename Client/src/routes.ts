@@ -9,5 +9,8 @@ export function routes(route) {
                 route('add-sequence', { path: '/pins/:pinId/add', page: 'add-sequence-fragment', stack: true })
             })
         })
+        route('users', { page: 'users-fragment', stack: true }, function() {
+            route('add-user', { path: '/users/add', page: 'add-user-fragment', stack: true })
+        })
     })
 }

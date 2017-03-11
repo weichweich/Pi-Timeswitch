@@ -33,12 +33,12 @@ class UserSchema(Schema):
 	password = fields.String(load_only=True, required=False, attribute="pwd_salty_hash")
 	email = fields.String(required=False)
 	last_loggin = fields.String(required=False)
-	privilege = fields.Integer(required=False)
+	privilege = fields.String(required=False)
 
 	@post_load
 	def make_user(self, data):
 		if "pwd_salty_hash" in data:
-			data["pwd_salty_hash"] = get_hashed_password(data["pwd_salty_hash"])
+			data["pwd_salty_hash"] = get_hashed_password(data["pwd_salty_hash"].encode('utf-8'))
 		print(str(data))
 		return User(**data)
 
@@ -46,5 +46,5 @@ class UserSchema(Schema):
 		raise ValidationError('An error occurred with input: {0} \n {1}'.format(data, str(exc)))
 
 	class Meta:
-		type_ = 'user'
+		type_ = 'users'
 		# inflect = dasherize

@@ -9,6 +9,7 @@ from flask_restful import Resource, abort
 import bcrypt
 import jwt
 from marshmallow import ValidationError
+from marshmallow_jsonapi.exceptions import IncorrectTypeError
 
 import auth
 from auth.schema import UserSchema
@@ -58,14 +59,36 @@ class UsersResource(Resource):
 	method_decorators = [auth.dec_auth]
 
 	def __init__(self):
-		self.schema = UserSchema(many=True)
+		self.schemaMany = UserSchema(many=True)
+		self.schemaSingle = UserSchema(many=False)
 		self.method_decorators = [auth.dec_auth]
 
 	def get(self):
 		'''Get all user names and privileges'''
-		resources = auth.get_users()
-		result = self.schema.dump(resources)
+		resources = auth.model.get_users()
+		result = self.schemaMany.dump(resources)
 		return result.data, 200
+
+	def post(self):
+		'''Create a new user'''
+		request_json = request.get_json(force=True)
+		try:
+			self.schemaSingle.validate(request_json)
+		except ValidationError as err:
+			LOGGER.warn("ValidationError POST \n\t"\
+				+ str(err.messages) + "\n" + str(request_json))
+			return err.messages, 400
+		except IncorrectTypeError as err:
+			LOGGER.warn("IncorrectTypeError POST \n\t"\
+			 + str(err.messages) + "\n" + str(request_json))
+			return err.messages, 400
+
+		result = self.schemaSingle.load(request_json)
+
+		auth.model.add_user(result.data)
+
+		updated_result = self.schemaSingle.dump(result.data)
+		return updated_result.data, 200
 
 class UserResource(Resource):
 
@@ -73,13 +96,13 @@ class UserResource(Resource):
 		self.schema = UserSchema(many=False)
 		self.method_decorators = [auth.dec_auth]
 
-	def get(self, user_name):
+	def get(self, user_id):
 		'''Get all user names and privileges'''
-		resources = auth.get_user(user_name)
+		resources = auth.model.get_user(user_id)
 		result = self.schema.dump(resources)
 		return result.data, 200
 
-	def post(self, user_name):
+	def post(self, user_id):
 		'''Create a new user'''
 		request_json = request.get_json(force=True)
 		try:
@@ -95,17 +118,17 @@ class UserResource(Resource):
 
 		result = self.schema.load(request_json)
 
-		auth.add_user(result.data)
+		auth.model.add_user(result.data)
 
 		updated_result = self.schema.dump(result.data)
 		return updated_result.data, 200
 
-	def delete(self, user_name):
+	def delete(self, user_id):
 		'''delete an existing user'''
-		auth.remove_user(user_name)
+		auth.model.remove_user(user_id)
 		return 204
 
-	def patch(self, user_name):
+	def patch(self, user_id):
 		'''update password and/or privilege of an user'''
 		request_json = request.get_json(force=True)
 		try:
@@ -120,6 +143,6 @@ class UserResource(Resource):
 			return err.messages, 400
 
 		resource = self.schema.load(request_json)
-		auth.update_user(resource)
+		auth.model.update_user(resource)
 		result = self.schema.dump(resource)
 		return result.data, 200

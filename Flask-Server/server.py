@@ -146,7 +146,7 @@ api.add_resource(SingleResource, URL_PREFIX + '/sequences/<int:sequence_id>',
 api.add_resource(UsersResource, URL_PREFIX + '/users',
 				 endpoint='users')
 
-api.add_resource(UserResource, URL_PREFIX + '/users/<string:user_name>',
+api.add_resource(UserResource, URL_PREFIX + '/users/<int:user_id>',
 				 endpoint='user')
 
 # ––––––––––––––––––––––––––––––––––––––

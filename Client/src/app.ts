@@ -6,6 +6,7 @@ import { Constants } from './config'
 
 import * as pin from './model/pin'
 import * as seq from './model/Sequence'
+import * as user from './model/User'
 import { AppState } from "./AppState"
 
 // ************** Register Components **************
@@ -24,17 +25,25 @@ ko.components.register('main-page', {
 	viewModel: require('./components/main-page/main-page'),
 	template: require('./components/main-page/main-page.html')
 })
+ko.components.register('users-fragment', {
+	viewModel: require('./components/users-fragment/users-fragment'),
+	template: require('./components/users-fragment/users-fragment.html')
+})
+ko.components.register('add-user-fragment', {
+	viewModel: require('./components/add-user-fragment/add-user-fragment'),
+	template: require('./components/add-user-fragment/add-user-fragment.html')
+})
 ko.components.register('pins-fragment', {
 	viewModel: require('./components/pins-fragment/pins-fragment'),
 	template: require('./components/pins-fragment/pins-fragment.html')
 })
-ko.components.register('sequences-fragment', {
-	viewModel: require('./components/sequences-fragment/sequences-fragment'),
-	template: require('./components/sequences-fragment/sequences-fragment.html')
-})
 ko.components.register('add-pin-fragment', {
 	viewModel: require('./components/add-pin-fragment/add-pin-fragment'),
 	template: require('./components/add-pin-fragment/add-pin-fragment.html')
+})
+ko.components.register('sequences-fragment', {
+	viewModel: require('./components/sequences-fragment/sequences-fragment'),
+	template: require('./components/sequences-fragment/sequences-fragment.html')
 })
 ko.components.register('add-sequence-fragment', {
 	viewModel: require('./components/add-sequence-fragment/add-sequence-fragment'),
@@ -53,6 +62,8 @@ console.log('Register Models')
 
 let sequenceModel = new Model<seq.Sequence>(Constants.model.sequence, seq.definition, {}, seq.parser)
 let pinModel = new Model<pin.Pin>(Constants.model.pin, pin.definition, {}, pin.parser)
+let userModel = new Model<user.User>(Constants.model.user, user.definition, {}, user.parser)
 
 appState.setModel(Constants.model.pin, pinModel)
 appState.setModel(Constants.model.sequence, sequenceModel)
+appState.setModel(Constants.model.user, userModel)

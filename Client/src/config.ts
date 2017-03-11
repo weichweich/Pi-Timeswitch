@@ -4,7 +4,8 @@ export class Constants {
     static backendURL = 'api'
     static model = {
         pin: 'pin',
-        sequence: 'sequence'
+        sequence: 'sequence',
+        user: 'user'
     }
 
     constructor() {}

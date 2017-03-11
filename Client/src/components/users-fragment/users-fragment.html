@@ -1,0 +1,17 @@
+<div class="fragment">
+  <h2>Users</h2>
+  <table id="userTable">
+    <tbody data-bind="foreach: users">
+        <tr data-bind="click: $parent.pushUser, clickBubble: false">
+          <td data-bind="text: name"></td>
+          <td data-bind="text: privilege"></td>
+          <td>
+            <button class="destroy" data-bind="click: $parent.pushRemove, clickBubble: false" >
+            	<img src="/images/delete.svg" width="15">
+            </button>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+  <button data-bind="click: pushAdd">add user!</button>
+</div>

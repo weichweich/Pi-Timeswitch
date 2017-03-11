@@ -15,7 +15,7 @@ from jwt.exceptions import InvalidTokenError, DecodeError, \
 						   MissingRequiredClaimError
 
 from auth.dao import User
-from auth.model import get_user
+from auth.model import get_user_with_name
 
 class NullHandler(logging.Handler):
 	def emit(self, record):
@@ -81,7 +81,7 @@ def dec_auth(func):
 				LOGGER.info("ACCESS GRANTED: User {0} {1} {2}"
 							.format(token_data['user'], \
 									request.method, request.url))
-				user = get_user(token_data['user'])
+				user = get_user_with_name(token_data['user'])
 				if user is None:
 					msg="User is not known!"
 					errors.append(__make_auth_error(401, msg))
