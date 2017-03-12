@@ -1,0 +1,21 @@
+<div class="fragment">
+	<div data-bind="if: user()">
+		<h3 data-bind="text: user().name()"></h3>
+	<table id="pinTable">
+      <tbody>
+        <tr>
+          <td>Email</td>
+          <td data-bind="text: user().email()"></td>
+        </tr>
+        <tr>
+          <td>Privilege</td>
+          <td data-bind="text: user().privilege()"></td>
+        </tr>
+      </tbody>
+    </table>
+
+	</div>
+	<div data-bind="ifnot: user()">
+		<h3>Loading ...</h3>
+	</div>
+</div>

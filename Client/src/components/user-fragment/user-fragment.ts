@@ -10,18 +10,18 @@ import { Constants } from '../../config'
 class ViewModel {
 	router: any
     userModel: Model<User>
-    users: KnockoutObservableArray<User>
+    user: KnockoutObservable<User>
     appState: AppState
+    index: number
 
 	constructor(params) {
 		let viewState = params.viewState
 		let appState = params.appState
 
         this.router = appState.router
-
+		this.index = viewState.index
+		this.user = ko.observable(undefined)
         this.userModel = appState.getModel(Constants.model.user)
-        this.users = ko.observableArray([])
-
         this.userModel.addObserver({
             objectAdded: this.addUser,
             objectModified: this.modifyUser,
@@ -29,11 +29,9 @@ class ViewModel {
         })
 
         let globThis = this
-        this.userModel.findAll({
-            relation: [],
-            attributes: []
-        }).then((users) => {
-            this.users(users)
+        this.userModel.findOne(viewState.route.vals.userId)
+                      .then((user) => {
+            this.user(user)
         }, (error) => {
             console.log("Error!")
             globThis.router.transitionTo('login', { 
@@ -43,37 +41,19 @@ class ViewModel {
     }
 
     public addUser = (user: User) => {
-        this.users.push(user)
     }
 
     public modifyUser = (user: User) => {
-    	var oldUser = ko.utils.arrayFirst(this.users(), (testUser: User) => {
-    		return testUser.id == user.id
-    	})
-    	if (!oldUser) {
-    		throw "Updated user not found!"
-    	} else {
-    		oldUser.update(user)
+    	if (this.user.id == user.id) {
+    		this.user().update(user)
     	}
     }
 
     public removeUser = (user: User) => {
-        this.users.remove(user)
-    }
-
-    public pushRemove = (user: User) => {
-        this.userModel.remove(user, {
-            relation: [],
-            attributes: []
-        })
-    }
-
-    public pushAdd = (params) => {
-        this.router.transitionTo('add-user')
-    }
-
-    public pushUser = (user: User, event) => {
-        this.router.transitionTo('user', { userId: user.id })
+    	if (this.user.id == user.id) {
+        	let last_route = this.router.state.routes[this.index]
+        	this.router.transitionTo(last_route.name)
+    	}
     }
 }
 

@@ -2,16 +2,7 @@
   <div data-bind="if: pin">
     <h3 data-bind="text: pin().name()"></h3>
     <table id="pinTable">
-<!--       <thead>
-        <tr>
-        <th class="borderedCell">Start</th>
-        <th class="borderedCell">Start Range</th>
-        <th class="borderedCell">End</th>
-        <th class="borderedCell">End Range</th>
-        <th width="20"></th>
-        </tr>
-      </thead>
- -->      <tbody data-bind="foreach: sequences">
+      <tbody data-bind="foreach: sequences">
         <tr data-bind="click: $parent.clicked, clickBubble: false">
           <td data-bind="text: start_time"></td>
           <td data-bind="text: start_range"></td>

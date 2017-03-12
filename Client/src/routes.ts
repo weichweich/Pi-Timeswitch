@@ -11,6 +11,7 @@ export function routes(route) {
         })
         route('users', { page: 'users-fragment', stack: true }, function() {
             route('add-user', { path: '/users/add', page: 'add-user-fragment', stack: true })
+            route('user', { path: '/users/:userId', page: 'user-fragment', stack: true })
         })
     })
 }

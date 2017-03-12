@@ -33,6 +33,10 @@ ko.components.register('add-user-fragment', {
 	viewModel: require('./components/add-user-fragment/add-user-fragment'),
 	template: require('./components/add-user-fragment/add-user-fragment.html')
 })
+ko.components.register('user-fragment', {
+	viewModel: require('./components/user-fragment/user-fragment'),
+	template: require('./components/user-fragment/user-fragment.html')
+})
 ko.components.register('pins-fragment', {
 	viewModel: require('./components/pins-fragment/pins-fragment'),
 	template: require('./components/pins-fragment/pins-fragment.html')

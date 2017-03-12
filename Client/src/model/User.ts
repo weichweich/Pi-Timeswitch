@@ -36,7 +36,7 @@ export function jsonToUser(json: any): User {
 export function userToJson(user: User) {
 	return {
 		id: user.id,
-		username: ko.utils.unwrapObservable(user.name),
+		name: ko.utils.unwrapObservable(user.name),
 		privilege: ko.utils.unwrapObservable(user.privilege),
 		email: ko.utils.unwrapObservable(user.email),
 		password: ko.utils.unwrapObservable(user.password),

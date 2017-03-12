@@ -38,7 +38,7 @@ class LoginResource(Resource):
 			user_name = json_data['name']
 			password = json_data['password']
 
-			if not auth.check_password(auth.get_user(user_name), password):
+			if not auth.check_password(auth.model.get_user_with_name(user_name), password):
 				LOGGER.info('Access denied: wrong password.')
 				return "Invalide password or username.", 400
 		except LookupError:
@@ -50,7 +50,7 @@ class LoginResource(Resource):
 
 		LOGGER.info('User {0} logged in.'.format(json_data['name']))
 		
-		token = auth.create_token(auth.get_user(json_data['name']))
+		token = auth.create_token(auth.model.get_user_with_name(json_data['name']))
 		body_json = { 'token': token }
 
 		return json.dumps(body_json), 200
