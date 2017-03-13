@@ -31,7 +31,7 @@ class UserSchema(Schema):
 
 	name = fields.String(required=True)
 	password = fields.String(load_only=True, required=False, attribute="pwd_salty_hash")
-	email = fields.String(required=False)
+	email = fields.Email(required=False)
 	last_loggin = fields.String(required=False)
 	privilege = fields.String(required=False)
 

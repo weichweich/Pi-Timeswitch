@@ -53,7 +53,7 @@ class LoginResource(Resource):
 		token = auth.create_token(auth.model.get_user_with_name(json_data['name']))
 		body_json = { 'token': token }
 
-		return json.dumps(body_json), 200
+		return body_json, 200
 
 class UsersResource(Resource):
 	method_decorators = [auth.dec_auth]

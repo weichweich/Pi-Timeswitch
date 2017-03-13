@@ -51,6 +51,7 @@ export class Sequence implements Identifiable {
 }
 
 export function sequenceToJson(sequence: Sequence): SequenceJson {
+
 	return {
 		id: sequence.id,
 		pin_id: sequence.pin_id,

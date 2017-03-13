@@ -82,10 +82,9 @@ gulp.task('build', ['browserify', 'copy-index', 'copy-css', 'copy-images']);
 
 gulp.task('watch', ['build'], function() {
     gulp.watch(imgSrcDir + '/**/*', ['copy-images']);
-    gulp.watch(compsDir + '/**/*', ['browserify']);
-    gulp.watch(modelDir + '/**/*', ['browserify']);
-    gulp.watch(srcDir + '/*.js', ['browserify']);
-    gulp.watch(srcDir + '/*.ts', ['browserify']);
+    gulp.watch(srcDir + '/**/*.js', ['browserify']);
+    gulp.watch(srcDir + '/**/*.ts', ['browserify']);
+    gulp.watch(srcDir + '/**/*.html', ['browserify']);
     gulp.watch(cssSrcDir + '/**/*', ['copy-css']);
     gulp.watch(srcDir + '/' + indexHTML, ['copy-index']);
 });

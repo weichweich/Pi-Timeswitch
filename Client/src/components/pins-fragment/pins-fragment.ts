@@ -4,7 +4,7 @@ import ko = require('knockout')
 
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/sequence'
-import { Model } from '../../frame'
+import { Model, AuthenticationError } from '../../frame'
 import { AppState } from '../../AppState'
 import { Constants } from '../../config'
 
@@ -13,6 +13,7 @@ class ViewModel {
 	pinModel: Model<Pin>
 	pins: KnockoutObservableArray<Pin>
 	appState: AppState
+	selected: KnockoutObservable<number>
 
 	constructor(params) {
 		let viewState = params.viewState
@@ -22,7 +23,8 @@ class ViewModel {
 
 		this.pinModel = appState.getModel(Constants.model.pin)
 		this.pins = ko.observableArray([])
-
+		this.selected = ko.observable(undefined)
+		
 		this.pinModel.addObserver({
 			objectAdded: this.addPin,
 			objectModified: this.modifyPin,
@@ -36,10 +38,13 @@ class ViewModel {
 		}).then((pins) => {
 		    this.pins(pins)
 		}, (error) => {
-			console.log("Error!")
-			globThis.router.transitionTo('login', { 
-			    backRoute: globThis.router.state.path 
-			})
+			if (error instanceof AuthenticationError) {
+				globThis.router.transitionTo('login', { 
+				    backRoute: globThis.router.state.path 
+				})
+			} else {
+				console.log("Error!", error)
+			}
 		})
 	}
 
@@ -74,6 +79,7 @@ class ViewModel {
 	}
 
 	public pushPin = (pin: Pin, event) => {
+		this.selected(pin.id)
 	    this.router.transitionTo('sequences', { pinId: pin.id })
 	}
 

@@ -117,6 +117,6 @@ def dec_auth(func):
 		if len(errors) == 0:
 			return func(*args, **kwargs)
 		else:
-			return json.dumps({'errors': errors}), 401
+			return {'errors': errors}, 401
 
 	return func_wrapper

@@ -56,10 +56,9 @@ export class AppState {
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
 		}).then(function(data) {
-			let jsonObj = JSON.parse(data)
-			if (jsonObj.token != null) {
-				globThis.setToken(jsonObj.token)
-				cookie.write(AppState.JWT_IDENTIFIER, jsonObj.token)
+			if (data.token != null) {
+				globThis.setToken(data.token)
+				cookie.write(AppState.JWT_IDENTIFIER, data.token)
 			} else {
 				throw "login failed. JWT missing."
 			}

@@ -2,6 +2,7 @@
 
 let cherrytree: any = require('cherrytree/standalone')
 
+
 // Init properties
 let cherryRouter = new cherrytree()
 

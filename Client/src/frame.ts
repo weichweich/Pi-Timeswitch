@@ -10,6 +10,8 @@ export * from "./frame/router"
 export * from "./frame/model/cookie"
 export * from "./frame/model/model"
 export * from "./frame/model/Interfaces"
+export * from "./frame/model/Error"
+
 
 export function startApp() {
 	let appState = new AppState(router)

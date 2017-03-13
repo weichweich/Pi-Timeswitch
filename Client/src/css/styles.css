@@ -67,7 +67,7 @@ h3 {
 
 .container {
     
-    margin-left: 0;
+    margin-left: 40px;
     margin-right: auto;
 
     padding: 20px;
@@ -99,6 +99,18 @@ h3 {
 .center {
     margin:0 auto;
     width: 50%;
+}
+
+table {
+	border-collapse:collapse;
+}
+
+tr.highlight {
+    background:rgba(200, 100, 100, 1);
+}
+
+td {
+	vertical-align: middle;
 }
 
 td.numeric {

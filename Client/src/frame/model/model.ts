@@ -86,15 +86,15 @@ export class Model<E extends Identifiable> {
 	public update = (obj: E, config: Filter) => {
 		return this.connection.update(obj, config.relation)
 				.then((created: E) => {
-			this.cache.store(obj)
+			// this.cache.store(obj)
 			this.notifyModified(obj)
 		})	
 	}
 
 	public remove = (obj: E, config: Filter) => {
 		return this.connection.remove(obj, config.relation)
-				.then((removed: E) => {
-			this.cache.remove(removed)
+				              .then((removed: E) => {
+			// this.cache.remove(removed)
 			this.notifyRemoved(removed)
 			return removed
 		})
@@ -103,8 +103,7 @@ export class Model<E extends Identifiable> {
 	public create = (obj: E, config: Filter) => {
 		return this.connection.create(obj, config.relation)
 				.then((created: E) => {
-			console.log("created", created)
-			this.cache.store(created)
+			// this.cache.store(created)
 			this.notifyAdded(created)
 		}, (error) => {
 			console.log("error", error)

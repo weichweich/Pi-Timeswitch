@@ -14,6 +14,7 @@
 - Login/Logout
 	* authentication [implemented]
 	* delete all stored data on logout
+	* whene user logs in, return to the last page which raised the "not authenticated" exception
 - Overview Page
 - typings
 	* type for cherrytree router

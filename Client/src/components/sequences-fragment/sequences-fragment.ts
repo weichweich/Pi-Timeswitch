@@ -57,7 +57,6 @@ class ViewModel {
 	}
 
     public addSequence = (sequence: Sequence) => {
-        console.log('added Sequence')
         this.sequences.push(sequence)
     }
 

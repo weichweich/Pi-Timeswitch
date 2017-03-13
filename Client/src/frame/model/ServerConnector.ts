@@ -5,6 +5,19 @@ let JsonApi: any = require('devour-client')
 let jsonApi = new JsonApi({ apiUrl: Constants.backendURL })
 
 import { Identifiable } from './Interfaces'
+import { AuthenticationError, ErrorDescriptor } from './Error'
+
+let errorMiddleware = {
+	name: 'error-formatter',
+	error: function (payload) {
+		let errors: ErrorDescriptor[] = []
+		for (let err of payload.data.errors) {
+			errors.push(<ErrorDescriptor><any> err)
+		}
+		return errors
+	}
+}
+jsonApi.replaceMiddleware('errors', errorMiddleware)
 
 export interface Relation {
 	type: string
@@ -37,16 +50,14 @@ export class ServerConnector<E extends Identifiable> {
 		for (let relation of relations) {
 			jsonApi.one(relation.type, relation.id)
 		}
-		let obj = jsonApi.all(this.type).get()
+		return jsonApi.all(this.type).get()
 			.then((data: any) => {
 				let objects: E[] = []
 				if (data != null) {
 					objects = data.map(this.jsonToObject)
 				}
 				return objects
-			}, this.error)
-		return obj
-		
+			}, this.error)		
 	}
 
 	public getOne(id: number) {
@@ -84,7 +95,13 @@ export class ServerConnector<E extends Identifiable> {
 			}, this.error)
 	}
 
-	public error(data: any) {
-		throw data
+	public error(errors: ErrorDescriptor[]) {
+		for (let err of errors) {
+			if (err.code == 401) {
+				throw new AuthenticationError(err.detail)
+			}
+		}
+		throw errors
+		
 	} 
 }

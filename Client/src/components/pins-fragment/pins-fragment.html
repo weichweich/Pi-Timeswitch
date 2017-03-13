@@ -1,16 +1,8 @@
 <div class="fragment">
   <h2>Pins</h2>
   <table id="pinTable">
-<!--     <thead>
-      <tr>
-      <th width="20">State</th>
-      <th class="borderedCell" width="50">Pin</th>
-      <th class="borderedCell">Name</th>
-      <th width="20"></th>
-      </tr>
-    </thead>
- -->    <tbody data-bind="foreach: pins">
-        <tr data-bind="click: $parent.pushPin, clickBubble: false">
+    <tbody data-bind="foreach: pins">
+        <tr data-bind="click: $parent.pushPin, clickBubble: false, css: {'highlight': $parent.selected()==id}">
           <td>
           	<button class="image" data-bind="click: $parent.pushSwitchState, clickBubble: false">
             	<img data-bind="attr: {src: stateImage}" width="20">
