@@ -4,8 +4,7 @@ import ko = require('knockout')
 
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/sequence'
-import { Model } from '../../frame'
-import { AppState } from '../../AppState'
+import { Model, AppState } from '../../frame'
 import { Constants } from '../../config'
 
 class ViewModel {

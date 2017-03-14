@@ -1,17 +1,26 @@
 <div class="fragment">
   <div data-bind="if: pin">
     <h3 data-bind="text: pin().name()"></h3>
-    <table id="pinTable">
+    <table>
+    	<thead>
+    		<tr>
+    		  <th>Start</th>
+    		  <th>Stop</th>
+    		  <th></th>
+    		</tr>
+    	</thead>
       <tbody data-bind="foreach: sequences">
         <tr data-bind="click: $parent.clicked, clickBubble: false">
-          <td data-bind="text: start_time"></td>
-          <td data-bind="text: start_range"></td>
-          <td data-bind="text: end_time"></td>
-          <td data-bind="text: end_range"></td>
           <td>
-      			<button class="destroy" data-bind="click: $parent.pushRemove, clickBubble: false" >
-      				<img src="/images/delete.svg" width="15">
-      			</button>
+            <span data-bind="text: start_time"></span>
+            (+-<span data-bind="text: start_range"></span>)
+          </td>
+          <td>
+            <span data-bind="text: end_time"></span>
+          	(+-<span data-bind="text: end_range"></span>)
+          </td>
+          <td>
+            <input class="destroy" type="image" src="/images/delete.svg" width="20" height="20" data-bind="click: $parent.pushRemove, clickBubble: false" />
           </td>
         </tr>
       </tbody>

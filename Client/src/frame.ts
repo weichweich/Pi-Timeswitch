@@ -4,8 +4,9 @@ let _ = require('lodash')
 import ko = require('knockout')
 import { router, startRouter } from './frame/router'
 import { routes } from "./routes"
-import { AppState } from "./AppState"
+import { AppState } from "./frame/AppState"
 
+export * from "./frame/AppState"
 export * from "./frame/router"
 export * from "./frame/model/cookie"
 export * from "./frame/model/model"

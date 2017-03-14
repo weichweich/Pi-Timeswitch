@@ -1,76 +1,76 @@
 body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    /* background: url('/images/bg.png');*/
-    -webkit-font-smoothing: antialiased;
-    -moz-font-smoothing: antialiased;
-    -ms-font-smoothing: antialiased;
-    -o-font-smoothing: antialiased;
-    font-smoothing: antialiased;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	/* background: url('/images/bg.png');*/
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-ms-font-smoothing: antialiased;
+	-o-font-smoothing: antialiased;
+	font-smoothing: antialiased;
 }
 
 h2 {
 	margin-top: 5px;
 	margin-bottom: 0px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 10px;
-    padding-right: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 10px;
+	padding-right: 10px;
 	text-align:center; 
 }
 
 h3 {
 	margin-top: 5px;
 	margin-bottom: 0px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 10px;
-    padding-right: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 10px;
+	padding-right: 10px;
 	text-align:center; 
 }
 
 .nav ul {
-    list-style: none;
-    background-color: #006600;
-    text-align: left;
-    padding: 0;
-    margin-top: 0px;
-    margin-bottom: 17px;
+	list-style: none;
+	background-color: #006600;
+	text-align: left;
+	padding: 0;
+	margin-top: 0px;
+	margin-bottom: 17px;
 }
 
 .nav li img {
-    height: 47px;
-    position: relative;
-    bottom: 0px;
+	height: 47px;
+	position: relative;
+	bottom: 0px;
 }
 
 .nav li.icon {
-    float: left;
+	float: left;
 }
 
 .nav li.info{
-    float: right;
+	float: right;
 }
 
 .nav li {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: #fff;
-    border-bottom: none;
-    font-size: 1.2em;
-    line-height: 30px;
-    height: 30px;
-    padding: 5px;
-    display: inline-block;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	color: #fff;
+	border-bottom: none;
+	font-size: 1.2em;
+	line-height: 30px;
+	height: 30px;
+	padding: 5px;
+	display: inline-block;
 }
 
 .container {
     
-    margin-left: 40px;
-    margin-right: auto;
+	margin-left: 40px;
+	margin-right: auto;
 
-    padding: 20px;
+	padding: 20px;
 }
 
 .fragment {
@@ -78,7 +78,7 @@ h3 {
     width: -moz-fit-content;
     width: fit-content;
 
-    min-width: 70px;
+    min-width: 150px;
 
     padding: 5px;
     margin: 5px;
@@ -109,10 +109,6 @@ tr.highlight {
     background:rgba(200, 100, 100, 1);
 }
 
-td {
-	vertical-align: middle;
-}
-
 td.numeric {
 	text-align:center; 
 }
@@ -122,7 +118,7 @@ button.submit {
     cursor: pointer;
 }
 
-button.destroy {
+input.destroy {
     margin: 0px;
     padding: 0px;
 	opacity: 0;
@@ -131,16 +127,24 @@ button.destroy {
     cursor: pointer;
 }
 
-tr:hover > td > button.destroy {
+tr:hover > td > input.destroy {
 	opacity: 1;
+}
+
+input.imgButton {
+    margin: 0px;
+    padding: 0px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 button.image {
     border:0;
-    margin: 0px;
-    padding: 0px;
-    background:rgba(255, 255, 255, 0);
+    margin: 0;
+    padding: 0;
     cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
 }
 
 div.wappen {

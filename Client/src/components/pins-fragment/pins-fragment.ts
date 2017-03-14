@@ -4,8 +4,7 @@ import ko = require('knockout')
 
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/sequence'
-import { Model, AuthenticationError } from '../../frame'
-import { AppState } from '../../AppState'
+import { Model, AuthenticationError, AppState } from '../../frame'
 import { Constants } from '../../config'
 
 class ViewModel {
@@ -24,7 +23,7 @@ class ViewModel {
 		this.pinModel = appState.getModel(Constants.model.pin)
 		this.pins = ko.observableArray([])
 		this.selected = ko.observable(undefined)
-		
+
 		this.pinModel.addObserver({
 			objectAdded: this.addPin,
 			objectModified: this.modifyPin,

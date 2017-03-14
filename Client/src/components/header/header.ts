@@ -1,6 +1,6 @@
 /// <reference path="../../../typings/main.d.ts" />
 
-import { AppState } from '../../AppState'
+import { AppState } from '../../frame'
 import { Constants } from '../../config'
 
 class ViewModel {

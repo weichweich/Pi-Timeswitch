@@ -1,6 +1,6 @@
-/// <reference path="./../typings/main.d.ts" />
+/// <reference path="./../../typings/main.d.ts" />
 
-import { Model, cookie } from "./frame"
+import { Model, cookie } from "../frame"
 import $ = require('jquery')
 
 export class AppState {
