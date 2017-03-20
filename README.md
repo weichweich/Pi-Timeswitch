@@ -10,7 +10,7 @@ Currently the project is in an **early state of development**. There are several
 Ensure that pip is installed:
 
 ~~~
-sudo easy_install pip
+sudo easy_install pip3
 ~~~
 
 ### Virtualenv
@@ -20,7 +20,7 @@ At first i recommend to create a virtual environment using [Virtualenv](https://
 Install Virtualenv:
 
 ~~~
-pip install virtualenv
+pip3 install virtualenv
 ~~~
 
 Create a virtual environment:
@@ -40,11 +40,11 @@ source venv/bin/activate
 Then you need to install [Flask](http://flask.pocoo.org), [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO), [marshmallow](http://marshmallow.readthedocs.org/en/latest/), [marshmallow-jsonapi](https://marshmallow-jsonapi.readthedocs.org/en/latest/).
 
 ~~~
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 # Only on Raspberry Pi:
 sudo apt-get install python-dev  
-pip install rpi.gpio
+pip3 install rpi.gpio
 ~~~
 
 If the RPi.GPIO is not installed, the program will use a mockup (which won't switch anything and just logs switching attempts).
@@ -69,7 +69,7 @@ When starting the server for the first time, we need to create a new database. R
 ~~~bash
 cd <project-root>/Flask-Server
 source venv/bin/activate
-python server.py --file schedule.sqlite
+python3 server.py --file schedule.sqlite
 ~~~
 
 Options for server.py:
