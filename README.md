@@ -26,7 +26,7 @@ pip3 install virtualenv
 Create a virtual environment:
 
 ~~~
-cd pi-timeswitch-folder
+cd <ProjectFolder>/Flask-Server
 virtualenv venv
 ~~~
 Activate it:
@@ -37,7 +37,7 @@ source venv/bin/activate
 
 ### Prepare Flask-Backend
 
-Then you need to install [Flask](http://flask.pocoo.org), [Flask-Restful](http://flask-restful.readthedocs.org/en/0.3.4/), [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO), [marshmallow](http://marshmallow.readthedocs.org/en/latest/), [marshmallow-jsonapi](https://marshmallow-jsonapi.readthedocs.org/en/latest/).
+Then you need to install the backend dependencies.
 
 ~~~
 pip3 install -r requirements.txt
@@ -49,9 +49,9 @@ pip3 install rpi.gpio
 
 If the RPi.GPIO is not installed, the program will use a mockup (which won't switch anything and just logs switching attempts).
 
-### Prepare Frontend
+### Prepare Frontend for development
 
-Make sure you have `npm` and `bower` installed.
+Make sure you have `npm` installed.
 
 Install the dependencies:
 
