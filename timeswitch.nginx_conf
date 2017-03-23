@@ -1,0 +1,13 @@
+server {
+ listen 80;
+ server_name <address or ip>;
+
+ location / {
+  root /var/www/timeswitch;
+ }
+
+ location /api {
+   include uwsgi_params;
+   uwsgi_pass unix:/tmp/timeswitch.sock;
+ }
+}
