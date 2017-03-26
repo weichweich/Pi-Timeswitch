@@ -6,7 +6,7 @@ export function routes(route) {
     route('pins', { page: 'pins-fragment', stack: true }, function() {
         route('add-pin', { path: 'add', page: 'add-pin-fragment', stack: true })
         route('sequences', { path: 'pin/:pinId', page: 'sequences-fragment', stack: true }, function() {
-            route('add-sequence', { path: 'add', page: 'add-sequence-fragment', stack: true })
+            route('add-sequence', { path: '/pins/pin/:pinId/add', page: 'add-sequence-fragment', stack: true })
         })
     })
     route('users', { page: 'users-fragment', stack: true }, function() {

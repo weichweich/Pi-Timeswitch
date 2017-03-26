@@ -47,8 +47,8 @@ let images=[
 ]
 
 export class Pin {
-	public static readonly OFF=0
-	public static readonly ON=1
+	public static readonly OFF=1
+	public static readonly ON=0
 	public static readonly UNDEF=2
 	id: number
 
