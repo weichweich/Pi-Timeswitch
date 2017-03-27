@@ -51,10 +51,11 @@ class Sequence(object):
 
 class Pin(object):
 
-    def __init__(self, number, sequences=None, name=None, state=0):
+    def __init__(self, number, sequences=None, name=None, state=0, prio=0):
         ''' State = 0 -> Undef | 1 -> ON | -1 -> OFF
         '''
         self.number = number
+        self.prio = prio
         self.sequences = sequences if sequences else []
         for sequence in self.sequences:
             sequence.set_pin(self)
@@ -89,3 +90,9 @@ class Pin(object):
 
     def set_id(self, pin_id):
         self.number = pin_id
+
+    def get_prio(self):
+        return self.prio
+
+    def set_prio(self, prio):
+        self.prio = prio

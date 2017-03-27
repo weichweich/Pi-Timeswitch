@@ -39,7 +39,9 @@ def create_db():
 			FOREIGN KEY(pin_id) REFERENCES Pins(id) ON UPDATE CASCADE)''')
 		cur.execute('''CREATE TABLE Pins(
 			id INTEGER PRIMARY KEY,
+			prio INTEGER,
 			name TEXT)''')
+	connection.close()
 
 ## validate data
 
@@ -70,17 +72,13 @@ def get_sequences_from_rows(rows):
 
 	return sequences
 
-### MODEL ###
-PRIO_KEY = 'prio'
-STATE_KEY = 'state'
-
-class PiSwitchModel(object):
+class SwitchModel(object):
 	'''This class saves and loads pins and schedules.'''
 
 	def __init__(self, filename):
 		self.sql_file = filename
 		self.observers = []
-		self.pin_info = {}
+		self.used_gpio = {}
 		GPIO.setmode(GPIO.BOARD)
 
 		try:
@@ -115,7 +113,9 @@ class PiSwitchModel(object):
 					print("none?")
 				sequences.append(Sequence(start_time, start_range, end_time,
 										  end_range, pin=pin, sequence_id=sequence_id))
-			return sequences
+
+		connection.close()
+		return sequences
 
 	def get_sequence(self, sequence_id):
 		'''Returns all schedules in the dataset.'''
@@ -129,16 +129,13 @@ class PiSwitchModel(object):
 
 			row = cur.fetchone()
 			pin = self.__get_pin_for_sequence(sequence_id)
-
-			if row is None:
-				return None
-			elif pin is None:
-				print("none?")
-				return None
-			else:
+			sequence = None
+			if not pin is None:
 				sequence = get_sequence_from_row(row)
 				sequence.set_pin(pin)
-				return sequence
+		
+		connection.close()
+		return sequence
 
 	def set_sequence(self, sequence, pin_id=-1):
 		'''Adds the given sequence to the dataset.\
@@ -163,13 +160,14 @@ class PiSwitchModel(object):
 			else:
 				LOGGER.info("set_sequence({0}) - updating sequence"\
 					.format(sequence.get_id()))
-				vals = (sequence.sequence_id, pin_id,
+				vals = (sequence.id, pin_id,
 						sequence.get_start()[0], sequence.get_start()[1],
 						sequence.get_end()[0], sequence.get_end()[1])
 				cur.execute('''REPLACE INTO
 							Sequences(id, pin_id, start_time, start_range,\
 							end_time, end_range)
 							VALUES (?, ?, ?, ?, ?, ?)''', vals)
+		connection.close()
 		return self.get_sequence(sequence.get_id())
 
 	def delete_sequence(self, sequence_id):
@@ -178,6 +176,7 @@ class PiSwitchModel(object):
 			cur = connection.cursor()
 			cur.execute('''DELETE FROM Sequences
 						WHERE id=?''', (sequence_id,))
+		connection.close()
 
 	def get_sequences_for_pin(self, pin_id):
 		'''Returns all sequences for the pin.'''
@@ -193,14 +192,16 @@ class PiSwitchModel(object):
 				pin = self.__get_pin_for_sequence(sequence_id)
 				sequences.append(Sequence(start_time, start_range, end_time,
 								  end_range, sequence_id=sequence_id, pin=pin))
-			return sequences
+		
+		connection.close()
+		return sequences
 
 
 	def __get_pin_for_sequence(self, sequence_id):
 		'''Returns all sequences for the pin.'''
 		with sql.connect(self.sql_file) as connection:
 			cur = connection.cursor()
-			cur.execute('''SELECT Pins.id, Pins.name FROM pins
+			cur.execute('''SELECT Pins.id, Pins.prio, Pins.name FROM pins
 				JOIN Sequences
 				ON Sequences.pin_id = Pins.id
 				WHERE Sequences.id =?''', (str(sequence_id),))
@@ -209,7 +210,8 @@ class PiSwitchModel(object):
 			if row is None:
 				return None
 
-			return Pin(row[0], None, row[1])
+		connection.close()
+		return Pin(row[0], None, row[2], prio=row[1])
 
 	def __delete_sequences_for_pin(self, pin_id):
 		'''Deletes all sequences for the pin.'''
@@ -220,7 +222,8 @@ class PiSwitchModel(object):
 
 			rows = cur.fetchall()
 
-			return get_sequences_from_rows(rows)
+		connection.close()
+		return get_sequences_from_rows(rows)
 
 	def get_pins(self):
 		'''Returns all pins.'''
@@ -234,12 +237,14 @@ class PiSwitchModel(object):
 			for row in rows:
 				sequences = self.get_sequences_for_pin(row[0])
 				rawPin = row
-				pin = Pin(rawPin[0], sequences, rawPin[1])
-				if pin.get_id() in self.pin_info:
-					pin_state = self.pin_info[pin.get_id()][STATE_KEY]
-					pin.set_state(pin_state)
+				pin = Pin(rawPin[0], sequences, rawPin[2], prio=rawPin[1])
+				if not pin.get_id() in self.used_gpio:
+					self.__setup_pin(pin)
+				pin.set_state(GPIO.input(pin.get_id()))
 				pins.append(pin)
-			return pins
+		
+		connection.close()
+		return pins
 
 	def get_pin(self, pin_id):
 		'''Returns the pin with the given id.'''
@@ -248,22 +253,24 @@ class PiSwitchModel(object):
 			cur.execute('''SELECT * FROM Pins
 				WHERE id=?''', (str(pin_id),))
 
-			row = cur.fetchone()
-			if row is None:
+			rawPin = cur.fetchone()
+			if rawPin is None:
 				return None
+		connection.close()
 
-			sequences = self.get_sequences_for_pin(pin_id)
-			rawPin = row
-			pin = Pin(rawPin[0], sequences, rawPin[1])
-			if pin.get_id() in self.pin_info:
-				pin_state = self.pin_info[pin.get_id()][STATE_KEY]
-				pin.set_state(pin_state)
-			return pin
+		sequences = self.get_sequences_for_pin(pin_id)
+		pin = Pin(rawPin[0], sequences, rawPin[2], prio=rawPin[1])
+		if not pin.get_id() in self.used_gpio:
+			self.__setup_pin(pin)
+		pin.set_state(GPIO.input(pin.get_id()))
+		
+		return pin
 
 	def delete_pin(self, pin_id):
 		'''Deletes all sequence for the pin and the pin it selfs.'''
 		self.__delete_sequences_for_pin(pin_id)
 		GPIO.cleanup(pin_id)
+		self.used_gpio.pop(pin_id, None)
 
 		with sql.connect(self.sql_file) as connection:
 			cur = connection.cursor()
@@ -279,56 +286,59 @@ class PiSwitchModel(object):
 		elif pin.get_state() == SWITCH_OFF:
 			self.switch_pin_off(pin, prio=1)
 
+		return self.__set_pin(pin, pin_id)
+
+	def __set_pin(self, pin, pin_id=-1):
+		'''Alters the pin name or adds the pin if he
+		did not exist. Also adds sequences.'''
+
 		with sql.connect(self.sql_file) as connection:
 			cur = connection.cursor()
-			cur.execute('''REPLACE INTO Pins(id, name)
-						VALUES (?, ?)''',
-						(pin.get_id(), pin.get_name()))
+			cur.execute('''REPLACE INTO Pins(id, prio, name)
+						VALUES (?, ?, ?)''',
+						(pin.get_id(), pin.get_prio(), pin.get_name()))
+		connection.close()
 
-			if pin.get_sequences() is not None:
-				for sequence in pin.get_sequences():
-					self.set_sequence(sequence)
+		if pin.get_sequences() is not None:
+			for sequence in pin.get_sequences():
+				self.set_sequence(sequence)
+
 		return self.get_pin(pin.get_id())
 
 	def switch_pin_on(self, pin, prio=0):
-		if not pin.get_id() in self.pin_info:
-			self.__setup_info(pin)
-
 		self.__switch_state(pin, SWITCH_ON, prio)
 
 	def switch_pin_off(self, pin, prio=0):
-		if not pin.get_id() in self.pin_info:
-			self.__setup_info(pin)
-
 		self.__switch_state(pin, SWITCH_OFF, prio)
 
-	def __setup_info(self, pin):
-		self.pin_info[pin.get_id()] = {
-			STATE_KEY: SWITCH_UNDEF,
-			PRIO_KEY: 0
-		}
-		GPIO.setup(pin.get_id(), GPIO.OUT)
+	def __setup_pin(self, pin):
+		pin_id = pin.get_id()
+		GPIO.setup(pin_id, GPIO.OUT, initial=GPIO.LOW)
+		self.used_gpio[pin_id] = "in use"
 
 	def __switch_state(self, pin, state, prio):
-		info = self.pin_info[pin.get_id()]
-		if not info[PRIO_KEY]:
-			info[PRIO_KEY] = prio
+		if not pin.get_id() in self.used_gpio:
+			self.__setup_pin(pin)
 
-		if info[STATE_KEY] != state and info[PRIO_KEY] <= prio:
+		old_state = GPIO.input(pin.get_id())
+		old_prio = pin.get_prio()
+
+		if old_state != state and old_prio <= prio:
 			LOGGER.info(u"Switch State: {0} Id: {1:2} Name: {2} Prio: {3}"
 				.format(state, pin.get_id(), pin.get_name(), prio))
 			pin.set_state(state)
-			info[STATE_KEY] = state
 			if state == SWITCH_ON:
 				GPIO.output(pin.get_id(), GPIO.HIGH)
 			elif state == SWITCH_OFF:
 				GPIO.output(pin.get_id(), GPIO.LOW)
 
-		elif info[STATE_KEY] == state:
-			info[PRIO_KEY] = prio
+		elif old_state == state:
+			pin.set_prio(prio)
+			self.__set_pin(pin)
 		else:
 			LOGGER.info(u"No switching done. Current prio:{0} - order prio:{1}"
 				.format(info[PRIO_KEY], prio))
 
 	def cleanup_all_pins(self):
 		GPIO.cleanup()
+		self.used_gpio = {}

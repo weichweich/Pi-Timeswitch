@@ -3,18 +3,18 @@
 from flask import Flask, g, make_response
 from flask_restful import Api
 
-from time_switch.switch_manager import SwitchManager
-from time_switch.model import create_db as time_db_init, PiSwitchModel
+from time_switch.model import create_db as time_db_init, SwitchModel
 from time_switch.schema import PinSchema, SequenceSchema
 from rest_model_adapter import ManyRessource, SingleResource
 import auth
 from auth.model import create_db as auth_db_init
 from auth.resource import UsersResource, UserResource, LoginResource
 
+import json
 import argparse
 import logging
 import os
-import json
+import sys
 
 # ######################################
 # # parsing commandline args
@@ -32,6 +32,9 @@ parser.add_argument('--debug', dest='debug', default=False,
 
 parser.add_argument('--create', dest='create', default=False, const=True,
 					nargs="?", help='Creates a new database. DELETES ALL DATA!!')
+
+parser.add_argument('--manager', dest='manager', default=False, const=True,
+					nargs="?", help='Start the manager which switches the GPIOs at specified times.')
 
 args = parser.parse_args()
 
@@ -81,9 +84,9 @@ if args.create:
 	with app.app_context():
 		auth_db_init()
 		time_db_init()
+	sys.exit(0)
 
-switch_model = PiSwitchModel(app.config['SQL_FILE'])
-switch_manager = SwitchManager(switch_model)
+switch_model = SwitchModel(app.config['SQL_FILE'])
 
 # ######################################
 # # flask_restful:
@@ -154,9 +157,14 @@ api.add_resource(UserResource, URL_PREFIX + '/users/<int:user_id>',
 api.add_resource(LoginResource, URL_PREFIX + "/login", endpoint='login')
 
 if __name__ == '__main__':
-	switch_manager.start()
+	switch_manager = None
+	if (args.manager):
+		switch_manager = SwitchManager(switch_model)
+		switch_manager.start()
+
 	try:
 		app.run(debug=args.debug)
 	finally:
-		switch_manager.stop()
+		if (args.manager):
+			switch_manager.stop()
 		logger.info("############# END OF LOG #############\n")
