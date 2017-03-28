@@ -29,6 +29,9 @@ class ViewModel {
 
         this.state = ko.observable('ready') // possible: ready, uploading 
 
+        if (viewState.route.vals.pinId == undefined) {
+        	console.error("Pin ID is undefined! Adding sequence will fail.")
+        }
         this.pinId = viewState.route.vals.pinId
         this.start_time = ko.observable('')
         this.start_range = ko.observable('')
