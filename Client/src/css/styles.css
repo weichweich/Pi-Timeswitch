@@ -101,8 +101,9 @@ h3 {
     width: 50%;
 }
 
-table {
+div.fragment table {
 	border-collapse:collapse;
+	width: 100%;
 }
 
 tr.highlight {
@@ -138,13 +139,21 @@ input.imgButton {
     vertical-align: middle;
 }
 
-button.image {
-    border:0;
+button.topRight {
     margin: 0;
     padding: 0;
+    float: right;
     cursor: pointer;
-    display: inline-block;
     vertical-align: top;
+}
+
+button.topRightSave {
+    margin: 0;
+    padding: 0;
+    float: right;
+    cursor: pointer;
+    vertical-align: top;
+    color: green;
 }
 
 div.wappen {
