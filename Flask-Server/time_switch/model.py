@@ -133,17 +133,22 @@ class SwitchModel(object):
 			if not pin is None:
 				sequence = get_sequence_from_row(row)
 				sequence.set_pin(pin)
+			else:
+				LOGGER.error("sequence got no pin!")
 		
 		connection.close()
 		return sequence
 
-	def set_sequence(self, sequence, pin_id=-1):
+	def set_sequence(self, sequence, pin_id=-1, sequence_id=-1):
 		'''Adds the given sequence to the dataset.\
 		   Removes the old schedule if it exists.'''
 		with sql.connect(self.sql_file) as connection:
 			cur = connection.cursor()
 			if sequence.get_pin() and pin_id==-1:
 				pin_id = sequence.get_pin().get_id()
+
+			if sequence.get_id() == -1 and sequence_id != -1:
+				sequence.set_id(sequence_id)
 
 			if sequence.get_id() == -1:
 				LOGGER.info("set_sequence() - adding new sequence")
@@ -160,13 +165,11 @@ class SwitchModel(object):
 			else:
 				LOGGER.info("set_sequence({0}) - updating sequence"\
 					.format(sequence.get_id()))
-				vals = (sequence.id, pin_id,
-						sequence.get_start()[0], sequence.get_start()[1],
-						sequence.get_end()[0], sequence.get_end()[1])
-				cur.execute('''REPLACE INTO
-							Sequences(id, pin_id, start_time, start_range,\
-							end_time, end_range)
-							VALUES (?, ?, ?, ?, ?, ?)''', vals)
+				vals = (sequence.get_start()[0], sequence.get_start()[1],
+						sequence.get_end()[0], sequence.get_end()[1], sequence.get_id())
+				cur.execute('''UPDATE Sequences
+							SET start_time=?, start_range=?, end_time=?, end_range=?
+							WHERE id=?''', vals)
 		connection.close()
 		return self.get_sequence(sequence.get_id())
 
@@ -294,9 +297,10 @@ class SwitchModel(object):
 
 		with sql.connect(self.sql_file) as connection:
 			cur = connection.cursor()
-			cur.execute('''REPLACE INTO Pins(id, prio, name)
-						VALUES (?, ?, ?)''',
-						(pin.get_id(), pin.get_prio(), pin.get_name()))
+			cur.execute('''UPDATE Pins
+						SET prio=?, name=?
+						WHERE id=?''',
+						(pin.get_prio(), pin.get_name(), pin.get_id()))
 		connection.close()
 
 		if pin.get_sequences() is not None:

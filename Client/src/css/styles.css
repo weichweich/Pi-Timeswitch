@@ -139,6 +139,19 @@ input.imgButton {
     vertical-align: middle;
 }
 
+button.edit {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+button.save {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    color: green;
+}
+
 button.topRight {
     margin: 0;
     padding: 0;

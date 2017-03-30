@@ -1,33 +1,56 @@
 <div class="fragment">
-	<div data-bind="if: pin">
-		<div data-bind="with: pin">
-			<div data-bind="ifnot: $parent.isEditing">
-				<button data-bind="click: $parent.pushEdit" class="topRight">Edit</button>
+	<!-- ko if: pin -->
+		<!-- ko with: pin -->
+			<!-- ko ifnot: $parent.isEditing -->
+				<button data-bind="click: $parent.pushEditPin" class="topRight">Edit</button>
 				<h3 data-bind="text: name"></h3>
-			</div>
-			<div data-bind="if: $parent.isEditing">
-				<button data-bind="click: $parent.pushEdit" class="topRightSave">save</button>
+			<!-- /ko -->
+			<!-- ko if: $parent.isEditing -->
+				<button data-bind="click: $parent.pushEditPin" class="topRightSave">save</button>
 				<input data-bind="textInput: name" type="text" name="pin">
-			</div>
+			<!-- /ko -->
 			<h4>Schedule for <span data-bind="text: name"></span></h4>
-		</div>
+		<!-- /ko -->
 		<table>
 			<thead>
 				<tr>
 					<th>Start</th>
 					<th>Stop</th>
 					<th></th>
+					<th></th>
 				</tr>
 			</thead>
-			<tbody data-bind="foreach: sequences">
+			<tbody data-bind="foreach: viewSequences">
 				<tr data-bind="click: $parent.clicked, clickBubble: false">
+					<!-- ko with: sequence -->
+						<!-- ko ifnot: $parent.isEditing -->
+							<td>
+								<span data-bind="text: start_time"></span>
+								(+-<span data-bind="text: start_range"></span>)
+							</td>
+							<td>
+								<span data-bind="text: end_time"></span>
+							(+-<span data-bind="text: end_range"></span>)
+							</td>
+						<!-- /ko -->
+						<!-- ko if: $parent.isEditing -->
+							<td>
+								<input data-bind="textInput: start_time" type="text" name="startTime">
+								<input data-bind="textInput: start_range" type="text" name="startRange">
+							</td>
+							<td>
+								<input data-bind="textInput: end_time" type="text" name="endTime">
+								<input data-bind="textInput: end_range" type="text" name="endRange">
+							</td>
+						<!-- /ko -->
+					<!-- /ko -->
 					<td>
-						<span data-bind="text: start_time"></span>
-						(+-<span data-bind="text: start_range"></span>)
-					</td>
-					<td>
-						<span data-bind="text: end_time"></span>
-					(+-<span data-bind="text: end_range"></span>)
+						<!-- ko ifnot: isEditing -->
+							<button data-bind="click: $parent.pushEditSequence" class="edit">Edit</button>
+						<!-- /ko -->
+						<!-- ko if: isEditing -->
+							<button data-bind="click: $parent.pushEditSequence" class="save">save</button>
+						<!-- /ko -->
 					</td>
 					<td>
 						<input class="destroy" type="image" src="/images/delete.svg" width="20" height="20" data-bind="click: $parent.pushRemove, clickBubble: false" />
@@ -35,7 +58,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<p data-bind="if: sequences().length==0">No sequences given.</p>
+		<p data-bind="if: viewSequences().length==0">No sequences given.</p>
 		<button data-bind="click: pushAdd">add sequence!</button>
-	</div>
+	<!-- /ko -->
 </div>

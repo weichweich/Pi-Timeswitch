@@ -48,6 +48,14 @@ export class Sequence implements Identifiable {
 		this.end_time = ko.observable(anEnd_time)
 		this.end_range = ko.observable(anEnd_range)
 	}
+
+	public update(newSeq: Sequence) {
+		this.start_time(newSeq.start_time())
+		this.start_range(newSeq.start_range())
+		this.end_time(newSeq.end_time())
+		this.end_range(newSeq.end_range())
+
+	}
 }
 
 export function sequenceToJson(sequence: Sequence): SequenceJson {

@@ -86,9 +86,9 @@ class SingleResource(Resource):
 
         result = self.schemaSingle.load(request_json)
         addedItem = result.data
-        self.setter_func(addedItem, *args, **kwargs)
-        addedItem_json = self.schemaSingle.dump(addedItem)
-        return addedItem_json.data, 200
+        newItem = self.setter_func(addedItem, *args, **kwargs)
+        newItem_json = self.schemaSingle.dump(newItem)
+        return newItem_json.data, 200
 
 # ######################################
 # # Many Resource:

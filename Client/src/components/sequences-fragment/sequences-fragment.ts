@@ -7,6 +7,17 @@ import { Sequence } from '../../model/sequence'
 import { Model, AppState } from '../../frame'
 import { Constants } from '../../config'
 
+class ViewSequence {
+	public isEditing: KnockoutObservable<boolean>
+	public sequence: Sequence
+
+	constructor(newSequence: Sequence) {
+		this.isEditing = ko.observable(false)
+		this.sequence = newSequence
+	}
+
+}
+
 class ViewModel {
 	router: any
 	isEditing: KnockoutObservable<boolean>
@@ -16,7 +27,7 @@ class ViewModel {
 	index: number
 
 	pin: KnockoutObservable<Pin>
-	sequences: KnockoutObservableArray<Sequence>
+	viewSequences: KnockoutObservableArray<ViewSequence>
 
 	constructor(params) {
 		let viewState = params.viewState
@@ -29,7 +40,7 @@ class ViewModel {
 		this.index = viewState.index
 
 		this.pin = ko.observable(undefined)
-		this.sequences = ko.observableArray([])
+		this.viewSequences = ko.observableArray([])
 
 		this.sequenceModel.addObserver({
 			objectAdded: this.addSequence,
@@ -53,7 +64,9 @@ class ViewModel {
 			}],
 			attributes: []
 		}).then((sequences: Sequence[]) => {
-		    this.sequences(sequences)
+			this.viewSequences(sequences.map((seq: Sequence, i: number) => {
+				return new ViewSequence(seq)
+			}))
 		})
 	}
 
@@ -62,16 +75,22 @@ class ViewModel {
 	}
 
 	public addSequence = (sequence: Sequence) => {
-	    this.sequences.push(sequence)
+	    this.viewSequences.push(new ViewSequence(sequence))
 	}
 
 	public modifySequence = (sequence: Sequence) => {
-		this.removeSequence(sequence)
-		this.addSequence(sequence)
+		var oldVSeq = ko.utils.arrayFirst(this.viewSequences(), (testVSeq: ViewSequence) => {
+			return testVSeq.sequence.id == sequence.id
+		})
+		if (!oldVSeq) {
+			throw "Updated sequence not found!"
+		} else {
+			oldVSeq.sequence.update(sequence)
+		}
 	}
 
 	public removeSequence = (sequence: Sequence) => {
-	    this.sequences.remove(sequence)
+	    this.viewSequences.remove(new ViewSequence(sequence))
 	}
 
 	public pinDeleted = (pin: Pin) => {
@@ -80,7 +99,7 @@ class ViewModel {
 		}
 	}
 
-	public pushEdit = (params) => {
+	public pushEditPin = (params) => {
 		if (this.isEditing()) {
 			let globThis = this
 			this.pinModel.update(this.pin(), {
@@ -93,7 +112,23 @@ class ViewModel {
 			})
 		} else {
 			this.isEditing(true)
-			console.log("push edit!", this.isEditing())
+		}
+	}
+
+	public pushEditSequence = (viewSequence: ViewSequence) => {
+		if (viewSequence.isEditing()) {
+			let globThis = this
+			this.sequenceModel.update(viewSequence.sequence, {
+				relation: [],
+				attributes: []
+			}).then( () => {
+				viewSequence.isEditing(!viewSequence.isEditing)
+			},(error) => {
+				console.log("Error!", error)
+			})
+		} else {
+			viewSequence.isEditing(true)
+			console.log("push edit!", viewSequence)
 		}
 	}
 
@@ -103,12 +138,12 @@ class ViewModel {
 		this.router.transitionTo(last_route.name)
 	}
 
-	public pushRemove = (sequence: Sequence) => {
-		this.sequenceModel.remove(sequence, {
+	public pushRemove = (viewSequence: ViewSequence) => {
+		this.sequenceModel.remove(viewSequence.sequence, {
 			relation: [],
 			attributes: []
 		}).then((removedSeq: Sequence) => {
-			this.sequences.remove(removedSeq)
+			this.viewSequences.remove(new ViewSequence(removedSeq))
 		})
 	}
 
