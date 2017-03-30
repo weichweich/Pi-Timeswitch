@@ -119,6 +119,10 @@ button.submit {
     cursor: pointer;
 }
 
+input.timeIn {
+	width: 30px;
+}
+
 input.destroy {
     margin: 0px;
     padding: 0px;

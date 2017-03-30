@@ -7,7 +7,7 @@
 			<!-- /ko -->
 			<!-- ko if: $parent.isEditing -->
 				<button data-bind="click: $parent.pushEditPin" class="topRightSave">save</button>
-				<input data-bind="textInput: name" type="text" name="pin">
+				<input data-bind="textInput: name" type="text" name="pin" />
 			<!-- /ko -->
 			<h4>Schedule for <span data-bind="text: name"></span></h4>
 		<!-- /ko -->
@@ -35,12 +35,12 @@
 						<!-- /ko -->
 						<!-- ko if: $parent.isEditing -->
 							<td>
-								<input data-bind="textInput: start_time" type="text" name="startTime">
-								<input data-bind="textInput: start_range" type="text" name="startRange">
+								<input class="timeIn" data-bind="textInput: start_time" type="text" name="startTime" />
+								<input class="timeIn" data-bind="textInput: start_range" type="text" name="startRange" />
 							</td>
 							<td>
-								<input data-bind="textInput: end_time" type="text" name="endTime">
-								<input data-bind="textInput: end_range" type="text" name="endRange">
+								<input class="timeIn" data-bind="textInput: end_time" type="text" name="endTime" />
+								<input class="timeIn" data-bind="textInput: end_range" type="text" name="endRange" />
 							</td>
 						<!-- /ko -->
 					<!-- /ko -->
