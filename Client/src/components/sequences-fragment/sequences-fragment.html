@@ -1,15 +1,17 @@
 <div class="fragment">
 	<!-- ko if: pin -->
 		<!-- ko with: pin -->
-			<!-- ko ifnot: $parent.isEditing -->
+			<div class="fragHeader" data-bind="ifnot: $parent.isEditing">
 				<button data-bind="click: $parent.pushEditPin" class="topRight">Edit</button>
 				<h3 data-bind="text: name"></h3>
-			<!-- /ko -->
-			<!-- ko if: $parent.isEditing -->
-				<button data-bind="click: $parent.pushEditPin" class="topRightSave">save</button>
+			</div>
+			<div class="fragHeader" data-bind="if: $parent.isEditing">
+				<button data-bind="click: $parent.pushEditPin" class="save">save</button>
 				<input data-bind="textInput: name" type="text" name="pin" />
-			<!-- /ko -->
+			</div>
+			<div class="fragSubHeader">
 			<h4>Schedule for <span data-bind="text: name"></span></h4>
+			</div>
 		<!-- /ko -->
 		<table>
 			<thead>

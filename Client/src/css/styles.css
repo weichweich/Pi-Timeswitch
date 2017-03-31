@@ -106,6 +106,18 @@ div.fragment table {
 	width: 100%;
 }
 
+div.fragHeader > button {
+    float: right;
+}
+
+div.fragHeader > input {
+	margin-right: 40px;
+	margin-top: 5px;
+	margin-bottom: 0px;
+
+	width: auto;
+}
+
 tr.highlight {
     background:rgba(200, 100, 100, 1);
 }
@@ -159,7 +171,6 @@ button.save {
 button.topRight {
     margin: 0;
     padding: 0;
-    float: right;
     cursor: pointer;
     vertical-align: top;
 }

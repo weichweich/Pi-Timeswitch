@@ -40,6 +40,12 @@ export class Model<E extends Identifiable> {
 		this.observers.push(observer)
 	}
 
+	public removeObserver = (observer: Observer<E>) => {
+		return this.observers.filter((val: Observer<E>, index: number, array: Observer<E>[]) => {
+			return observer === val
+		})
+	}
+
 	public notifyAdded = (obj: E) => {
 		for (let observer of this.observers) {
 			observer.objectAdded(obj)

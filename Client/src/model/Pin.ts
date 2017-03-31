@@ -73,7 +73,7 @@ export class Pin {
 
 	public update(pin: Pin) {
 		if (this.id != pin.id) {
-			throw "Updating pin with diffrent pin!"
+			throw "Updating pin with diffrent pin! " + this.id + " vs. " + pin.id
 		}
 		this.number(pin.number())
 		this.name(pin.name())

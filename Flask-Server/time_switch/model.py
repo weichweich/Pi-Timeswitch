@@ -294,14 +294,22 @@ class SwitchModel(object):
 	def __set_pin(self, pin, pin_id=-1):
 		'''Alters the pin name or adds the pin if he
 		did not exist. Also adds sequences.'''
-
-		with sql.connect(self.sql_file) as connection:
-			cur = connection.cursor()
-			cur.execute('''UPDATE Pins
-						SET prio=?, name=?
-						WHERE id=?''',
-						(pin.get_prio(), pin.get_name(), pin.get_id()))
-		connection.close()
+		if self.get_pin(pin.get_id()) is None:
+			with sql.connect(self.sql_file) as connection:
+				cur = connection.cursor()
+				cur.execute('''INSERT INTO Pins
+							(prio, name, id)
+							VALUES (?,?,?)''',
+							(pin.get_prio(), pin.get_name(), pin.get_id()))
+			connection.close()
+		else:
+			with sql.connect(self.sql_file) as connection:
+				cur = connection.cursor()
+				cur.execute('''UPDATE Pins
+							SET prio=?, name=?
+							WHERE id=?''',
+							(pin.get_prio(), pin.get_name(), pin.get_id()))
+			connection.close()
 
 		if pin.get_sequences() is not None:
 			for sequence in pin.get_sequences():

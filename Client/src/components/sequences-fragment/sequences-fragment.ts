@@ -4,7 +4,7 @@ import ko = require('knockout')
 
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/sequence'
-import { Model, AppState } from '../../frame'
+import { Model, AppState, Observer } from '../../frame'
 import { Constants } from '../../config'
 
 class ViewSequence {
@@ -29,6 +29,9 @@ class ViewModel {
 	pin: KnockoutObservable<Pin>
 	viewSequences: KnockoutObservableArray<ViewSequence>
 
+	pinObserver: Observer<Pin>
+	sequenceObserver: Observer<Sequence>
+
 	constructor(params) {
 		let viewState = params.viewState
 		let appState = params.appState
@@ -42,17 +45,19 @@ class ViewModel {
 		this.pin = ko.observable(undefined)
 		this.viewSequences = ko.observableArray([])
 
-		this.sequenceModel.addObserver({
+		this.sequenceObserver = {
 			objectAdded: this.addSequence,
 			objectModified: this.modifySequence,
 			objectRemoved: this.removeSequence
-		})
+		}
+		this.sequenceModel.addObserver(this.sequenceObserver)
 
-		this.pinModel.addObserver({
+		this.pinObserver = {
 			objectAdded: (pin: Pin) => {},
 			objectModified: this.modifyPin,
 			objectRemoved: this.pinDeleted
-		})
+		}
+		this.pinModel.addObserver(this.pinObserver)
 
 		this.pinModel.findOne(viewState.route.vals.pinId).then((pin: Pin) => {
 		    this.pin(pin)
@@ -71,7 +76,11 @@ class ViewModel {
 	}
 
 	public modifyPin = (pin: Pin) => {
-		this.pin().update(pin)
+		if (this.pin() && this.pin().id == pin.id) {
+			this.pin().update(pin)
+		} else {
+			console.log("wrong pin")
+		}
 	}
 
 	public addSequence = (sequence: Sequence) => {
@@ -149,6 +158,11 @@ class ViewModel {
 
 	public pushAdd = (params) => {
 		this.router.transitionTo('add-sequence', { pinId: this.pin().id })
+	}
+
+	public dispose = () => {
+		this.pinModel.removeObserver(this.pinObserver)
+		this.sequenceModel.removeObserver(this.sequenceObserver)
 	}
 }
 
