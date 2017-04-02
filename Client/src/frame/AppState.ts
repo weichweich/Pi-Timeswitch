@@ -55,15 +55,16 @@ export class AppState {
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
-		}).then(function(data) {
+		}).then((data) => {
 			if (data.token != null) {
 				globThis.setToken(data.token)
 				cookie.write(AppState.JWT_IDENTIFIER, data.token)
 			} else {
 				throw "login failed. JWT missing."
 			}
-		}, function(data) {
-			throw data
+		}, (error) => {
+			console.log(error)
+			return error.responseJSON
 		});
 	}
 }

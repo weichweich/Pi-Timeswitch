@@ -14,6 +14,16 @@
                    placeholder="Password" 
                    data-bind="textInput: password" /></td>
         </tr>
+        <!-- ko if: error() -->
+        <!-- ko with: error -->
+		<tr>
+		<td class="errorTitle" colspan="2" data-bind="text: title"></td>
+        </tr>
+		<tr>
+		<td class="errorDetail" colspan="2" data-bind="text: detail"></td>
+        </tr>
+        <!-- /ko -->
+        <!-- /ko -->
     </table>
 
 	<button class="submit" data-bind="click: pushLogin">login</button>

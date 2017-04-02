@@ -15,6 +15,7 @@ class ViewModel {
 
 	title: KnockoutObservable<string>
 	pins: KnockoutObservableArray<Pin>
+	pinsOn: KnockoutComputed<Pin[]>
 
 	constructor(params) {
 		let viewState = params.viewState
@@ -25,6 +26,14 @@ class ViewModel {
 		this.pinModel = appState.getModel(Constants.model.pin)
 
 		this.pins = ko.observableArray([])
+		this.pinsOn = ko.computed({
+    	    owner: this,
+    	    read:  () => {
+    	        return this.pins().filter((pin: Pin, i: number) => {
+    	        	return pin.state() == Pin.ON
+    	        })
+    	    }
+    	});
 		this.title = ko.observable('Overview!')
 
 		this.pinModel.findAll({

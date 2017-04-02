@@ -36,19 +36,16 @@ h3 {
 	background-color: #006600;
 	text-align: left;
 	padding: 0;
-	margin-top: 0px;
-	margin-bottom: 17px;
+	margin: 0px;
 }
 
 .nav li img {
 	height: 40px;
 	padding: 0;
-	margin: 0;
+	margin: auto;
 }
 
 .nav li.icon {
-	padding: 0;
-	padding-left: 10px;
 	margin: 0;
 	float: left;
 }
@@ -61,10 +58,8 @@ h3 {
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	color: #fff;
 	border-bottom: none;
-	font-size: 1.2em;
-	line-height: 30px;
-	height: 30px;
-	padding: 5px;
+	height: 40px;
+	padding: 10px;
 	display: inline-block;
 }
 
@@ -127,6 +122,19 @@ tr.highlight {
 
 td.numeric {
 	text-align:center; 
+}
+
+td.errorTitle {
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    padding-top: 5px;
+	color: red;
+}
+td.errorDetail {
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0px;
+    padding: 0px;
+	color: red;
 }
 
 button.submit {

@@ -40,16 +40,16 @@ export function pinToJson(pin: Pin) {
 	}
 }
 
-let images=[
-	'images/off.png',
-	'images/on.png',
-	'images/undef.png'
-]
-
 export class Pin {
-	public static readonly OFF=1
-	public static readonly ON=0
-	public static readonly UNDEF=2
+	public static readonly OFF = 0
+	public static readonly ON = 1
+	public static readonly UNDEF = 2
+	public static readonly images = {
+		0: 'images/off.png',
+		1: 'images/on.png',
+		2: 'images/undef.png'
+	}
+
 	id: number
 
 	number: KnockoutObservable<number>
@@ -63,7 +63,7 @@ export class Pin {
 		this.name = ko.observable(aName)
 		this.state = ko.observable(aState)
 		this.stateImage = ko.computed(() => {
-			return images[this.state()]
+			return Pin.images[this.state()]
 		})
 	}
 

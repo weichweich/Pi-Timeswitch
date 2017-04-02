@@ -21,6 +21,13 @@ class NullHandler(logging.Handler):
 logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
 
+def _make_jsonapi_error(title: str, detail: str, code: int):
+	return {
+		'title': title,
+		'detail': detail,
+		'code': code
+	}
+
 class LoginResource(Resource):
 	method_decorators = []
 
@@ -29,10 +36,12 @@ class LoginResource(Resource):
 		
 		if 'name' not in json_data:
 			LOGGER.info('Access denied: No username given.')
-			return "No username found.", 400
+			return _make_jsonapi_error("Username missing.",
+				"A username is needed to successfuly log in", 1001), 400
 		elif 'password' not in json_data:
 			LOGGER.info('Access denied: No password given.')
-			return "No password found.", 400
+			return _make_jsonapi_error("Password missing.",
+				"A password is needed to successfuly log in", 1002), 400
 
 		try:
 			user_name = json_data['name']
@@ -40,13 +49,16 @@ class LoginResource(Resource):
 
 			if not auth.check_password(auth.model.get_user_with_name(user_name), password):
 				LOGGER.info('Access denied: wrong password.')
-				return "Invalide password or username.", 400
+				return _make_jsonapi_error("Wrong username or password", 
+				"The given username password combination does not match.", 1003), 400
 		except LookupError:
 			LOGGER.info('Access denied: User not found. {}'.format(user_name))
-			return "Invalide password or username.", 400
+			return _make_jsonapi_error("Wrong username or password", 
+				"The given username password combination does not match.", 1003), 400
 		except Exception as e:
-			LOGGER.warn('Access denied: unknown error: {}'.format(e))
-			return "Unknowen error.", 500
+			LOGGER.error('Access denied: unknown error: {}'.format(e))
+			return _make_jsonapi_error("Unkown error occoured", 
+				"There was an error which could not be classified.", 1004), 500
 
 		LOGGER.info('User {0} logged in.'.format(json_data['name']))
 		
