@@ -83,6 +83,7 @@ class UsersResource(Resource):
 
 	def post(self):
 		'''Create a new user'''
+
 		request_json = request.get_json(force=True)
 		try:
 			self.schemaSingle.validate(request_json)
@@ -146,15 +147,20 @@ class UserResource(Resource):
 		try:
 			self.schema.validate(request_json)
 		except ValidationError as err:
-			LOGGER.warn("ValidationError POST \n\t"\
+			LOGGER.warn("ValidationError PATCH \n\t"\
 				+ str(err.messages) + "\n" + str(request_json))
 			return err.messages, 400
 		except IncorrectTypeError as err:
-			LOGGER.warn("IncorrectTypeError POST \n\t"\
+			LOGGER.warn("IncorrectTypeError PATCH \n\t"\
 			 + str(err.messages) + "\n" + str(request_json))
 			return err.messages, 400
 
 		resource = self.schema.load(request_json)
-		auth.model.update_user(resource)
+		resource.data.id = user_id
+		try:
+			auth.model.update_user(resource.data)
+		except auth.model.Unauthorized:
+			return _make_jsonapi_error("Wrong password!", 
+				"User could not be changed because the given password was wrong", 1005), 401
 		result = self.schema.dump(resource)
 		return result.data, 200

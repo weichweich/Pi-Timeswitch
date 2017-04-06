@@ -67,10 +67,7 @@ class ViewModel {
 	}
 
 	public pushRemove = (pin: Pin) => {
-	    this.pinModel.remove(pin, {
-	        relation: [],
-	        attributes: []
-	    })
+	    this.pinModel.remove(pin)
 	}
 
 	public pushAdd = (params) => {
@@ -91,10 +88,7 @@ class ViewModel {
 			pinCopy.state(Pin.ON)
 		}
 	    let globThis = this
-		this.pinModel.update(pinCopy, {
-	       relation: [],
-	        attributes: []
-		}).catch((error) => {
+		this.pinModel.update(pinCopy).catch((error) => {
 	        console.log("Error!", error)
 		})
 	}

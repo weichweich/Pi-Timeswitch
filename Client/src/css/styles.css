@@ -71,6 +71,10 @@ h3 {
 	padding: 20px;
 }
 
+table.container > tbody > tr > td {
+    vertical-align:top;
+}
+
 .fragment {
     width: -webkit-fit-content;
     width: -moz-fit-content;
@@ -78,10 +82,7 @@ h3 {
 
     min-width: 150px;
 
-    padding: 5px;
-    margin: 5px;
-
-    float: left;
+    padding: 10px;
 
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -91,7 +92,7 @@ h3 {
 
     -webkit-box-shadow: #B3B3B3 4px 4px 4px;
     -moz-box-shadow: #B3B3B3 4px 4px 4px;
-     box-shadow: #B3B3B3 4px 4px 4px;
+    box-shadow: #B3B3B3 4px 4px 4px;
 }
 
 .center {
@@ -170,13 +171,31 @@ button.edit {
     margin: 0;
     padding: 0;
     cursor: pointer;
+	opacity: 0;
 }
+
+tr:hover > td > button.edit {
+	opacity: 1;
+}
+
 
 button.save {
     margin: 0;
     padding: 0;
     cursor: pointer;
     color: green;
+}
+
+button.saveRight {
+    cursor: pointer;
+    color: green;
+    float: right;
+}
+
+.fragment::after {
+    content: "";
+    clear: both;
+    display: table;
 }
 
 button.topRight {

@@ -30,16 +30,14 @@ class UserSchema(Schema):
 	id = fields.String(dump_only=True, required=True)
 
 	name = fields.String(required=True)
-	password = fields.String(load_only=True, required=False, attribute="pwd_salty_hash")
+	password = fields.String(load_only=True, required=False, attribute="password_clear")
+	newPassword = fields.String(load_only=True, required=False)
 	email = fields.Email(required=False)
 	last_loggin = fields.String(required=False)
 	privilege = fields.String(required=False)
 
 	@post_load
 	def make_user(self, data):
-		if "pwd_salty_hash" in data:
-			data["pwd_salty_hash"] = get_hashed_password(data["pwd_salty_hash"].encode('utf-8'))
-		print(str(data))
 		return User(**data)
 
 	def handle_error(self, exc, data):

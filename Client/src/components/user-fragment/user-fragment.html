@@ -1,18 +1,63 @@
 <div class="fragment">
 	<div data-bind="if: user()">
 		<h3 data-bind="text: user().name()"></h3>
-	<table id="pinTable">
-      <tbody>
-        <tr>
-          <td>Email</td>
-          <td data-bind="text: user().email()"></td>
-        </tr>
-        <tr>
-          <td>Privilege</td>
-          <td data-bind="text: user().privilege()"></td>
-        </tr>
-      </tbody>
-    </table>
+      <table id="pinTable">
+        <tbody>
+          <tr>
+            <td>Email</td>
+            <td data-bind="text: user().email()"></td>
+          </tr>
+          <tr>
+            <td>Privilege</td>
+            <td data-bind="text: user().privilege()"></td>
+          </tr>
+          <tr data-bind="ifnot: userChanger">
+            <td colspan="2">
+              <button data-bind="click: pushShowChange, clickBubble: false">change Password</button>
+            </td>
+          </tr>
+          <!-- ko if: userChanger() -->
+          <!-- ko with: userChanger -->
+          <!-- ko with: user -->
+          <tr>
+            <td>Old password:</td>
+            <td>
+              <input data-bind="textInput: password" type="password" name="pin" />
+            </td>
+          </tr>
+          <tr>
+            <td>New password:</td>
+            <td>
+              <input data-bind="textInput: newPassword" type="password" name="pin" />
+            </td>
+          </tr>
+          <!-- /ko -->
+          <tr>
+              <td>New password:</td>
+              <td>
+                  <input data-bind="textInput: checkNewPwd" type="password" name="pin" />
+              </td>
+          </tr>
+          <!-- ko foreach: pwdErrors -->
+          <tr>
+            <td class="errorTitle" ><span data-bind="text: $index"></span></td>
+            <td class="errorDetail" >
+              <span data-bind="text: $data"></span>
+            </td>
+          </tr>
+          <!-- /ko -->
+          <tr>
+            <td>
+              <button data-bind="click: $parent.pushCancle, clickBubble: false">cancle</button>
+            </td>
+            <td>
+              <button class="saveRight" data-bind="click: $parent.pushSave, clickBubble: false, enable: noError">save</button>
+            </td>
+          </tr>
+          <!-- /ko -->
+          <!-- /ko -->
+        </tbody>
+      </table>
 
 	</div>
 	<div data-bind="ifnot: user()">

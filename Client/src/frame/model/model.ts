@@ -89,16 +89,16 @@ export class Model<E extends Identifiable> {
 		}
 	}
 
-	public update = (obj: E, config: Filter) => {
-		return this.connection.update(obj, config.relation)
+	public update = (obj: E) => {
+		return this.connection.update(obj)
 				.then((created: E) => {
 			// this.cache.store(obj)
 			this.notifyModified(obj)
 		})	
 	}
 
-	public remove = (obj: E, config: Filter) => {
-		return this.connection.remove(obj, config.relation)
+	public remove = (obj: E) => {
+		return this.connection.remove(obj)
 				              .then((removed: E) => {
 			// this.cache.remove(removed)
 			this.notifyRemoved(removed)

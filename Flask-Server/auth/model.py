@@ -7,6 +7,7 @@ from flask import request, current_app, g
 from datetime import datetime, timedelta
 
 from auth.dao import User
+import auth
 
 class NullHandler(logging.Handler):
     def emit(self, record):
@@ -14,6 +15,10 @@ class NullHandler(logging.Handler):
 
 logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
+
+class Unauthorized(Exception):
+    """Exception raised when there is an unauthorized attemt to access the database."""
+    pass
 
 # Privileges
 
@@ -98,11 +103,20 @@ def remove_user(user_id):
         cur.execute('''DELETE FROM User
                     WHERE id=?''', (user_id,))
 
-def update_user(user, password_clear):
+def update_user(user):
+    old_user = get_user(user.id)
+    if not auth.check_password(old_user, user.password_clear):
+        raise Unauthorized("Users password does not match!")
+
+    password_hash = old_user.pwd_salty_hash
+    if not user.newPassword is None:
+        password_hash = auth.get_hashed_password(user.newPassword.encode('utf-8'))
+
     with sql.connect(current_app.config['SQL_FILE']) as connection:
         cur = connection.cursor()
-        pwd_salted_hashed = bcrypt.hashpw(password_clear.encode('utf-8'), bcrypt.gensalt())
-        val = (user.name, user.privilege, user.last_loggin, pwd_salted_hashed)
-        cur.execute('''REPLACE INTO
-                User(name, privilege, last_loggin, password)
-                VALUES (?, ?, ?, ?)''', vals)
+        val = (user.name, user.privilege, password_hash, user.id)
+        cur.execute('''UPDATE User
+                SET name=?, privilege=?, password=?
+                WHERE id=?''', val)
+    connection.close()
+

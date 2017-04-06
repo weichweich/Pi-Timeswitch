@@ -45,17 +45,18 @@ class ViewModel {
 		this.pin = ko.observable(undefined)
 		this.viewSequences = ko.observableArray([])
 
+		let globThis = this
 		this.sequenceObserver = {
-			objectAdded: this.addSequence,
-			objectModified: this.modifySequence,
-			objectRemoved: this.removeSequence
+			objectAdded: (seq: Sequence) => { globThis.addSequence(seq) },
+			objectModified: (seq: Sequence) => { globThis.modifySequence(seq) },
+			objectRemoved: (seq: Sequence) => { globThis.removeSequence(seq) }
 		}
 		this.sequenceModel.addObserver(this.sequenceObserver)
 
 		this.pinObserver = {
 			objectAdded: (pin: Pin) => {},
-			objectModified: this.modifyPin,
-			objectRemoved: this.pinDeleted
+			objectModified: (pin: Pin) => { globThis.modifyPin(pin) },
+			objectRemoved: (pin: Pin) => { globThis.pinDeleted(pin) }
 		}
 		this.pinModel.addObserver(this.pinObserver)
 
@@ -99,7 +100,10 @@ class ViewModel {
 	}
 
 	public removeSequence = (sequence: Sequence) => {
-	    this.viewSequences.remove(new ViewSequence(sequence))
+	    let viewSeqDel = ko.utils.arrayFirst(this.viewSequences(), (viewSeq: ViewSequence) => {
+	    	return viewSeq.sequence.id == sequence.id
+	    })
+	    this.viewSequences.remove(viewSeqDel)
 	}
 
 	public pinDeleted = (pin: Pin) => {
@@ -111,10 +115,7 @@ class ViewModel {
 	public pushEditPin = (params) => {
 		if (this.isEditing()) {
 			let globThis = this
-			this.pinModel.update(this.pin(), {
-				relation: [],
-				attributes: []
-			}).then( () => {
+			this.pinModel.update(this.pin()).then( () => {
 				globThis.isEditing(!this.isEditing)
 			},(error) => {
 				console.log("Error!", error)
@@ -127,10 +128,7 @@ class ViewModel {
 	public pushEditSequence = (viewSequence: ViewSequence) => {
 		if (viewSequence.isEditing()) {
 			let globThis = this
-			this.sequenceModel.update(viewSequence.sequence, {
-				relation: [],
-				attributes: []
-			}).then( () => {
+			this.sequenceModel.update(viewSequence.sequence).then( () => {
 				viewSequence.isEditing(!viewSequence.isEditing)
 			},(error) => {
 				console.log("Error!", error)
@@ -148,10 +146,7 @@ class ViewModel {
 	}
 
 	public pushRemove = (viewSequence: ViewSequence) => {
-		this.sequenceModel.remove(viewSequence.sequence, {
-			relation: [],
-			attributes: []
-		}).then((removedSeq: Sequence) => {
+		this.sequenceModel.remove(viewSequence.sequence).then((removedSeq: Sequence) => {
 			this.viewSequences.remove(new ViewSequence(removedSeq))
 		})
 	}

@@ -65,7 +65,7 @@ export class ServerConnector<E extends Identifiable> {
 			.then(this.jsonToObject, this.error)
 	}
 
-	public update(object: E, relations: Relation[]) {
+	public update(object: E, relations: Relation[] =[]) {
 		for (let relation of relations) {
 			jsonApi.one(relation.type, relation.id)
 		}
@@ -74,7 +74,7 @@ export class ServerConnector<E extends Identifiable> {
 			.then(this.jsonToObject, this.error)
 	}
 
-	public create(object: E, relations: Relation[]) {
+	public create(object: E, relations: Relation[] =[]) {
 		for (let relation of relations) {
 			jsonApi.one(relation.type, relation.id)
 		}
@@ -84,13 +84,14 @@ export class ServerConnector<E extends Identifiable> {
 						.then(this.jsonToObject, this.error)
 	}
 
-	public remove(object: E, relations: Relation[]) {
+	public remove(object: E, relations: Relation[] =[]) {
 		for (let relation of relations) {
 			jsonApi.one(relation.type, relation.id)
 		}
 		let objJson = this.objectToJson(object)
 		return jsonApi.one(this.type, object.id).destroy(objJson)
 			.then((json: any) => {
+				console.log("deleted", json)
 				return object
 			}, this.error)
 	}

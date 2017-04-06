@@ -61,10 +61,7 @@ class ViewModel {
     }
 
     public pushRemove = (user: User) => {
-        this.userModel.remove(user, {
-            relation: [],
-            attributes: []
-        })
+        this.userModel.remove(user)
     }
 
     public pushAdd = (params) => {

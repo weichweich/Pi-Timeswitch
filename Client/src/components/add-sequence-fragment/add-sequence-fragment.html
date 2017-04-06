@@ -1,10 +1,38 @@
 <div class="fragment">
-	<h3>Add Sequence</h3>
-	<input placeholder="Start" data-bind="textInput: start_time"/><br>
-	<input placeholder="Range" data-bind="textInput: start_range"/><br>
-	<input placeholder="End" data-bind="textInput: end_time"/><br>
-	<input placeholder="Range" data-bind="textInput: end_range"/><br>
-
-	<button data-bind="click: cancle">cancle</button>
-	<button data-bind="click: addSequence">add sequence</button>
+    <h3>Add Sequence</h3>
+    &nbsp;
+    <table>
+    <tbody>
+    <tr>
+    <td><label for="Name">Start:</label></td>
+    <td><input placeholder="Start" 
+               data-bind="textInput: start_time"
+               size="5" /></td>
+    </tr>
+    <tr>
+    <td><label for="Number">Range:</label></td>
+    <td><input placeholder="Range" 
+               data-bind="textInput: start_range"
+               size="5" /></td>
+    </tr>
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr>
+    <td><label for="Number">End:</label></td>
+    <td><input placeholder="End" 
+               data-bind="textInput: end_time"
+               size="5" /></td>
+    </tr>
+    <tr>
+    <td><label for="Number">Range:</label></td>
+    <td><input placeholder="Range"
+               data-bind="textInput: end_range"
+               size="5" /></td>
+    </tr>
+    <tr>
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <td><button data-bind="click: cancle">cancle</button></td>
+    <td><button class="saveRight" data-bind="click: addSequence">save</button></td>
+    </tr>
+    </tbody>
+    </table>
 </div>

@@ -6,9 +6,7 @@
           <td data-bind="text: name"></td>
           <td data-bind="text: privilege"></td>
           <td>
-            <button class="destroy" data-bind="click: $parent.pushRemove, clickBubble: false" >
-            	<img src="/images/delete.svg" width="15">
-            </button>
+            <input class="destroy" type="image" src="/images/delete.svg" width="20" height="20" data-bind="click: $parent.pushRemove, clickBubble: false" />
           </td>
         </tr>
     </tbody>
