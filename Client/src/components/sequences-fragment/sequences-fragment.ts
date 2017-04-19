@@ -92,7 +92,7 @@ class ViewModel {
 		var oldVSeq = ko.utils.arrayFirst(this.viewSequences(), (testVSeq: ViewSequence) => {
 			return testVSeq.sequence.id == sequence.id
 		})
-		if (!oldVSeq) {
+		if (oldVSeq == undefined) {
 			throw "Updated sequence not found!"
 		} else {
 			oldVSeq.sequence.update(sequence)
@@ -135,7 +135,6 @@ class ViewModel {
 			})
 		} else {
 			viewSequence.isEditing(true)
-			console.log("push edit!", viewSequence)
 		}
 	}
 

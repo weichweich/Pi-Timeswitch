@@ -91,7 +91,6 @@ export class ServerConnector<E extends Identifiable> {
 		let objJson = this.objectToJson(object)
 		return jsonApi.one(this.type, object.id).destroy(objJson)
 			.then((json: any) => {
-				console.log("deleted", json)
 				return object
 			}, this.error)
 	}
