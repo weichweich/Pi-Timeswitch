@@ -1,11 +1,9 @@
 # Pi-TimeSwitch
 Pi-TimeSwitch is an automated, easy to use timeswitch for the [Raspberry Pi](https://www.raspberrypi.org).
 
-Pi-TimeSwitch is an automation for the GPIO pins of your Raspberry Pi. You can set a schedule for every pin which switches the GPIOs of your raspberry on at the given times.
+You can set a schedule for every GPIO. If these GPIOs are connected to a relay you can automate your garden light or garden watering.
 
 This programm can be monitored and configed with a website which is protected by username/password.
-
-This project can be used to automate gadgets (connect relais to the GPIOs) and any other thing which can be switched using GPIOs.
 
 ## User Interface
 
