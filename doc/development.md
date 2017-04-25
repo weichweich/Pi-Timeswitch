@@ -1,4 +1,4 @@
-# Development Instalation 
+# Development Installation 
 
 Here you will learn how to install this project on your PC. Because this project is intended for usage with a raspberry pi there will be no real switching of GPIOs (also your PC may not have those).
 
@@ -36,10 +36,10 @@ source venv/bin/activate
 Then you need to install the backend dependencies.
 
 ```
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-## Prepare Frontent
+## Prepare Frontend
 
 
 Install the dependencies:
