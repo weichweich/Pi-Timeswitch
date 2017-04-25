@@ -32,14 +32,25 @@ Activate it:
 source venv/bin/activate
 ```
 
-
 Then you need to install the backend dependencies.
 
 ```
 pip3 install -r requirements.txt
 ```
 
-## Prepare Frontend
+Befor the backend can now be started, you need to initialize the database. This is done with the following command, which will exit after its done.
+
+```
+python3 server.py --create --file schedule.sqlite
+```
+
+To run the backend, just leaveout the '--create' option. This command will run until its killed.
+
+```
+python3 server.py --file schedule.sqlite
+```
+
+## Prepare Frontent
 
 
 Install the dependencies:
@@ -51,7 +62,7 @@ npm install
 
 ##  Start the development Server
 
-When starting the server for the first time, we need to create a new database. Run the command with the `--create` switch.
+To run the website you need to serve the frontend and the backend. The frontend are just static files which will be served by gulp. All request for the url `/api` which are send to the frontend server are redirected to the backend server. Therefor both server has to run simultaneously.
 
 ### Start the backend
 
