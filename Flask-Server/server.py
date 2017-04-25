@@ -22,19 +22,18 @@ import sys
 
 parser = argparse.ArgumentParser(description='Timeswitch for the\
  GPIOs of an Raspberry Pi with a webinterface.')
-parser.add_argument('--file', dest='schedule_file', metavar='file',
-					type=str, default='gpio_time.db',
-					help='A JSON-file containing the schedule.')
+parser.add_argument('-f', '--file', dest='schedule_file', metavar='file',
+                    type=str, required=True,
+                    help='A JSON-file containing the schedule.')
 
-parser.add_argument('--debug', dest='debug', default=False,
-					const=True, nargs="?",
-					help='A JSON-file containing the schedule.')
+parser.add_argument('--debug', action='store_true',
+                    help='A JSON-file containing the schedule.')
 
-parser.add_argument('--create', dest='create', default=False, const=True,
-					nargs="?", help='Creates a new database. DELETES ALL DATA!!')
+parser.add_argument('--create', dest='create', action='store_true',
+                    help='Creates a new database. DELETES ALL DATA!!')
 
-parser.add_argument('--manager', dest='manager', default=False, const=True,
-					nargs="?", help='Start the manager which switches the GPIOs at specified times.')
+parser.add_argument('--manager', dest='manager', action='store_true',
+                    help='Start the manager which switches the GPIOs at specified times.')
 
 args = parser.parse_args()
 
