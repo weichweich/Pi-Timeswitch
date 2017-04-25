@@ -36,7 +36,7 @@ source venv/bin/activate
 Then you need to install the backend dependencies.
 
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ## Prepare Frontend
