@@ -15,6 +15,6 @@ The most important page of the website is the pins page. This page shows a list 
 
 Currently the project is in an **early state of development**. There are several **bugs** in the GUI and some features are missing.
 
-If you want to [tryout the frontend without a raspberry pi or help developing](doc/development.md), follow this link.
+If you want to [tryout the frontend](doc/development.md) without a raspberry pi or help developing, follow this link.
 
-If you want to install [on your raspberry for realword use](doc/production.md), follow this link.
+If you want to install on your raspberry for [realword use](doc/production.md), follow this link.
