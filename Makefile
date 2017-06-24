@@ -13,6 +13,9 @@ frontend_dist:
 backend_run_dev:
 	$(MAKE) -C Flask-Server run_dev
 
+backend_run_dev_static:
+	$(MAKE) -C Flask-Server run_dev_static
+
 backend_dist:
 	$(MAKE) -C Flask-Server dist
 
