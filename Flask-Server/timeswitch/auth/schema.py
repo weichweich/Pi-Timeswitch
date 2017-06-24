@@ -10,8 +10,8 @@ from marshmallow import ValidationError, post_load, validates_schema
 from marshmallow_jsonapi import Schema, fields
 from marshmallow_jsonapi.exceptions import IncorrectTypeError
 
-from auth import get_hashed_password
-from auth.dao import User
+from timeswitch.auth import get_hashed_password
+from timeswitch.auth.dao import User
 
 class NullHandler(logging.Handler):
 	def emit(self, record):

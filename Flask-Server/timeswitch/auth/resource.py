@@ -11,8 +11,8 @@ import jwt
 from marshmallow import ValidationError
 from marshmallow_jsonapi.exceptions import IncorrectTypeError
 
-import auth
-from auth.schema import UserSchema
+import timeswitch.auth as auth
+from timeswitch.auth.schema import UserSchema
 
 class NullHandler(logging.Handler):
 	def emit(self, record):
@@ -33,7 +33,7 @@ class LoginResource(Resource):
 
 	def post(self):
 		json_data = request.get_json(force=True)
-		
+
 		if 'name' not in json_data:
 			LOGGER.info('Access denied: No username given.')
 			return _make_jsonapi_error("Username missing.",
@@ -49,19 +49,19 @@ class LoginResource(Resource):
 
 			if not auth.check_password(auth.model.get_user_with_name(user_name), password):
 				LOGGER.info('Access denied: wrong password.')
-				return _make_jsonapi_error("Wrong username or password", 
+				return _make_jsonapi_error("Wrong username or password",
 				"The given username password combination does not match.", 1003), 400
 		except LookupError:
 			LOGGER.info('Access denied: User not found. {}'.format(user_name))
-			return _make_jsonapi_error("Wrong username or password", 
+			return _make_jsonapi_error("Wrong username or password",
 				"The given username password combination does not match.", 1003), 400
 		except Exception as e:
 			LOGGER.error('Access denied: unknown error: {}'.format(e))
-			return _make_jsonapi_error("Unkown error occoured", 
+			return _make_jsonapi_error("Unkown error occoured",
 				"There was an error which could not be classified.", 1004), 500
 
 		LOGGER.info('User {0} logged in.'.format(json_data['name']))
-		
+
 		token = auth.create_token(auth.model.get_user_with_name(json_data['name']))
 		body_json = { 'token': token }
 
@@ -160,7 +160,7 @@ class UserResource(Resource):
 		try:
 			auth.model.update_user(resource.data)
 		except auth.model.Unauthorized:
-			return _make_jsonapi_error("Wrong password!", 
+			return _make_jsonapi_error("Wrong password!",
 				"User could not be changed because the given password was wrong", 1005), 401
 		result = self.schema.dump(resource)
 		return result.data, 200

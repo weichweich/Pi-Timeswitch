@@ -14,8 +14,8 @@ from jwt.exceptions import InvalidTokenError, DecodeError, \
 						   ExpiredSignatureError, InvalidAlgorithmError, \
 						   MissingRequiredClaimError
 
-from auth.dao import User
-from auth.model import get_user_with_name
+from timeswitch.auth.dao import User
+from timeswitch.auth.model import get_user_with_name
 
 class NullHandler(logging.Handler):
 	def emit(self, record):
@@ -46,7 +46,7 @@ def create_token(user):
 	return jwt_token.decode('utf-8')
 
 def check_password(user, plain_text_password):
-    # Check hashed password. Useing bcrypt, 
+    # Check hashed password. Useing bcrypt,
     # the salt is saved into the hash itself
     hashed_password = user.pwd_salty_hash
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_password)

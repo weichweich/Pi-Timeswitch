@@ -5,7 +5,7 @@ import threading
 import time
 import random
 
-from time_switch.model import is_relative_time, is_absolute_time, SWITCH_OFF, SWITCH_ON, SWITCH_UNDEF
+from timeswitch.switch.model import is_relative_time, is_absolute_time, SWITCH_OFF, SWITCH_ON, SWITCH_UNDEF
 
 time.strptime('2012-01-01', '%Y-%m-%d') # dummy call to prevent error...
 

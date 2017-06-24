@@ -6,11 +6,11 @@ import time
 
 from flask import current_app
 
-from time_switch.dao import Pin, Sequence, SWITCH_ON, SWITCH_OFF, SWITCH_UNDEF
+from timeswitch.switch.dao import Pin, Sequence, SWITCH_ON, SWITCH_OFF, SWITCH_UNDEF
 try:
     import RPi.GPIO as GPIO
 except ImportError:
-    import time_switch.no_gpio as GPIO
+    import timeswitch.switch.no_gpio as GPIO
 
 class NullHandler(logging.Handler):
     def emit(self, record):

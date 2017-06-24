@@ -9,13 +9,13 @@ import sys
 from flask import Flask, make_response
 from flask_restful import Api
 
-from time_switch.manager import SwitchManager
-from time_switch.model import create_db as time_db_init, SwitchModel
-from time_switch.schema import PinSchema, SequenceSchema
-from rest_model_adapter import ManyRessource, SingleResource
-import auth
-from auth.model import create_db as auth_db_init
-from auth.resource import UsersResource, UserResource, LoginResource
+from timeswitch.switch.manager import SwitchManager
+from timeswitch.switch.model import create_db as time_db_init, SwitchModel
+from timeswitch.switch.schema import PinSchema, SequenceSchema
+from timeswitch.rest_model_adapter import ManyRessource, SingleResource
+import timeswitch.auth as auth
+from timeswitch.auth.model import create_db as auth_db_init
+from timeswitch.auth.resource import UsersResource, UserResource, LoginResource
 
 # ######################################
 # # parsing commandline args
@@ -133,7 +133,7 @@ kwargs_sequences = {
 sequences_url = URL_PREFIX + '/pins/<int:pin_id>/sequences'
 api.add_resource(ManyRessource, sequences_url, endpoint='pins_sequences',
                  resource_class_kwargs=kwargs_sequences)
- 
+
 kwargs_sequences['getter_func'] = switch_model.get_sequences
 
 api.add_resource(ManyRessource, URL_PREFIX + '/sequences', endpoint='sequences',
@@ -156,7 +156,7 @@ api.add_resource(UserResource, URL_PREFIX + '/users/<int:user_id>',
 # Login
 api.add_resource(LoginResource, URL_PREFIX + "/login", endpoint='login')
 
-if __name__ == '__main__':
+def main():
     switch_manager = None
     if ARGS.manager:
         switch_manager = SwitchManager(switch_model)
@@ -168,3 +168,6 @@ if __name__ == '__main__':
         if ARGS.manager:
             switch_manager.stop()
     logger.info("############# END OF LOG #############\n")
+
+if __name__ == '__main__':
+    main()

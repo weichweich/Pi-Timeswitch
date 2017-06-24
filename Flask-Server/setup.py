@@ -5,6 +5,13 @@ setup(name='Timeswitch',
       description='Time based GPIO switching',
       author='Albrecht Weiche',
       author_email='weich@posteo.de',
+
       url='https://github.com/weichweich/Pi-Timeswitch',
       packages=['timeswitch'],
+
+      entry_points={
+        'console_scripts': [
+            'timeswitch = timeswitch.server:main'
+        ]
+      },
      )

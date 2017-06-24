@@ -6,8 +6,7 @@ import sqlite3 as sql
 from flask import request, current_app, g
 from datetime import datetime, timedelta
 
-from auth.dao import User
-import auth
+from timeswitch.auth.dao import User
 
 class NullHandler(logging.Handler):
     def emit(self, record):
@@ -46,7 +45,7 @@ def add_user(user, password_clear=None):
         cur = connection.cursor()
 
         pwd_salted_hashed = ''
-        if password_clear is not None: 
+        if password_clear is not None:
             pwd_salted_hashed = bcrypt.hashpw(password_clear.encode('utf-8'), bcrypt.gensalt())
         else:
             pwd_salted_hashed = user.pwd_salty_hash
@@ -119,4 +118,3 @@ def update_user(user):
                 SET name=?, privilege=?, password=?
                 WHERE id=?''', val)
     connection.close()
-
