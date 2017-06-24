@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from time_switch.model import is_relative_time, is_absolute_time, SWITCH_OFF, SWITCH_ON, SWITCH_UNDEF
 import logging
 import threading
 import time
 import random
+
+from time_switch.model import is_relative_time, is_absolute_time, SWITCH_OFF, SWITCH_ON, SWITCH_UNDEF
 
 time.strptime('2012-01-01', '%Y-%m-%d') # dummy call to prevent error...
 
@@ -18,14 +19,6 @@ class NullHandler(logging.Handler):
 
 logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
-
-try:
-    import RPi.GPIO as GPIO
-except ImportError:
-    LOGGER.warning('Error importing RPi.GPIO! Running with gpio mockup! RPi.GPIO not installed?')
-    import time_switch.no_gpio as GPIO
-except RuntimeError:
-    print("Error importing RPi.GPIO!  This is probably because you need superuser privileges.  You can achieve this by using 'sudo' to run your script")
 
 
 UNIT_PER_MINUTE = 1
@@ -77,7 +70,7 @@ class SwitchManager(object):
         self.diffusions = {}
         self.event = threading.Event()
         self.thread = threading.Thread(target=self.__loop, args=())
-        self.thread_running=False
+        self.thread_running = False
 
     def get_model(self):
         '''Returns the current used model.'''
@@ -85,7 +78,7 @@ class SwitchManager(object):
 
     def update(self):
         pins = self.switch_model.get_pins()
-        
+
         # find deleted pins
         deleted_pins = self.used_gpios[:]
         for pin in pins:

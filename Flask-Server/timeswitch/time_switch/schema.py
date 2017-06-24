@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import logging
+import time
+
 from flask import request
 from flask_restful import Resource
 from time_switch.model import Sequence, Pin, is_absolute_time, is_relative_time
 
 from marshmallow import ValidationError, post_load, validates_schema
 from marshmallow_jsonapi import Schema, fields
-from marshmallow_jsonapi.exceptions import IncorrectTypeError
-import logging
-
-import time
 
 class NullHandler(logging.Handler):
     def emit(self, record):
@@ -83,4 +82,3 @@ class PinSchema(Schema):
     class Meta:
         type_ = 'pins'
         strict = True
-
