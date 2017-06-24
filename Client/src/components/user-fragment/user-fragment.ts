@@ -3,7 +3,7 @@
 import ko = require('knockout')
 
 import { User } from '../../model/user'
-import { Model, AppState } from '../../frame'
+import { Model, AppState, ErrorDescriptor } from '../../frame'
 import { Constants } from '../../config'
 
 interface UserChanger {
@@ -45,10 +45,13 @@ class ViewModel {
                       .then((user) => {
             this.user(user)
         }, (error) => {
-            console.log("Error!")
-            globThis.router.transitionTo('login', { 
-                backRoute: globThis.router.state.path 
-            })
+			if (error.code == 401) {
+				globThis.router.transitionTo('login', { 
+				    backRoute: globThis.router.state.path 
+				})
+			} else {
+				console.log("Error!", error)
+			}
         })
     }
 

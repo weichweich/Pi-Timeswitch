@@ -4,7 +4,7 @@ import ko = require('knockout')
 
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/sequence'
-import { Model, AppState, Observer } from '../../frame'
+import { Model, AppState, Observer, ErrorDescriptor } from '../../frame'
 import { Constants } from '../../config'
 
 class ViewSequence {
@@ -118,7 +118,13 @@ class ViewModel {
 			this.pinModel.update(this.pin()).then( () => {
 				globThis.isEditing(!this.isEditing)
 			},(error) => {
-				console.log("Error!", error)
+				if (error.code == 401) {
+					globThis.router.transitionTo('login', { 
+					    backRoute: globThis.router.state.path 
+					})
+				} else {
+					console.log("Error!", error)
+				}
 			})
 		} else {
 			this.isEditing(true)
@@ -131,7 +137,13 @@ class ViewModel {
 			this.sequenceModel.update(viewSequence.sequence).then( () => {
 				viewSequence.isEditing(!viewSequence.isEditing)
 			},(error) => {
-				console.log("Error!", error)
+				if (error.code == 401) {
+					globThis.router.transitionTo('login', { 
+					    backRoute: globThis.router.state.path 
+					})
+				} else {
+					console.log("Error!", error)
+				}
 			})
 		} else {
 			viewSequence.isEditing(true)

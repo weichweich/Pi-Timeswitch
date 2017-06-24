@@ -5,7 +5,7 @@ let JsonApi: any = require('devour-client')
 let jsonApi = new JsonApi({ apiUrl: Constants.backendURL })
 
 import { Identifiable } from './Interfaces'
-import { AuthenticationError, ErrorDescriptor } from './Error'
+import { ErrorDescriptor } from './Error'
 
 let errorMiddleware = {
 	name: 'error-formatter',
@@ -98,7 +98,7 @@ export class ServerConnector<E extends Identifiable> {
 	public error(errors: ErrorDescriptor[]) {
 		for (let err of errors) {
 			if (err.code == 401) {
-				throw new AuthenticationError(err.detail)
+				throw err
 			}
 		}
 		throw errors

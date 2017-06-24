@@ -40,7 +40,6 @@ class ViewModel {
 			relation: [],
 			attributes: []
 		}).then((pins) => {
-			console.log("Pins!", pins)
 			this.pins(pins)
 		}, (error) => {
 			console.log("Error!", error)

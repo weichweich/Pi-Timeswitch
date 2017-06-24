@@ -3,7 +3,7 @@
 import ko = require('knockout')
 import { Pin } from '../../model/pin'
 import { Sequence } from '../../model/sequence'
-import { Model, AppState } from '../../frame'
+import { Model, ErrorDescriptor, AppState } from '../../frame'
 import { Constants } from '../../config'
 
 class ViewModel {
@@ -43,7 +43,7 @@ class ViewModel {
 		let aNumber = ko.utils.unwrapObservable(this.number)
 
 		let pin = new Pin(aNumber, aNumber, aName, 0)
-
+		let globThis = this
 		this.pinModel.create(pin, {
 			relation: [],
 			attributes: []
@@ -55,7 +55,13 @@ class ViewModel {
 			this.name('')
 			this.number(0)
 			this.stateReady()
-			console.log(error)
+			if (error.code == 401) {
+				globThis.router.transitionTo('login', { 
+				    backRoute: globThis.router.state.path 
+				})
+			} else {
+				console.log("Error!", error)
+			}
 		})
 	}
 
