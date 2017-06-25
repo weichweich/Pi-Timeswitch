@@ -39,7 +39,7 @@ dist: venv
 
 # Run tests
 
-test: install_editable
-	$(PYTEST) --ignore=docs/
+test:
+	$(PYTEST) --ignore=docs/ --cov=timeswitch
 
 .PHONY : install_dev install_editable run_dev dist test

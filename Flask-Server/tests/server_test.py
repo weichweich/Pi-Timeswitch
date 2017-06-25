@@ -21,6 +21,7 @@ def test_app_setup():
                                   create=True)
     app = timeswitch.server.prepare_app(cmd_args)
     assert app
+    timeswitch.server.create_db(app)
 
     switch_model = timeswitch.server.app_setup(app)
     assert switch_model
