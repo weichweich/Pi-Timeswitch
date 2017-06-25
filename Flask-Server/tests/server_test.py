@@ -4,15 +4,23 @@ import tempfile
 
 import timeswitch.server
 
-class ServerTest(unittest.TestCase):
+import tests.helper
 
-    def setUp(self):
-        self.db_fd, server.app.config['SQL_FILE'] = tempfile.mkstemp()
-        server.app.config['TESTING'] = True
-        self.app = server.app.test_client()
-        with server.app.app_context():
-            server.init_db()
 
-    def tearDown(self):
-        os.close(self.db_fd)
-        os.unlink(flaskr.app.config['DATABASE'])
+def test_prepare_app():
+    cmd_args = tests.helper.Bunch(static_dir="",
+                                  schedule_file="schedule.sqlite",
+                                  create=True)
+    app = timeswitch.server.prepare_app(cmd_args)
+
+    assert app
+
+def test_app_setup():
+    cmd_args = tests.helper.Bunch(static_dir="",
+                                  schedule_file="schedule.sqlite",
+                                  create=True)
+    app = timeswitch.server.prepare_app(cmd_args)
+    assert app
+
+    switch_model = timeswitch.server.app_setup(app)
+    assert switch_model

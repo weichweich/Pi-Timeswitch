@@ -79,17 +79,20 @@ URL_PREFIX = '/api'
 
 def prepare_app(cmd_args):
     app = Flask(__name__, static_folder=cmd_args.static_dir, static_url_path='')
-    api = Api(app, default_mediatype='application/vnd.api+json')
     app.config['SECRET_KEY'] = 'secret'
     app.config['SQL_FILE'] = cmd_args.schedule_file
 
-    if cmd_args.create:
-        if os.path.exists(app.config['SQL_FILE']):
-            os.remove(app.config['SQL_FILE'])
-        with app.app_context():
-            auth_db_init()
-            time_db_init()
-        sys.exit(0)
+    return app
+
+def create_db(app):
+    if os.path.exists(app.config['SQL_FILE']):
+        os.remove(app.config['SQL_FILE'])
+    with app.app_context():
+        auth_db_init()
+        time_db_init()
+
+def app_setup(app):
+    api = Api(app, default_mediatype='application/vnd.api+json')
 
     switch_model = SwitchModel(app.config['SQL_FILE'])
 
@@ -156,7 +159,7 @@ def prepare_app(cmd_args):
     # Login
     api.add_resource(LoginResource, URL_PREFIX + "/login", endpoint='login')
 
-    return (app, switch_model)
+    return switch_model
 
 def start(cmd_args, app, switch_model):
     switch_manager = None
@@ -172,7 +175,11 @@ def start(cmd_args, app, switch_model):
 
 def main():
     cmd_args = parse_arguments()
-    (app, switch_model) = prepare_app(cmd_args)
+    app = prepare_app(cmd_args)
+    if cmd_args.create:
+        create_db(app)
+        sys.exit(0)
+    switch_model = app_setup(app)
     start(cmd_args, app, switch_model)
 
 if __name__ == '__main__':

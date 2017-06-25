@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/weichweich/Pi-Timeswitch.svg?branch=master)](https://travis-ci.org/weichweich/Pi-Timeswitch)
+
 # Pi-TimeSwitch
 Pi-TimeSwitch is an automated, easy to use timeswitch for the [Raspberry Pi](https://www.raspberrypi.org).
 
