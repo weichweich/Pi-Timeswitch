@@ -1,7 +1,7 @@
 # Setup the virtual environment
 PYTHON="venv/bin/python"
 PIP="venv/bin/pip"
-PYTEST="venv/bin/pytest"
+PYTEST="venv/bin/py.test"
 TIMESWITCH="venv/bin/timeswitch"
 
 venv/bin/activate: requirements.txt
