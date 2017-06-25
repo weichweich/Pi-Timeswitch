@@ -40,6 +40,6 @@ dist: venv
 # Run tests
 
 test:
-	$(PYTEST) --ignore=docs
+	$(PYTEST) --ignore=docs/
 
 .PHONY : install_dev install_editable run_dev dist test

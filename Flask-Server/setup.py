@@ -9,6 +9,7 @@ setup(name='Timeswitch',
       url='https://github.com/weichweich/Pi-Timeswitch',
       packages=['timeswitch'],
 
+      test_suite='tests',
       entry_points={
         'console_scripts': [
             'timeswitch = timeswitch.server:main'
