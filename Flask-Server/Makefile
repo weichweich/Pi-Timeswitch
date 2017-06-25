@@ -1,6 +1,7 @@
 # Setup the virtual environment
 PYTHON="venv/bin/python"
 PIP="venv/bin/pip"
+PYTEST="venv/bin/pytest"
 TIMESWITCH="venv/bin/timeswitch"
 
 venv/bin/activate: requirements.txt
@@ -39,6 +40,6 @@ dist: venv
 # Run tests
 
 test:
-	pytest --ignore=docs
+	$(PYTEST) --ignore=docs
 
 .PHONY : install_dev install_editable run_dev dist test
