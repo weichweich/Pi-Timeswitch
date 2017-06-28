@@ -40,6 +40,6 @@ dist: venv
 # Run tests
 
 test:
-	$(PYTEST) --ignore=docs/ --cov=timeswitch
+	$(PYTEST) --ignore=docs/ --cov=timeswitch --cov-report term-missing -v
 
 .PHONY : install_dev install_editable run_dev dist test
