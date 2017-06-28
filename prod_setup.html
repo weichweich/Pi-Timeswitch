@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation on Raspberry Pi &mdash; timeswitch 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="timeswitch 0.0.1 documentation" href="index.html"/>
+        <link rel="next" title="API Reference" href="api_reference.html"/>
+        <link rel="prev" title="Development Installation" href="dev_setup.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> timeswitch
+          
+
+          
+            
+            <img src="_static/Logo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dev_setup.html">Development Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation on Raspberry Pi</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-dependencies">Install Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#put-every-thing-in-place-and-start-nginx">Put every thing in place and start nginx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-backend-dependencies">Install backend dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#start-the-backend">Start the backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#security">Security</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">timeswitch</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Installation on Raspberry Pi</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/prod_setup.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation-on-raspberry-pi">
+<h1>Installation on Raspberry Pi<a class="headerlink" href="#installation-on-raspberry-pi" title="Permalink to this headline">¶</a></h1>
+<p>Currently the project is in an <strong>early state of development</strong>. There are several <strong>bugs</strong> in the GUI and some features are missing.</p>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>The following software has to be installed.</p>
+<ul class="simple">
+<li>Python 3.x</li>
+<li>pip</li>
+</ul>
+</div>
+<div class="section" id="install-dependencies">
+<h2>Install Dependencies<a class="headerlink" href="#install-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>At first prepare the raspberry pi:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo apt install python3 python3-pip python3-dev libssl-dev libffi-dev libpcre3 libpcre3-dev build-essential nginx
+pip3 install virtualenv
+</pre></div>
+</div>
+</div>
+<div class="section" id="put-every-thing-in-place-and-start-nginx">
+<h2>Put every thing in place and start nginx<a class="headerlink" href="#put-every-thing-in-place-and-start-nginx" title="Permalink to this headline">¶</a></h2>
+<p>There are two options to get the source files of this project.</p>
+<p><strong>First of all</strong>, clone the repository. This way you will get the lates version which may have the newest feature and bug fixes. But you have to consider that the newest version is not as much tested as the release version.</p>
+<p>Clone the repository with <code class="docutils literal"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/weichweich/Pi-Timeswitch.git</span></code></p>
+<p><strong>The second option</strong> is to download the <a class="reference external" href="https://github.com/weichweich/Pi-Timeswitch/releases/">release version</a> and unzip it with <code class="docutils literal"><span class="pre">unzip</span> <span class="pre">timeswitch-x.y.z.zip</span></code>.</p>
+<p>After you have downloaded the source files, copy them into there destination.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cp timeswitch-x.y.z/frontend /var/www/timeswitch
+cp timeswitch-x.y.z/backend /home/pi/timeswitch
+cp timeswitch-x.y.z/timeswitch.nginx_conf /etc/nginx/sites-available/timeswitch
+
+sudo chown -R www-data /var/www/timeswitch
+sudo chown -R www-data /home/pi/timeswitch
+
+sudo ln -s /etc/nginx/sites-available/timeswitch /etc/nginx/sites-enabled/
+sudo service nginx restart
+</pre></div>
+</div>
+</div>
+<div class="section" id="install-backend-dependencies">
+<h2>Install backend dependencies<a class="headerlink" href="#install-backend-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Go to the backend directory. Create a virtual environment and install all requiremets.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> /home/pi/timeswitch
+virtualenv venv
+<span class="nb">source</span> venv/bin/activate
+pip3 install -r requirements.txt
+pip3 install rpi.gpio uwsgi
+</pre></div>
+</div>
+</div>
+<div class="section" id="start-the-backend">
+<h2>Start the backend<a class="headerlink" href="#start-the-backend" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> /home/pi/timeswitch
+<span class="nb">source</span> venv/bin/activate
+</pre></div>
+</div>
+<p>Initiat the database with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo python --create --file timeswitch.sqlite
+</pre></div>
+</div>
+<p>Whene the database is created, start uwsgi:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo ./venv/bin/uwsgi --ini timeswitch.ini --pyargv <span class="s2">&quot;--file timeswitch.sqlite&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="security">
+<h2>Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h2>
+<p>The back- and frontend is not tested for security. It is not recommended to expose the webserver to the internet.</p>
+<p>To secure the backend replace the secret key ‘secret’ (file server.py line 78) with a real secret key and change the username and password (url: &lt;your PI&gt;#/users).</p>
+<p>Even if you follow these advice, the backend will not be secure. All userdata, including username and password, will be transmittet in cleartext!</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api_reference.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="dev_setup.html" class="btn btn-neutral" title="Development Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, albrecht.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

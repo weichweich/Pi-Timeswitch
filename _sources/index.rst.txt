@@ -6,7 +6,16 @@
 Timeswitch Documentation
 ========================
 
-API Reference
+Guides
+-------------
+
+.. toctree::
+   :maxdepth: 2
+
+   dev_setup
+   prod_setup
+
+Documentation
 -------------
 
 .. toctree::
