@@ -10,6 +10,16 @@ class Sequence(object):
         self.pin = pin
         self.id = sequence_id
 
+        if (type(start_range) is int):
+            start_range = str(start_range)
+        if (type(end_range) is int):
+            end_range = str(end_range)
+
+        if (type(start_time) is int):
+            start_time = str(start_time)
+        if (type(end_time) is int):
+            end_time = str(end_time)
+
         self.start_time = start_time
         self.start_range = start_range
         self.end_time = end_time
@@ -42,12 +52,8 @@ class Sequence(object):
         self.end_time, self.end_range = end_time, end_range
 
     def __str__(self):
-        if self.pin is None:
-            return "<Sequence: Start " + self.start_time + " End " +\
-                    self.end_time + " Pin none>"
-        else:
-            return "<Sequence: Start " + self.start_time + " End " +\
-                    self.end_time + " Pin " + str(self.pin) + ">"
+        return "<Sequence: Start " + self.start_time + " End " +\
+                self.end_time + " Pin " + str(self.pin) + ">"
 
 class Pin(object):
 
@@ -90,8 +96,7 @@ class Pin(object):
 
     def set_id(self, pin_id):
         self.id = pin_id
-        self.number = pin_id
-
+ 
     def get_prio(self):
         return self.prio
 

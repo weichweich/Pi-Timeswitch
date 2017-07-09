@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import logging
 import json
+import logging
 from datetime import datetime
 
-from flask import request, current_app, g
-from flask_restful import Resource, abort
 import bcrypt
 import jwt
+from flask import current_app, g, request
+from flask_restful import Resource, abort
 from marshmallow import ValidationError
 from marshmallow_jsonapi.exceptions import IncorrectTypeError
 
 import timeswitch.auth as auth
 from timeswitch.auth.schema import UserSchema
+
 
 class NullHandler(logging.Handler):
 	def emit(self, record):

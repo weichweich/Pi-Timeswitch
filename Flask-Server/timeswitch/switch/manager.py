@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import random
 import threading
 import time
-import random
 
-from timeswitch.switch.model import is_relative_time, is_absolute_time, SWITCH_OFF, SWITCH_ON, SWITCH_UNDEF
+from timeswitch.switch.model import (SWITCH_OFF, SWITCH_ON, SWITCH_UNDEF,
+                                     is_absolute_time, is_relative_time)
 
 time.strptime('2012-01-01', '%Y-%m-%d') # dummy call to prevent error...
 

@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import bcrypt
 import logging
 import sqlite3 as sql
-from flask import request, current_app, g
 from datetime import datetime, timedelta
 
+import bcrypt
+from flask import current_app, g, request
+
 from timeswitch.auth.dao import User
+
 
 class NullHandler(logging.Handler):
     def emit(self, record):

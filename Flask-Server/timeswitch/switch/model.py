@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import sqlite3 as sql
 import logging
+import sqlite3 as sql
 import time
 
 from flask import current_app
 
-from timeswitch.switch.dao import Pin, Sequence, SWITCH_ON, SWITCH_OFF, SWITCH_UNDEF
+from timeswitch.switch.dao import (SWITCH_OFF, SWITCH_ON, SWITCH_UNDEF, Pin,
+                                   Sequence)
+
 try:
     import RPi.GPIO as GPIO
 except ImportError:
@@ -57,6 +59,8 @@ def is_relative_time(check_time):
         as_int = int(check_time)
         return 0 <= as_int and as_int <= 1440
     except ValueError:
+        return False
+    except TypeError:
         return False
 
 def get_sequence_from_row(row):

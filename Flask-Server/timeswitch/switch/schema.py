@@ -5,10 +5,12 @@ import time
 
 from flask import request
 from flask_restful import Resource
-from timeswitch.switch.model import Sequence, Pin, is_absolute_time, is_relative_time
-
 from marshmallow import ValidationError, post_load, validates_schema
 from marshmallow_jsonapi import Schema, fields
+
+from timeswitch.switch.model import (Pin, Sequence, is_absolute_time,
+                                     is_relative_time)
+
 
 class NullHandler(logging.Handler):
     def emit(self, record):

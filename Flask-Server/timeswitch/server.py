@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import json
 import argparse
+import json
 import logging
 import os
 import sys
@@ -9,13 +9,15 @@ import sys
 from flask import Flask, make_response
 from flask_restful import Api
 
-from timeswitch.switch.manager import SwitchManager
-from timeswitch.switch.model import create_db as time_db_init, SwitchModel
-from timeswitch.switch.schema import PinSchema, SequenceSchema
-from timeswitch.rest_model_adapter import ManyRessource, SingleResource
 import timeswitch.auth as auth
 from timeswitch.auth.model import create_db as auth_db_init
-from timeswitch.auth.resource import UsersResource, UserResource, LoginResource
+from timeswitch.auth.resource import LoginResource, UserResource, UsersResource
+from timeswitch.rest_model_adapter import ManyRessource, SingleResource
+from timeswitch.switch.manager import SwitchManager
+from timeswitch.switch.model import create_db as time_db_init
+from timeswitch.switch.model import SwitchModel
+from timeswitch.switch.schema import PinSchema, SequenceSchema
+
 
 # ######################################
 # # parsing commandline args

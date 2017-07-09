@@ -8,9 +8,9 @@ import logging
 
 from flask import request
 from flask_restful import Resource
-
-from marshmallow_jsonapi.exceptions import IncorrectTypeError
 from marshmallow import ValidationError
+from marshmallow_jsonapi.exceptions import IncorrectTypeError
+
 
 class NullHandler(logging.Handler):
     def emit(self, record):

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from time_switch.model import SwitchModel
-from time_switch.manager import SwitchManager
-
 import argparse
-import logging
 import atexit
+import logging
 
+from time_switch.manager import SwitchManager
+from time_switch.model import SwitchModel
 
 parser = argparse.ArgumentParser(description='Timeswitch for the\
  GPIOs of an Raspberry Pi.')
