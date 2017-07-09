@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/weichweich/Pi-Timeswitch.svg?branch=restful)](https://travis-ci.org/weichweich/Pi-Timeswitch)
-![sfd](https://img.shields.io/github/downloads/weichweich/Pi-Timeswitch/total.svg)
+![sfd](https://img.shields.io/github/downloads/weichweich/Pi-Timeswitch/total.svg)[![Coverage Status](https://coveralls.io/repos/github/weichweich/Pi-Timeswitch/badge.svg?branch=restful)](https://coveralls.io/github/weichweich/Pi-Timeswitch?branch=restful)
 
 # Pi-TimeSwitch
 Pi-TimeSwitch is an automated, easy to use timeswitch for the [Raspberry Pi](https://www.raspberrypi.org).
