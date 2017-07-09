@@ -6,6 +6,7 @@ dist: backend_dist frontend_dist
 
 test:
 	$(MAKE) -C Flask-Server test
+	mv Flask-Server/.coverage .
 
 frontend_run_dev:
 	$(MAKE) -C Client run_dev
