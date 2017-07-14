@@ -8,7 +8,7 @@ import bcrypt
 from flask import current_app, g, request
 
 from timeswitch.auth.dao import User
-from timeswitch.auth import check_password, check_password
+from timeswitch.auth import check_password, get_hashed_password
 
 
 class NullHandler(logging.Handler):
@@ -112,7 +112,7 @@ def update_user(user):
 
     password_hash = old_user.pwd_salty_hash
     if not user.newPassword is None:
-        password_hash = auth.get_hashed_password(user.newPassword.encode('utf-8'))
+        password_hash = get_hashed_password(user.newPassword.encode('utf-8'))
 
     with sql.connect(current_app.config['SQL_FILE']) as connection:
         cur = connection.cursor()
