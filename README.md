@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/weichweich/Pi-Timeswitch.svg?branch=restful)](https://travis-ci.org/weichweich/Pi-Timeswitch)
+[![Build Status](https://travis-ci.org/weichweich/Pi-Timeswitch.svg?branch=master)](https://travis-ci.org/weichweich/Pi-Timeswitch)
 ![sfd](https://img.shields.io/github/downloads/weichweich/Pi-Timeswitch/total.svg)
-[![Coverage Status](https://coveralls.io/repos/github/weichweich/Pi-Timeswitch/badge.svg?branch=restful)](https://coveralls.io/github/weichweich/Pi-Timeswitch?branch=restful)
-[![Code Health](https://landscape.io/github/weichweich/Pi-Timeswitch/restful/landscape.svg?style=flat)](https://landscape.io/github/weichweich/Pi-Timeswitch/restful)
+[![Coverage Status](https://coveralls.io/repos/github/weichweich/Pi-Timeswitch/badge.svg?branch=master)](https://coveralls.io/github/weichweich/Pi-Timeswitch?branch=master)
+[![Code Health](https://landscape.io/github/weichweich/Pi-Timeswitch/master/landscape.svg?style=flat)](https://landscape.io/github/weichweich/Pi-Timeswitch/master)
 
 
 # Pi-TimeSwitch

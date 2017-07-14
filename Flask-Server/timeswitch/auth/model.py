@@ -8,7 +8,7 @@ import bcrypt
 from flask import current_app, g, request
 
 from timeswitch.auth.dao import User
-from timeswitch import auth
+from timeswitch.auth import check_password, check_password
 
 
 class NullHandler(logging.Handler):
@@ -107,7 +107,7 @@ def remove_user(user_id):
 
 def update_user(user):
     old_user = get_user(user.id)
-    if not auth.check_password(old_user, user.password_clear):
+    if not check_password(old_user, user.password_clear):
         raise Unauthorized("Users password does not match!")
 
     password_hash = old_user.pwd_salty_hash
