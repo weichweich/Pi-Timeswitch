@@ -8,6 +8,7 @@ import bcrypt
 from flask import current_app, g, request
 
 from timeswitch.auth.dao import User
+from timeswitch import auth
 
 
 class NullHandler(logging.Handler):
