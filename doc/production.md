@@ -49,7 +49,7 @@ Go to the backend directory. Create a virtual environment and install all requir
 
 ```
 cd /home/pi/timeswitch
-virtualenv venv
+virtualenv -p python3 venv
 source venv/bin/activate
 pip3 install -r requirements.txt
 pip3 install rpi.gpio uwsgi
@@ -80,4 +80,4 @@ The back- and frontend is not tested for security. It is not recommended to expo
 
 To secure the backend replace the secret key 'secret' (file server.py line 78) with a real secret key and change the username and password (url: <your PI>#/users).
 
-Even if you follow these advice, the backend will not be secure. All userdata, including username and password, will be transmittet in cleartext!
+Even if you follow these advice, the backend will not be secure. All userdata, including username and password, will be transmittet in plain text!
