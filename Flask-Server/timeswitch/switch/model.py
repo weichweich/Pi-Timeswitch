@@ -14,9 +14,11 @@ try:
 except ImportError:
     import timeswitch.switch.no_gpio as GPIO
 
+
 class NullHandler(logging.Handler):
     def emit(self, record):
         pass
+
 
 logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
@@ -25,8 +27,10 @@ LOGGER = logging.getLogger(__name__)
 possible_gpios = [2, 5, 7, 8, 10, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24,
                   26, 29, 31, 32, 33, 35, 36, 37, 38, 40]
 
-### Helper methodes
-## create db
+# Helper methodes
+# create db
+
+
 def create_db():
     '''Creates all tables.'''
     with sql.connect(current_app.config['SQL_FILE']) as connection:
@@ -45,7 +49,8 @@ def create_db():
             name TEXT)''')
     connection.close()
 
-## validate data
+# validate data
+
 
 def is_absolute_time(check_time):
     try:
@@ -53,6 +58,7 @@ def is_absolute_time(check_time):
         return True
     except ValueError:
         return False
+
 
 def is_relative_time(check_time):
     try:
@@ -63,10 +69,12 @@ def is_relative_time(check_time):
     except TypeError:
         return False
 
+
 def get_sequence_from_row(row):
     (sequence_id, pin_id, start_time, start_range, end_time, end_range) = row
     return Sequence(start_time, start_range, end_time,
-                                  end_range, sequence_id=sequence_id)
+                    end_range, sequence_id=sequence_id)
+
 
 def get_sequences_from_rows(rows):
     sequences = []
@@ -75,6 +83,7 @@ def get_sequences_from_rows(rows):
                                   end_range, sequence_id=sequence_id))
 
     return sequences
+
 
 class SwitchModel(object):
     '''This class saves and loads pins and schedules.'''
@@ -148,7 +157,7 @@ class SwitchModel(object):
            Removes the old schedule if it exists.'''
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
-            if sequence.get_pin() and pin_id==-1:
+            if sequence.get_pin() and pin_id == -1:
                 pin_id = sequence.get_pin().get_id()
 
             if sequence.get_id() == -1 and sequence_id != -1:
@@ -167,7 +176,8 @@ class SwitchModel(object):
                             VALUES (?, ?, ?, ?, ?)''', vals)
                 sequence.set_id(cur.lastrowid)
             else:
-                LOGGER.info("set_sequence(%s) - updating sequence", sequence.get_id())
+                LOGGER.info("set_sequence(%s) - updating sequence",
+                            sequence.get_id())
                 vals = (sequence.get_start()[0], sequence.get_start()[1],
                         sequence.get_end()[0], sequence.get_end()[1], sequence.get_id())
                 cur.execute('''UPDATE Sequences
@@ -202,7 +212,6 @@ class SwitchModel(object):
 
         connection.close()
         return sequences
-
 
     def __get_pin_for_sequence(self, sequence_id):
         '''Returns all sequences for the pin.'''
@@ -284,7 +293,6 @@ class SwitchModel(object):
             cur.execute('''DELETE FROM Pins WHERE id=?''',
                         (str(pin_id),))
 
-
     def set_pin(self, pin, pin_id=-1):
         '''Alters the pin name or adds the pin if he
         did not exist. Also adds sequences.'''
@@ -341,7 +349,7 @@ class SwitchModel(object):
 
         if old_state != state and old_prio <= prio:
             LOGGER.info("Switch State: {0} Id: {1:2} Name: {2} Prio: {3}"
-                .format(state, pin.get_id(), pin.get_name(), prio))
+                        .format(state, pin.get_id(), pin.get_name(), prio))
             pin.set_state(state)
             if state == SWITCH_ON:
                 GPIO.output(pin.get_id(), GPIO.HIGH)

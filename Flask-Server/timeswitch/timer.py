@@ -4,14 +4,14 @@ import argparse
 import atexit
 import logging
 
-from time_switch.manager import SwitchManager
-from time_switch.model import SwitchModel
+from timeswitch.switch.manager import SwitchManager
+from timeswitch.switch.model import SwitchModel
 
 parser = argparse.ArgumentParser(description='Timeswitch for the\
  GPIOs of an Raspberry Pi.')
 parser.add_argument('--file', dest='schedule_file', metavar='file',
-					type=str, default='gpio_time.db',
-					help='A JSON-file containing the schedule.')
+                    type=str, default='gpio_time.db',
+                    help='A JSON-file containing the schedule.')
 
 args = parser.parse_args()
 
