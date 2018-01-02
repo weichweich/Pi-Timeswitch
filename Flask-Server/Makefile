@@ -35,7 +35,8 @@ run_dev_static: install_dev $(DATABASE_FILENAME)
 # Build lrelease package
 
 dist: venv
-	$(PYTHON) setup.py sdist
+	$(PYTHON) setup.py sdist --formats=zip
+	unzip dist/*.zip -d dist/
 
 # Run tests
 

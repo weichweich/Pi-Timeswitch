@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import time
 
-from flask import request
-from flask_restful import Resource
-from marshmallow import ValidationError, post_load, validates_schema
+from marshmallow import ValidationError, post_load
 from marshmallow_jsonapi import Schema, fields
-from marshmallow_jsonapi.exceptions import IncorrectTypeError
 
-from timeswitch.auth import get_hashed_password
 from timeswitch.auth.dao import User
 
 
@@ -31,7 +26,7 @@ class UserSchema(Schema):
 
     name = fields.String(required=True)
     password = fields.String(load_only=True, required=False, attribute="password_clear")
-    newPassword = fields.String(load_only=True, required=False)
+    new_password = fields.String(load_only=True, required=False)
     email = fields.Email(required=False)
     last_loggin = fields.String(required=False)
     privilege = fields.String(required=False)

@@ -64,6 +64,9 @@ docs/_build/
 
 # PyBuilder
 target/
-
+Flask-Server/MANIFEST
+Flask-Server/dist
 #Mac
 .DS_Store
+
+.vscode

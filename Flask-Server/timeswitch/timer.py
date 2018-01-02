@@ -4,8 +4,8 @@ import argparse
 import atexit
 import logging
 
-from time_switch.manager import SwitchManager
-from time_switch.model import SwitchModel
+from timeswitch.switch.manager import SwitchManager
+from timeswitch.switch.model import SwitchModel
 
 parser = argparse.ArgumentParser(description='Timeswitch for the\
  GPIOs of an Raspberry Pi.')

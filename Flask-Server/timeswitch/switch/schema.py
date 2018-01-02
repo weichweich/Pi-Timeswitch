@@ -16,14 +16,18 @@ class NullHandler(logging.Handler):
     def emit(self, record):
         pass
 
+
 logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
+
 
 class AppError(Exception):
     pass
 
+
 def dasherize(text):
     return text.replace('_', '-')
+
 
 class SequenceSchema(Schema):
     id = fields.String(dump_only=True)
@@ -45,19 +49,21 @@ class SequenceSchema(Schema):
         return Sequence(**data)
 
     def handle_error(self, exc, data):
-        raise ValidationError('An error occurred with input: {0} \n {1}'.format(data, exc.messages))
+        raise ValidationError(
+            'An error occurred with input: {0} \n {1}'.format(data, exc.messages))
 
     def __str__(self):
         if self.pin is None:
             return "<Sequence: Start " + self.start_time + " End " +\
-                    self.end_time + " Pin none>"
+                self.end_time + " Pin none>"
         else:
             return "<Sequence: Start " + self.start_time + " End " +\
-                    self.end_time + " Pin " + str(self.pin) + ">"
+                self.end_time + " Pin " + str(self.pin) + ">"
 
     class Meta:
         type_ = 'sequences'
         strict = True
+
 
 class PinSchema(Schema):
     id = fields.Str(dump_only=True)
@@ -79,7 +85,8 @@ class PinSchema(Schema):
         return Pin(**data)
 
     def handle_error(self, exc, data):
-        raise ValidationError('An error occurred with input: {0} \n {1}'.format(data, exc.messages))
+        raise ValidationError(
+            'An error occurred with input: {0} \n {1}'.format(data, exc.messages))
 
     class Meta:
         type_ = 'pins'
