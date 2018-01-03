@@ -175,6 +175,13 @@ def start(cmd_args, app, switch_model):
         if cmd_args.manager:
             switch_manager.stop()
 
+def gen_app():
+    cmd_args = parse_arguments()
+    app = prepare_app(cmd_args)
+    switch_model = app_setup(app)
+    return app
+
+
 def main():
     cmd_args = parse_arguments()
     app = prepare_app(cmd_args)

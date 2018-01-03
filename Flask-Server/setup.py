@@ -17,7 +17,8 @@ setup(name='Timeswitch',
       test_suite='tests',
       entry_points={
         'console_scripts': [
-            'timeswitch = timeswitch.server:main'
+            'timeswitch = timeswitch.server:main',
+            'timer = timeswitch.timer:main',
             ]
         },
      )

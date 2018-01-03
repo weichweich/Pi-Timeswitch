@@ -11,12 +11,6 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 from marshmallow_jsonapi.exceptions import IncorrectTypeError
 
-
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
-
-logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
 
 # ######################################

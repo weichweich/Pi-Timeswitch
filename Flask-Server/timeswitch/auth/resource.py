@@ -14,12 +14,6 @@ from marshmallow_jsonapi.exceptions import IncorrectTypeError
 import timeswitch.auth as auth
 from timeswitch.auth.schema import UserSchema
 
-
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
-
-logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
 
 def _make_jsonapi_error(title: str, detail: str, code: int):
@@ -58,7 +52,7 @@ class LoginResource(Resource):
                 "The given username password combination does not match.", 1003), 400
         except Exception as e:
             LOGGER.error('Access denied: unknown error: {}'.format(e))
-            return _make_jsonapi_error("Unkown error occoured",
+            return _make_jsonapi_error("Error occoured ({})".format(e.__class__.__name__),
                 "There was an error which could not be classified.", 1004), 500
 
         LOGGER.info('User {0} logged in.'.format(json_data['name']))

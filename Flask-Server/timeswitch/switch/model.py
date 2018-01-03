@@ -126,8 +126,8 @@ class SwitchModel(object):
                     print("none?")
                 sequences.append(Sequence(start_time, start_range, end_time,
                                           end_range, pin=pin, sequence_id=sequence_id))
-
         connection.close()
+
         return sequences
 
     def get_sequence(self, sequence_id):
@@ -148,8 +148,8 @@ class SwitchModel(object):
                 sequence.set_pin(pin)
             else:
                 LOGGER.error("sequence got no pin!")
-
         connection.close()
+
         return sequence
 
     def set_sequence(self, sequence, pin_id=-1, sequence_id=-1):
@@ -192,7 +192,6 @@ class SwitchModel(object):
             cur = connection.cursor()
             cur.execute('''DELETE FROM Sequences
                         WHERE id=?''', (sequence_id,))
-        connection.close()
 
     def get_sequences_for_pin(self, pin_id):
         '''Returns all sequences for the pin.'''
@@ -209,7 +208,6 @@ class SwitchModel(object):
                 seq = Sequence(start_time, start_range, end_time, end_range,
                                sequence_id=sequence_id, pin=pin)
                 sequences.append(seq)
-
         connection.close()
         return sequences
 
@@ -225,7 +223,6 @@ class SwitchModel(object):
             row = cur.fetchone()
             if row is None:
                 return None
-
         connection.close()
         return Pin(row[0], None, row[2], prio=row[1])
 
@@ -237,7 +234,6 @@ class SwitchModel(object):
                 WHERE pin_id=?''', (str(pin_id),))
 
             rows = cur.fetchall()
-
         connection.close()
         return get_sequences_from_rows(rows)
 
@@ -258,7 +254,6 @@ class SwitchModel(object):
                     self.__setup_pin(pin)
                 pin.set_state(GPIO.input(pin.get_id()))
                 pins.append(pin)
-
         connection.close()
         return pins
 
@@ -273,7 +268,6 @@ class SwitchModel(object):
             if raw_pin is None:
                 return None
         connection.close()
-
         sequences = self.get_sequences_for_pin(pin_id)
         pin = Pin(raw_pin[0], sequences, raw_pin[2], prio=raw_pin[1])
         if not pin.get_id() in self.used_gpio:
@@ -292,6 +286,7 @@ class SwitchModel(object):
             cur = connection.cursor()
             cur.execute('''DELETE FROM Pins WHERE id=?''',
                         (str(pin_id),))
+        connection.close()
 
     def set_pin(self, pin, pin_id=-1):
         '''Alters the pin name or adds the pin if he

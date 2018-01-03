@@ -8,15 +8,8 @@ import bcrypt
 from flask import current_app, g, request
 
 from timeswitch.auth.dao import User
-from timeswitch.auth import check_password, get_hashed_password
+from timeswitch.auth.helper import get_hashed_password
 
-
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
-
-
-logging.getLogger(__name__).addHandler(NullHandler())
 LOGGER = logging.getLogger(__name__)
 
 
@@ -41,10 +34,10 @@ def create_db():
             privilege INTEGER,
             email TEXT,
             CONSTRAINT unique_name UNIQUE (name))''')
-
+    connection.close()
+    
     add_user(User('admin', PRIVILEGE_ADMIN, user_id=-1, last_loggin=datetime.utcnow()),
              'admin')
-
 
 def add_user(user, password_clear=None):
     with sql.connect(current_app.config['SQL_FILE']) as connection:
@@ -63,7 +56,7 @@ def add_user(user, password_clear=None):
             User(name, password, last_loggin, privilege, email)
             VALUES (?, ?, ?, ?, ?)''', vals)
         user.id = cur.lastrowid
-
+    connection.close()
 
 def get_user(user_id):
     with sql.connect(current_app.config['SQL_FILE']) as connection:
@@ -77,7 +70,7 @@ def get_user(user_id):
 
         return User(user_id=row[0], name=row[1], pwd_salty_hash=row[2],
                     privilege=row[4], last_loggin=row[3], email=row[5])
-
+    connection.close()
 
 def get_user_with_name(username):
     with sql.connect(current_app.config['SQL_FILE']) as connection:
@@ -91,7 +84,7 @@ def get_user_with_name(username):
 
         return User(user_id=row[0], name=row[1], pwd_salty_hash=row[2],
                     privilege=row[4], last_loggin=row[3], email=row[5])
-
+    connection.close()
 
 def get_users():
     with sql.connect(current_app.config['SQL_FILE']) as connection:
@@ -105,14 +98,14 @@ def get_users():
                               privilege=row[4], last_loggin=row[3], email=row[5]))
 
         return users
-
+    connection.close()
 
 def remove_user(user_id):
     with sql.connect(current_app.config['SQL_FILE']) as connection:
         cur = connection.cursor()
         cur.execute('''DELETE FROM User
                     WHERE id=?''', (user_id,))
-
+    connection.close()
 
 def update_user(user):
     old_user = get_user(user.id)
@@ -127,3 +120,4 @@ def update_user(user):
         cur.execute('''UPDATE User
                 SET name=?, privilege=?, password=?
                 WHERE id=?''', val)
+    connection.close()

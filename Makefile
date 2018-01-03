@@ -1,7 +1,9 @@
 
 dist: backend_dist frontend_dist
-	test -d dist || mkdir dist; rm -rf dist/*
-	cp -r Flask-Server/ dist/backend
+	test -d dist || mkdir dist;
+	rm -rf dist/*
+	rm -f dist.zip
+	cp -r Flask-Server/dist/Timeswitch-*[!.zip] dist/backend
 	cp -r Client/build dist/frontend
 	zip dist.zip -r dist
 

@@ -27,7 +27,7 @@ install_dev: | install_editable $(DATABASE_FILENAME)
 # Run commands
 
 run_dev: install_dev $(DATABASE_FILENAME)
-	$(TIMESWITCH) --file $(DATABASE_FILENAME)
+	$(TIMESWITCH) --debug --file $(DATABASE_FILENAME)
 
 run_dev_static: install_dev $(DATABASE_FILENAME)
 	$(TIMESWITCH) --file $(DATABASE_FILENAME) --static 'static'
@@ -35,6 +35,7 @@ run_dev_static: install_dev $(DATABASE_FILENAME)
 # Build lrelease package
 
 dist: venv
+	rm -rf dist/*
 	$(PYTHON) setup.py sdist --formats=zip
 	unzip dist/*.zip -d dist/
 
