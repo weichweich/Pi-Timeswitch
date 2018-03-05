@@ -1,27 +1,38 @@
-import os
-import unittest
-import tempfile
+import json
 
-import timeswitch.server
+def ordered(obj):
+    """order json objects
+    """
+    if isinstance(obj, dict):
+        return sorted((k, ordered(v)) for k, v in obj.items())
+    if isinstance(obj, list):
+        return sorted(ordered(x) for x in obj)
+    else:
+        return obj
 
-import tests.helper
 
 
-def test_prepare_app():
-    cmd_args = tests.helper.Bunch(static_dir="",
-                                  schedule_file="schedule.sqlite",
-                                  create=True)
-    app = timeswitch.server.prepare_app(cmd_args)
 
-    assert app
+class TestServer(object):
 
-def test_app_setup():
-    cmd_args = tests.helper.Bunch(static_dir="",
-                                  schedule_file="schedule.sqlite",
-                                  create=True)
-    app = timeswitch.server.prepare_app(cmd_args)
-    assert app
-    timeswitch.server.create_db(app)
+    def test_empty_db(self, app):
+        rv = app.get('/')
+        assert rv.status == '404 NOT FOUND'
 
-    switch_model = timeswitch.server.app_setup(app)
-    assert switch_model
+    def test_get_pins_empty(self, app):
+        data = b'{"data": []}'
+        rv = app.get('/api/pins')
+        print(rv.data)
+        assert ordered(rv.data) == ordered(data)
+
+    def test_get_sequences_empty(self, app):
+        data = b'{"data": []}'
+        rv = app.get('/api/sequences')
+        print(rv.data)
+        assert ordered(rv.data) == ordered(data)
+
+    def test_get_pin_404(self, app):
+        data = b'{"errors": [{"status": "401", "code": 401, "title": "Authentication Error", "detail": "The token is not provided!", "source": {"pointer": "http://localhost/api/pins"}}]}'
+        rv = app.get('/api/pins/1')
+        print(rv.data)
+        assert ordered(rv.data) == ordered(data)

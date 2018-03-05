@@ -1,20 +1,34 @@
+import os
+from functools import wraps
+
 import pytest
+from flask import url_for
 
-from timeswitch.server import prepare_app, create_db, app_setup
+import timeswitch
+from timeswitch.server import app_setup, create_db, prepare_app
 
-from tests.helper import Bunch
+
+def dummy_auth(func):
+    @wraps(func)
+    def func_wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return func_wrapper
+
+
+class Args(object):
+    static_dir=None
+    schedule_file="testing.db"
+
 
 @pytest.fixture
-def app_model(tmpdir):
-    file = tmpdir.join("test_db.sqlite3").strpath
-    dir = tmpdir.mkdir("test_static_dir").strpath
-    cmd_args = Bunch(
-        schedule_file=file,
-        debug=True,
-        static_dir=dir,
-        create=True
-    )
-    app = prepare_app(cmd_args)
+def app():
+    timeswitch.auth.dec_auth = dummy_auth
+
+    app = prepare_app(Args())
+    app.testing = True
     create_db(app)
-    model = app_setup(app)
-    return (app, model)
+    switch_model = app_setup(app)
+
+    yield app.test_client()
+
+    os.remove(Args.schedule_file)

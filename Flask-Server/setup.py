@@ -1,8 +1,7 @@
-import os
-from distutils.core import setup
+from setuptools import setup
 
 with open('requirements.txt') as f:
-        required = f.read().splitlines()
+    required = f.read().splitlines()
 
 setup(name='Timeswitch',
       version='0.1',
@@ -14,11 +13,13 @@ setup(name='Timeswitch',
       packages=['timeswitch'],
 
       install_requires=required,
-      test_suite='tests',
+      setup_requires=['pytest-runner'],
+      tests_require=['pytest'],
+
       entry_points={
-        'console_scripts': [
-            'timeswitch = timeswitch.server:main',
-            'timer = timeswitch.timer:main',
-            ]
-        },
-     )
+          'console_scripts': [
+              'timeswitch = timeswitch.server:main',
+              'timer = timeswitch.timer:main',
+          ]
+      }
+      )
