@@ -1,5 +1,0 @@
-include wsgi.py
-recursive-include timeswitch *.py
-recursive-include tests *.py
-include *.txt
-include timeswitch.ini

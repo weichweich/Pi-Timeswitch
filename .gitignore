@@ -70,3 +70,6 @@ Flask-Server/dist
 .DS_Store
 
 .vscode
+
+*.zip
+.pytest_cache/
