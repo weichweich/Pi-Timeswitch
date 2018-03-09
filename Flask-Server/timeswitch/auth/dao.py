@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 class User:
     def __init__(self, name, privilege, \
                  last_loggin=None, email=None, pwd_salty_hash=None, \

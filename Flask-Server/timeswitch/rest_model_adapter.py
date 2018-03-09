@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """This module provides adapters which takes setters, getters and delete
 functions. The adapter itself provides GET, POST, PATCH and DELETE functions
 which takes or provides JSONAPI encoded objects.

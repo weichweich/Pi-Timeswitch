@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 SWITCH_ON = 1
 SWITCH_OFF = 0
 SWITCH_UNDEF = -1
