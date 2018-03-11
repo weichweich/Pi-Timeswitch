@@ -12,6 +12,7 @@ setup(name='Timeswitch',
       url='https://github.com/weichweich/Pi-Timeswitch',
       packages=['timeswitch'],
 
+      python_requires='>3.5.2',
       install_requires=required,
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],
