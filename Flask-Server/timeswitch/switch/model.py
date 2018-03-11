@@ -32,7 +32,7 @@ possible_gpios = [2, 5, 7, 8, 10, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24,
 def create_db():
     """Creates all tables.
     """
-    with sql.connect(current_app.config['SQL_FILE']) as connection:
+    with sql.connect(current_app.config['DB_FILE']) as connection:
         cur = connection.cursor()
         cur.execute('''CREATE TABLE Sequences(
             id INTEGER PRIMARY KEY,
