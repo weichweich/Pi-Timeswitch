@@ -30,7 +30,8 @@ possible_gpios = [2, 5, 7, 8, 10, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24,
 
 
 def create_db():
-    '''Creates all tables.'''
+    """Creates all tables.
+    """
     with sql.connect(current_app.config['SQL_FILE']) as connection:
         cur = connection.cursor()
         cur.execute('''CREATE TABLE Sequences(
@@ -84,7 +85,8 @@ def get_sequences_from_rows(rows):
 
 
 class SwitchModel(object):
-    '''This class saves and loads pins and schedules.'''
+    """This class saves and loads pins and schedules.
+    """
 
     def __init__(self, filename):
         self.sql_file = filename
@@ -129,7 +131,8 @@ class SwitchModel(object):
         return sequences
 
     def get_sequence(self, sequence_id):
-        '''Returns all schedules in the dataset.'''
+        """Returns all schedules in the dataset.
+        """
 
         LOGGER.info("get_sequence(%s)", sequence_id)
 
@@ -151,8 +154,9 @@ class SwitchModel(object):
         return sequence
 
     def set_sequence(self, sequence, pin_id=-1, sequence_id=-1):
-        '''Adds the given sequence to the dataset.\
-           Removes the old schedule if it exists.'''
+        """Adds the given sequence to the dataset.\
+           Removes the old schedule if it exists.
+        """
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             if sequence.get_pin() and pin_id == -1:
@@ -185,14 +189,16 @@ class SwitchModel(object):
         return self.get_sequence(sequence.get_id())
 
     def delete_sequence(self, sequence_id):
-        '''Deletes the sequences with the given id.'''
+        """Deletes the sequences with the given id.
+        """
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''DELETE FROM Sequences
                         WHERE id=?''', (sequence_id,))
 
     def get_sequences_for_pin(self, pin_id):
-        '''Returns all sequences for the pin.'''
+        """Returns all sequences for the pin.
+        """
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''SELECT * FROM Sequences
@@ -210,7 +216,8 @@ class SwitchModel(object):
         return sequences
 
     def __get_pin_for_sequence(self, sequence_id):
-        '''Returns all sequences for the pin.'''
+        """Returns all sequences for the pin.
+        """
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''SELECT Pins.id, Pins.prio, Pins.name FROM pins
@@ -225,7 +232,8 @@ class SwitchModel(object):
         return Pin(row[0], None, row[2], prio=row[1])
 
     def __delete_sequences_for_pin(self, pin_id):
-        '''Deletes all sequences for the pin.'''
+        """Deletes all sequences for the pin.
+        """
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''DELETE FROM Sequences
@@ -236,7 +244,8 @@ class SwitchModel(object):
         return get_sequences_from_rows(rows)
 
     def get_pins(self):
-        '''Returns all pins.'''
+        """Returns all pins.
+        """
         pins = []
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
@@ -256,7 +265,8 @@ class SwitchModel(object):
         return pins
 
     def get_pin(self, pin_id):
-        '''Returns the pin with the given id.'''
+        """Returns the pin with the given id.
+        """
         with sql.connect(self.sql_file) as connection:
             cur = connection.cursor()
             cur.execute('''SELECT * FROM Pins
@@ -275,7 +285,8 @@ class SwitchModel(object):
         return pin
 
     def delete_pin(self, pin_id):
-        '''Deletes all sequence for the pin and the pin it selfs.'''
+        """Deletes all sequence for the pin and the pin it selfs.
+        """
         self.__delete_sequences_for_pin(pin_id)
         GPIO.cleanup(pin_id)
         self.used_gpio.pop(pin_id, None)
@@ -287,8 +298,9 @@ class SwitchModel(object):
         connection.close()
 
     def set_pin(self, pin, pin_id=-1):
-        '''Alters the pin name or adds the pin if he
-        did not exist. Also adds sequences.'''
+        """Alters the pin name or adds the pin if he
+        did not exist. Also adds sequences.
+        """
         if pin.get_state() == SWITCH_ON:
             self.switch_pin_on(pin, prio=1)
         elif pin.get_state() == SWITCH_OFF:
@@ -297,8 +309,9 @@ class SwitchModel(object):
         return self.__set_pin(pin, pin_id)
 
     def __set_pin(self, pin, pin_id=-1):
-        '''Alters the pin name or adds the pin if he
-        did not exist. Also adds sequences.'''
+        """Alters the pin name or adds the pin if he
+        did not exist. Also adds sequences.
+        """
         if self.get_pin(pin.get_id()) is None:
             with sql.connect(self.sql_file) as connection:
                 cur = connection.cursor()
