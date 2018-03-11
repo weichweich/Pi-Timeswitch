@@ -25,14 +25,14 @@ class TestPinAPI(object):
         assert rv.status == '404 NOT FOUND'
 
     def test_get_pins_empty(self, app):
-        data = b'{"data": []}'
+        data = '{"data": []}'
         rv = app.get('/api/pins')
         print(rv.data)
         assert ordered_str(rv.data) == ordered_str(data)
         assert rv.status == '200 OK'
 
     def test_get_pin_empty(self, app):
-        data = b'{"data": null}'
+        data = '{"data": null}'
         rv = app.get('/api/pins/1')
         print(rv.data)
         assert ordered_str(rv.data) == ordered_str(data)
@@ -40,8 +40,8 @@ class TestPinAPI(object):
 
     @pytest.mark.xfail
     def test_create_pin(self, app):
-        data = b'{"data": {"type":"pins","relationships":{"sequences":{"links":{"related":"/api/pins/12/sequences"}}},"attributes":{"name":"test","state":0,"number":12},"id":"12"}}'
-        request_data = b'{"data": {"type": "pins", "attributes": {"number": 12, "name": "test", "id": "1"}}}'
+        data = '{"data": {"type":"pins","relationships":{"sequences":{"links":{"related":"/api/pins/12/sequences"}}},"attributes":{"name":"test","state":0,"number":12},"id":"12"}}'
+        request_data = '{"data": {"type": "pins", "attributes": {"number": 12, "name": "test", "id": "1"}}}'
 
         rv1 = app.post('/api/pins', data=request_data)
         assert ordered_str(rv1.data) == ordered_str(data)
@@ -58,11 +58,11 @@ class TestPinAPI(object):
 
     @pytest.mark.xfail
     def test_edit_pin(self, app):
-        data = b'{"data": {"type":"pins","relationships":{"sequences":{"links":{"related":"/api/pins/12/sequences"}}},"attributes":{"name":"test","state":0,"number":12},"id":"12"}}'
-        request_data = b'{"data": {"type": "pins", "attributes": {"number": 12, "name": "test"}}}'
+        data = '{"data": {"type":"pins","relationships":{"sequences":{"links":{"related":"/api/pins/12/sequences"}}},"attributes":{"name":"test","state":0,"number":12},"id":"12"}}'
+        request_data = '{"data": {"type": "pins", "attributes": {"number": 12, "name": "test"}}}'
 
-        data2 = b'{"data": {"type":"pins","relationships":{"sequences":{"links":{"related":"/api/pins/12/sequences"}}},"attributes":{"name":"blub","state":1,"number":12},"id":"12"}}'
-        request_data2 = b'{"data": {"type": "pins", "attributes": {"number": 12, "name": "blub","state":1}}}'
+        data2 = '{"data": {"type":"pins","relationships":{"sequences":{"links":{"related":"/api/pins/12/sequences"}}},"attributes":{"name":"blub","state":1,"number":12},"id":"12"}}'
+        request_data2 = '{"data": {"type": "pins", "attributes": {"number": 12, "name": "blub","state":1}}}'
 
         rv1 = app.post('/api/pins', data=request_data)
         assert ordered_str(rv1.data) == ordered_str(data)
@@ -83,8 +83,8 @@ class TestPinAPI(object):
         assert rv1.status == '404 NOT FOUND'
 
     def test_delete_pin(self, app):
-        data = b'{"data": {"type":"pins","relationships":{"sequences":{"links":{"related":"/api/pins/12/sequences"}}},"attributes":{"name":"test","state":0,"number":12},"id":"12"}}'
-        request_data = b'{"data": {"type": "pins", "attributes": {"number": 12, "name": "test"}}}'
+        data = '{"data": {"type":"pins","relationships":{"sequences":{"links":{"related":"/api/pins/12/sequences"}}},"attributes":{"name":"test","state":0,"number":12},"id":"12"}}'
+        request_data = '{"data": {"type": "pins", "attributes": {"number": 12, "name": "test"}}}'
 
         rv1 = app.post('/api/pins', data=request_data)
         assert ordered_str(rv1.data) == ordered_str(data)
@@ -96,13 +96,13 @@ class TestPinAPI(object):
 
 class TestSequenceAPI(object):
     def test_get_sequences_empty(self, app):
-        data = b'{"data": []}'
+        data = '{"data": []}'
         rv = app.get('/api/sequences')
         assert ordered_str(rv.data) == ordered_str(data)
         assert rv.status == '200 OK'
 
     def test_get_sequence_empty(self, app):
-        data = b'{"data": null}'
+        data = '{"data": null}'
         rv = app.get('/api/sequences/12')
         print(rv.data)
         assert ordered_str(rv.data) == ordered_str(data)
@@ -110,8 +110,8 @@ class TestSequenceAPI(object):
 
     @pytest.mark.xfail
     def test_create_sequence(self, app):
-        p_data = b'{"data": {"type":"pins","relationships":{"sequences":{"links":{"related":"/api/pins/12/sequences"}}},"attributes":{"name":"test","state":0,"number":12},"id":"12"}}'
-        p_request_data = b'{"data": {"type": "pins", "attributes": {"number": 12, "name": "test"}}}'
+        p_data = '{"data": {"type":"pins","relationships":{"sequences":{"links":{"related":"/api/pins/12/sequences"}}},"attributes":{"name":"test","state":0,"number":12},"id":"12"}}'
+        p_request_data = '{"data": {"type": "pins", "attributes": {"number": 12, "name": "test"}}}'
 
         rv1 = app.post('/api/pins', data=p_request_data)
         assert ordered_str(rv1.data) == ordered_str(p_data)
@@ -122,7 +122,7 @@ class TestSequenceAPI(object):
         assert rv2.status == '200 OK'
 
         s_request_data = '{"data": {"type": "sequences","attributes": {"start_time": "12:00","start_range": "0:05","end_time": "14:00","end_range": "0:05","pin-id": 12}, "id": "1"}}'
-        s_data = b'{"data": {"type": "sequences", "attributes": {"end_range": "0:05", "end_time": "14:00", "start_range": "0:05", "start_time": "12:00"}, "id": "1"}}'
+        s_data = '{"data": {"type": "sequences", "attributes": {"end_range": "0:05", "end_time": "14:00", "start_range": "0:05", "start_time": "12:00"}, "id": "1"}}'
 
         rv3 = app.post('/api/sequences', data=s_request_data)
         assert ordered_str(rv3.data) == ordered_str(s_data)
