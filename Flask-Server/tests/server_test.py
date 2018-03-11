@@ -14,6 +14,8 @@ def ordered(obj):
 
 def ordered_str(json_str):
     if json_str:
+        if not isinstance(json_str, str):
+            json_str = json_str.decode("utf-8")
         return ordered(json.loads(json_str))
     else:
         return None
