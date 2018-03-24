@@ -4,7 +4,7 @@ import ko = require('knockout')
 import { Model, startApp, AppState } from './frame'
 import { Constants } from './config'
 
-import * as pin from './model/pin'
+import * as pin from './model/Pin'
 import * as seq from './model/Sequence'
 import * as user from './model/User'
 

@@ -2,8 +2,8 @@
 
 import ko = require('knockout')
 
-import { Pin } from '../../model/pin'
-import { Sequence } from '../../model/sequence'
+import { Pin } from '../../model/Pin'
+import { Sequence } from '../../model/Sequence'
 import { Model, ErrorDescriptor, AppState } from '../../frame'
 import { Constants } from '../../config'
 

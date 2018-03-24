@@ -1,7 +1,7 @@
 /// <reference path="./../../../typings/main.d.ts" />
 
 import ko = require('knockout')
-import { Pin } from '../../model/pin'
+import { Pin } from '../../model/Pin'
 import { Sequence } from '../../model/Sequence'
 import { Model, AppState } from '../../frame'
 import { Constants } from '../../config'
