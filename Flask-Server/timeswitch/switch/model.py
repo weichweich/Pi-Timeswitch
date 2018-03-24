@@ -6,6 +6,7 @@ from flask import current_app
 
 from timeswitch.switch.dao import (SWITCH_OFF, SWITCH_ON, SWITCH_UNDEF, Pin,
                                    Sequence)
+from timeswitch.config import KEY_DB_FILE
 
 try:
     import RPi.GPIO as GPIO
@@ -32,7 +33,7 @@ possible_gpios = [2, 5, 7, 8, 10, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24,
 def create_db():
     """Creates all tables.
     """
-    with sql.connect(current_app.config['DB_FILE']) as connection:
+    with sql.connect(current_app.config[KEY_DB_FILE]) as connection:
         cur = connection.cursor()
         cur.execute('''CREATE TABLE Sequences(
             id INTEGER PRIMARY KEY,
@@ -93,11 +94,6 @@ class SwitchModel(object):
         self.observers = []
         self.used_gpio = {}
         GPIO.setmode(GPIO.BOARD)
-
-        try:
-            self.get_pins()
-        except:
-            create_db()
 
     def __notify_all(self):
         for observer in self.observers:

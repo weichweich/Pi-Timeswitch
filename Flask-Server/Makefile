@@ -4,14 +4,25 @@ PIP="venv/bin/pip"
 PYTEST="venv/bin/py.test"
 TIMESWITCH="venv/bin/timeswitch"
 
+# Run commands
+
+run_dev_static: $(DATABASE_FILENAME)
+	$(TIMESWITCH) --file $(DATABASE_FILENAME) --static 'static'
+
+run_dev: $(DATABASE_FILENAME)
+	$(TIMESWITCH) --debug --file $(DATABASE_FILENAME)
+
+# environment
+
 venv/bin/activate: requirements.txt
 	test -d venv || virtualenv -p python3 venv
 	$(PIP) install -Ur requirements.txt
-	touch venv/bin/activate
+	source venv/bin/activate
 
 venv: venv/bin/activate
 
 # Setup initial database
+
 DATABASE_FILENAME="schedule.sqlite"
 
 $(DATABASE_FILENAME): venv
@@ -24,13 +35,6 @@ install_editable:
 
 install_dev: | install_editable $(DATABASE_FILENAME)
 
-# Run commands
-
-run_dev: install_dev $(DATABASE_FILENAME)
-	$(TIMESWITCH) --debug --file $(DATABASE_FILENAME)
-
-run_dev_static: install_dev $(DATABASE_FILENAME)
-	$(TIMESWITCH) --file $(DATABASE_FILENAME) --static 'static'
 
 # Build lrelease package
 

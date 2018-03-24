@@ -1,3 +1,4 @@
+KEY_DB_FILE = "DB_FILE"
 
 class Config(object):
     DEBUG = False

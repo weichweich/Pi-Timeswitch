@@ -17,6 +17,7 @@ def setup_api(app, model, url_prefix='/api'):
         resp = make_response(json.dumps(data), code)
         resp.headers.extend(headers or {})
         return resp
+    
     # ––––––––––––––––––––––––––––––––––––––
     # Pins
     kwargs_pins = {

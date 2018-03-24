@@ -36,7 +36,7 @@ def parse_arguments():
 # # Logging:
 # ######################################
 
-def get_logger(cmd_args):
+def setup_logger(debug=True):
     # set up logging to file - see previous section for more details
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(name)-20s \
@@ -47,7 +47,7 @@ def get_logger(cmd_args):
     # define a Handler which writes INFO messages or higher to the sys.stderr
     console = logging.StreamHandler()
 
-    if cmd_args.debug:
+    if debug:
         console.setLevel(logging.DEBUG)
     else:
         console.setLevel(logging.INFO)
@@ -59,7 +59,6 @@ def get_logger(cmd_args):
     # add the handler to the root logger
     logging.getLogger('').addHandler(console)
 
-    return logging.getLogger("MAIN")
 
 
 def start(cmd_args, app, switch_model):
@@ -76,10 +75,12 @@ def start(cmd_args, app, switch_model):
 
 
 def main():
+
     cmd_args = parse_arguments()
-    app = setup_app(cmd_args)
+    setup_logger(cmd_args.debug)
+    app = setup_app(static_folder=cmd_args.static_dir, static_url_path='')
     model = setup_model(app)
-    api = setup_api(app, model)
+    _ = setup_api(app, model)
 
     start(cmd_args, app, model)
 
